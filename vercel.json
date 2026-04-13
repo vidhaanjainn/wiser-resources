@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/one-tap-email-automation", "destination": "/one-tap-email-automation.html" }
+  ]
+}

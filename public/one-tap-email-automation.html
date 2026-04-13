@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One-Tap Email Automation — Wiser With Vidhaan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060b0d;
+    --surface: #0a1218;
+    --surface2: #0f1a22;
+    --surface3: #132030;
+    --teal: #00e5cc;
+    --teal-dim: #00b8a4;
+    --teal-glow: rgba(0,229,204,0.1);
+    --teal-glow-strong: rgba(0,229,204,0.18);
+    --teal-border: rgba(0,229,204,0.15);
+    --teal-border-bright: rgba(0,229,204,0.3);
+    --text: #dff2ef;
+    --text-muted: #5e8c85;
+    --text-dim: #2d5550;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Plus Jakarta Sans', sans-serif;
+    --serif: 'Instrument Serif', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* NAV */
+  .nav {
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--teal-border);
+    position: sticky;
+    top: 0;
+    background: rgba(6,11,13,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .nav-brand {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--teal);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+
+  .nav-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 100px 48px 80px;
+    position: relative;
+    overflow: hidden;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -100px;
+    left: -150px;
+    width: 800px;
+    height: 600px;
+    background: radial-gradient(ellipse at center, rgba(0,229,204,0.06) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--teal);
+    background: var(--teal-glow);
+    border: 1px solid var(--teal-border-bright);
+    padding: 7px 16px;
+    border-radius: 100px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+    width: fit-content;
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 5px; height: 5px;
+    background: var(--teal);
+    border-radius: 50%;
+    animation: blink 2s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+    animation: fadeUp 0.5s 0.05s ease both;
+  }
+
+  .hero-title {
+    font-family: var(--sans);
+    font-size: clamp(48px, 8vw, 100px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.04em;
+    margin-bottom: 28px;
+    animation: fadeUp 0.5s 0.1s ease both;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    font-family: var(--serif);
+    font-weight: 400;
+    color: var(--teal);
+    letter-spacing: -0.02em;
+  }
+
+  .hero-title .muted { color: var(--text-muted); }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 520px;
+    font-weight: 400;
+    line-height: 1.75;
+    margin-bottom: 52px;
+    animation: fadeUp 0.5s 0.15s ease both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    animation: fadeUp 0.5s 0.2s ease both;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-val {
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--teal);
+    font-weight: 500;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    letter-spacing: 0.06em;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--teal-border), transparent);
+    margin: 0 48px;
+  }
+
+  /* SECTION BASE */
+  section { padding: 72px 48px; }
+
+  .s-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+
+  .s-title {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+
+  .s-sub {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 44px;
+    max-width: 540px;
+  }
+
+  /* PREREQ */
+  .prereq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  .prereq-item {
+    background: var(--surface);
+    border: 1px solid var(--teal-border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .prereq-item:hover {
+    border-color: var(--teal-border-bright);
+    background: var(--surface2);
+    transform: translateY(-2px);
+  }
+
+  .prereq-icon {
+    font-size: 24px;
+    width: 46px; height: 46px;
+    background: var(--teal-glow);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .prereq-name { font-size: 14px; font-weight: 700; }
+  .prereq-note { font-size: 11px; color: var(--text-muted); font-family: var(--mono); margin-top: 2px; }
+
+  /* FLOW */
+  .flow-wrap {
+    overflow-x: auto;
+    padding: 8px 0 24px;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    min-width: 860px;
+    gap: 0;
+  }
+
+  .flow-node {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--teal-border);
+    border-radius: 12px;
+    padding: 22px 18px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .flow-node:hover {
+    border-color: var(--teal-border-bright);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 48px rgba(0,229,204,0.08);
+  }
+
+  .flow-node.active {
+    border-color: var(--teal);
+    background: linear-gradient(160deg, var(--surface2), rgba(0,229,204,0.06));
+    box-shadow: 0 0 32px rgba(0,229,204,0.1), inset 0 1px 0 rgba(0,229,204,0.15);
+  }
+
+  .fn-icon { font-size: 26px; margin-bottom: 10px; }
+  .fn-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .fn-desc { font-size: 11px; color: var(--text-muted); font-family: var(--mono); line-height: 1.5; }
+
+  .flow-connector {
+    flex-shrink: 0;
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(to right, var(--teal-border), var(--teal-dim));
+    position: relative;
+  }
+
+  .flow-connector::after {
+    content: '▶';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 9px;
+    color: var(--teal-dim);
+  }
+
+  /* STEPS */
+  .phase {
+    margin-bottom: 64px;
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--teal-border);
+  }
+
+  .phase-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--teal);
+    background: var(--teal-glow);
+    border: 1px solid var(--teal-border-bright);
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .phase-title { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; flex: 1; }
+
+  .phase-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--teal-border);
+    padding: 5px 12px;
+    border-radius: 100px;
+  }
+
+  .steps { display: flex; flex-direction: column; gap: 14px; }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--teal-border);
+    border-radius: 10px;
+    padding: 24px 26px;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 18px;
+    transition: border-color 0.2s;
+  }
+
+  .step:hover { border-color: var(--teal-border-bright); }
+
+  .step-n {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--teal);
+    font-weight: 500;
+    padding-top: 1px;
+  }
+
+  .step-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+
+  .step-body {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.75;
+  }
+
+  .step-body strong { color: var(--text); font-weight: 600; }
+
+  /* SCREENSHOT CALLOUT */
+  .screenshot-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: linear-gradient(135deg, var(--surface2), rgba(0,229,204,0.04));
+    border: 1px solid var(--teal-border-bright);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  .screenshot-note .sn-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .screenshot-note strong { color: var(--teal); }
+
+  /* CODE */
+  .code {
+    background: #040a0c;
+    border: 1px solid var(--teal-border);
+    border-left: 3px solid var(--teal);
+    border-radius: 0 6px 6px 0;
+    padding: 16px 20px;
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--teal-dim);
+    line-height: 1.85;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  .code .c { color: var(--text-dim); }
+  .code .h { color: var(--teal); }
+  .code .w { color: var(--text); }
+
+  /* TIP */
+  .tip {
+    display: flex;
+    gap: 10px;
+    background: var(--teal-glow);
+    border: 1px solid var(--teal-border-bright);
+    border-radius: 8px;
+    padding: 13px 16px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  .tip-i { color: var(--teal); flex-shrink: 0; font-size: 14px; font-style: normal; }
+
+  /* SKILL SECTION */
+  .skill-intro {
+    background: var(--surface2);
+    border: 1px solid var(--teal-border);
+    border-radius: 12px;
+    padding: 36px;
+    margin-bottom: 28px;
+  }
+
+  .skill-intro-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  .skill-intro p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.75;
+    max-width: 620px;
+  }
+
+  /* SKILL ANATOMY */
+  .anatomy {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+    margin-bottom: 40px;
+  }
+
+  .anatomy-card {
+    background: var(--surface);
+    border: 1px solid var(--teal-border);
+    border-radius: 10px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+
+  .anatomy-card:hover {
+    border-color: var(--teal-border-bright);
+    transform: translateY(-2px);
+  }
+
+  .anatomy-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--teal), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .anatomy-card:hover::before { opacity: 1; }
+
+  .ac-icon { font-size: 22px; margin-bottom: 12px; }
+  .ac-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .ac-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+
+  .ac-desc ul { list-style: none; margin-top: 8px; }
+  .ac-desc li { padding: 3px 0 3px 16px; position: relative; }
+  .ac-desc li::before { content: '→'; position: absolute; left: 0; color: var(--teal); font-size: 11px; top: 4px; }
+
+  /* SKILL TEMPLATE */
+  .skill-template {
+    background: #040a0c;
+    border: 1px solid var(--teal-border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 28px;
+  }
+
+  .st-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--teal-border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .st-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .st-title { font-family: var(--mono); font-size: 12px; color: var(--text-muted); margin-left: 6px; }
+
+  .st-body {
+    padding: 24px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 2;
+    color: var(--teal-dim);
+  }
+
+  .st-body .key { color: var(--teal); }
+  .st-body .val { color: var(--text); }
+  .st-body .cmt { color: var(--text-dim); }
+
+  /* PRINCIPLES */
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .p-card {
+    background: var(--surface);
+    border: 1px solid var(--teal-border);
+    border-radius: 10px;
+    padding: 24px;
+    transition: all 0.2s;
+  }
+
+  .p-card:hover { border-color: var(--teal-border-bright); }
+  .p-icon { font-size: 22px; margin-bottom: 12px; }
+  .p-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .p-body { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+  .p-body ul { list-style: none; margin-top: 8px; }
+  .p-body li { padding: 3px 0 3px 16px; position: relative; }
+  .p-body li::before { content: '–'; position: absolute; left: 0; color: var(--teal); }
+
+  /* FOOTER */
+  .footer {
+    padding: 80px 48px;
+    border-top: 1px solid var(--teal-border);
+    text-align: center;
+  }
+
+  .footer-title {
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+
+  .footer-title em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--teal);
+  }
+
+  .footer-sub { font-size: 15px; color: var(--text-muted); margin-bottom: 12px; }
+  .footer-brand { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em; }
+  .footer-brand span { color: var(--teal); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .nav, section, .hero, .footer { padding-left: 20px; padding-right: 20px; }
+    .divider { margin: 0 20px; }
+    .hero { padding-top: 64px; padding-bottom: 48px; }
+    .hero-stats { flex-wrap: wrap; gap: 24px; }
+    .phase-header { flex-wrap: wrap; }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 3px; height: 3px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--teal-border-bright); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-brand" href="/">wiser resources</a>
+  <span class="nav-tag">WR-001 · AI & Automation</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag">Free Resource · Wiser With Vidhaan</div>
+  <p class="hero-eyebrow">One tap. That's all it takes.</p>
+  <h1 class="hero-title">
+    All your emails<br>
+    replied — <em>automatically.</em><br>
+    <span class="muted">While you sleep.</span>
+  </h1>
+  <p class="hero-sub">
+    Build a home screen button that triggers Claude to read, draft, and respond to every pending email — in your own writing style. No sorting, no context-switching. Just tap and go.
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-val">~45 min</span>
+      <span class="stat-label">setup time</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">Beginner</span>
+      <span class="stat-label">difficulty</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">Free</span>
+      <span class="stat-label">cost (Claude Pro)</span>
+    </div>
+    <div class="stat">
+      <span class="stat-val">iPhone</span>
+      <span class="stat-label">required</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PREREQ -->
+<section>
+  <div class="s-label">Before you start</div>
+  <h2 class="s-title">What you need</h2>
+  <p class="s-sub">Four things. That's it.</p>
+
+  <div class="prereq-grid">
+    <div class="prereq-item">
+      <div class="prereq-icon">🍎</div>
+      <div>
+        <div class="prereq-name">iPhone</div>
+        <div class="prereq-note">Shortcuts app (built-in)</div>
+      </div>
+    </div>
+    <div class="prereq-item">
+      <div class="prereq-icon">🤖</div>
+      <div>
+        <div class="prereq-name">Claude Pro</div>
+        <div class="prereq-note">claude.ai with integrations</div>
+      </div>
+    </div>
+    <div class="prereq-item">
+      <div class="prereq-icon">📧</div>
+      <div>
+        <div class="prereq-name">Gmail account</div>
+        <div class="prereq-note">Connected to Claude via MCP</div>
+      </div>
+    </div>
+    <div class="prereq-item">
+      <div class="prereq-icon">✍️</div>
+      <div>
+        <div class="prereq-name">Your email examples</div>
+        <div class="prereq-note">5–10 replies you've actually sent</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FLOW -->
+<section>
+  <div class="s-label">How it works</div>
+  <h2 class="s-title">The full flow</h2>
+  <p class="s-sub">Three moving parts. One button that connects them all.</p>
+
+  <div class="flow-wrap">
+    <div class="flow">
+      <div class="flow-node active">
+        <div class="fn-icon">📱</div>
+        <div class="fn-title">Home Screen Tap</div>
+        <div class="fn-desc">iPhone Shortcut<br>triggers on button press</div>
+      </div>
+      <div class="flow-connector"></div>
+      <div class="flow-node">
+        <div class="fn-icon">📋</div>
+        <div class="fn-title">Prompt Sent</div>
+        <div class="fn-desc">"Ask Claude" action<br>fires the command</div>
+      </div>
+      <div class="flow-connector"></div>
+      <div class="flow-node active">
+        <div class="fn-icon">🧠</div>
+        <div class="fn-title">Claude Skill Runs</div>
+        <div class="fn-desc">Trained instructions<br>execute automatically</div>
+      </div>
+      <div class="flow-connector"></div>
+      <div class="flow-node">
+        <div class="fn-icon">📬</div>
+        <div class="fn-title">Gmail Scanned</div>
+        <div class="fn-desc">All pending emails<br>read via MCP</div>
+      </div>
+      <div class="flow-connector"></div>
+      <div class="flow-node active">
+        <div class="fn-icon">✅</div>
+        <div class="fn-title">Drafts Ready</div>
+        <div class="fn-desc">Replies written<br>in your voice</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STEP BY STEP -->
+<section>
+  <div class="s-label">Setup guide</div>
+  <h2 class="s-title">Build it step by step</h2>
+  <p class="s-sub">Three phases. One hour. Runs forever after.</p>
+
+  <!-- PHASE 1 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">01</div>
+      <div class="phase-title">Set up the iPhone Shortcut</div>
+      <div class="phase-badge">iPhone · 10 mins</div>
+    </div>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-n">1.1</div>
+        <div>
+          <div class="step-title">Open the Shortcuts app</div>
+          <div class="step-body">
+            On your iPhone, open the built-in <strong>Shortcuts</strong> app. Tap the <strong>+</strong> icon in the top right to create a new shortcut.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">1.2</div>
+        <div>
+          <div class="step-title">Add the "Ask Claude" action</div>
+          <div class="step-body">
+            In the action search bar, type <strong>"Ask Claude"</strong> — this is the official Claude action available in Shortcuts. Select it. You'll see a text field appear where you type the prompt directly into the action.
+            <div class="screenshot-note">
+              <span class="sn-icon">📸</span>
+              <span>This is exactly what it looks like: the shortcut shows <strong>Ask Claude</strong> followed by your prompt text in blue — e.g., <strong>"Reply to all pending mails of this week"</strong>. The prompt runs inside Claude the moment you tap the shortcut. No copy-paste needed.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">1.3</div>
+        <div>
+          <div class="step-title">Write your command prompt</div>
+          <div class="step-body">
+            Inside the Ask Claude text field, type your command. Be specific — Claude reads this literally:
+            <div class="code"><span class="h">Reply to all pending emails of this week.</span>
+<span class="c">// Or something more specific:</span>
+<span class="w">Check my Gmail for unanswered emails from the last 7 days.
+Draft replies in my usual tone and style.
+Save all as drafts — do not send anything.</span></div>
+            <div class="tip">
+              <em class="tip-i">💡</em>
+              This prompt is the trigger that connects your button to your Claude skill. Make it match whatever instruction your skill is trained to respond to.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">1.4</div>
+        <div>
+          <div class="step-title">Add shortcut to your home screen</div>
+          <div class="step-body">
+            Tap the shortcut name at the top → <strong>Add to Home Screen</strong>. Give it a name like <strong>"Email Replies"</strong> and pick an icon. Done — your button is live. One tap from now on is all it takes.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">02</div>
+      <div class="phase-title">Connect Gmail to Claude</div>
+      <div class="phase-badge">Claude Settings · 10 mins</div>
+    </div>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-n">2.1</div>
+        <div>
+          <div class="step-title">Enable Gmail integration in Claude</div>
+          <div class="step-body">
+            Open <strong>Claude.ai</strong> on desktop → go to <strong>Settings → Integrations</strong> (sometimes called Connectors or Tools). Find <strong>Gmail</strong> and connect your Google account. This gives Claude the ability to read your inbox and create drafts — all via MCP (Model Context Protocol).
+            <div class="tip">
+              <em class="tip-i">🔒</em>
+              Claude only creates <strong>drafts</strong> — it never sends anything without you reviewing and hitting send. You stay in full control.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">2.2</div>
+        <div>
+          <div class="step-title">Test the connection</div>
+          <div class="step-body">
+            In a new Claude chat, type: <strong>"Search my Gmail for emails from the last 3 days."</strong> If it returns results from your inbox, you're live. If not, re-check the integration is turned on.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHASE 3: SKILL DESIGN - Deep walkthrough -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">03</div>
+      <div class="phase-title">Design your Claude email skill</div>
+      <div class="phase-badge">The most important part · 25 mins</div>
+    </div>
+
+    <div class="skill-intro">
+      <div class="skill-intro-title">What exactly is a "Claude skill"?</div>
+      <p>
+        A Claude skill is a set of saved instructions that lives inside a <strong>Claude Project</strong>. Think of it as a trained assistant that already knows how you write, what emails to prioritize, what to skip, and how to open and close a message. Every time you run the shortcut, Claude reads these instructions first — before doing anything else. Your skill is the brain. The shortcut is just the trigger.
+      </p>
+    </div>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-n">3.1</div>
+        <div>
+          <div class="step-title">Create a new Claude Project</div>
+          <div class="step-body">
+            On Claude.ai, go to <strong>Projects → New Project</strong>. Name it something like <strong>"Email Assistant"</strong>. This is where your skill lives. Every chat you run inside this project automatically inherits your skill instructions — so your shortcut just needs to open a new chat here.
+            <div class="tip">
+              <em class="tip-i">💡</em>
+              Projects have a system prompt that persists across every conversation inside them. That's your skill — set it once, and it runs every time.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">3.2</div>
+        <div>
+          <div class="step-title">Collect 5–10 real emails you've written</div>
+          <div class="step-body">
+            Go into your Gmail <strong>Sent folder</strong> and find 5 to 10 replies that represent how you actually write. Include variety: a short confirmation, a polite decline, a detailed reply, a follow-up. Copy the body of each one. These become the voice training data for your skill.
+            <div class="tip">
+              <em class="tip-i">🎯</em>
+              Don't describe your style in words like "professional but friendly." Show it through actual emails. Examples > adjectives, always.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">3.3</div>
+        <div>
+          <div class="step-title">Write your skill instructions</div>
+          <div class="step-body">
+            Inside your Project, open <strong>Project Instructions</strong> and paste in your skill. Here's the full structure to follow — every section matters:
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SKILL TEMPLATE -->
+    <div class="skill-template">
+      <div class="st-header">
+        <div class="st-dot" style="background:#ff5f57"></div>
+        <div class="st-dot" style="background:#febc2e"></div>
+        <div class="st-dot" style="background:#28c840"></div>
+        <span class="st-title">Claude Project Instructions · Email Skill Template</span>
+      </div>
+      <div class="st-body">
+<span class="key">ROLE</span>
+<span class="val">You are my personal email assistant.</span>
+<span class="cmt">// You exist inside this project for one purpose: email replies.</span>
+
+<span class="key">TASK</span>
+<span class="val">When asked to reply to pending emails:</span>
+<span class="val">1. Search Gmail for unanswered emails in the last 7 days</span>
+<span class="val">2. Skip newsletters, automated emails, no-reply senders</span>
+<span class="val">3. Draft a reply for each real email in my voice</span>
+<span class="val">4. Save all replies as DRAFTS — never send directly</span>
+
+<span class="key">MY VOICE & TONE</span>
+<span class="cmt">// Paste 3–5 actual emails you've written here</span>
+<span class="val">Example 1: [paste a real reply you sent]</span>
+<span class="val">Example 2: [paste another real reply]</span>
+<span class="val">Example 3: [paste a polite decline you wrote]</span>
+
+<span class="key">WHAT TO REPLY TO</span>
+<span class="val">— Brand inquiries and collaboration requests</span>
+<span class="val">— Professional questions and follow-ups</span>
+<span class="val">— Any email from a real human that needs a response</span>
+
+<span class="key">WHAT TO SKIP</span>
+<span class="val">— Newsletters, subscriptions, automated digests</span>
+<span class="val">— Receipts, order confirmations, bank alerts</span>
+<span class="val">— No-reply senders</span>
+<span class="val">— Anything older than 14 days</span>
+
+<span class="key">FORMAT RULES</span>
+<span class="val">— Match the length and energy of the incoming email</span>
+<span class="val">— Never use stiff formal language unless they use it first</span>
+<span class="val">— Keep replies concise — no unnecessary filler sentences</span>
+<span class="val">— Sign off naturally, the way I do in my examples above</span>
+      </div>
+    </div>
+
+    <div class="steps" style="margin-top: 20px;">
+
+      <div class="step">
+        <div class="step-n">3.4</div>
+        <div>
+          <div class="step-title">Test it with 3–4 real emails</div>
+          <div class="step-body">
+            Inside your Project, run the command: <strong>"Reply to all pending emails from this week."</strong> Read the drafts it creates in Gmail. Ask yourself: does this sound like me? Is the tone right? Is the length appropriate?
+            <div class="tip">
+              <em class="tip-i">🔁</em>
+              The first version won't be perfect — and that's completely fine. After each test run, note one thing that felt off and update your skill instructions. Two or three iterations is usually all it takes.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-n">3.5</div>
+        <div>
+          <div class="step-title">The full loop is now live</div>
+          <div class="step-body">
+            <strong>Tap home screen → Ask Claude fires your command → Skill runs → Gmail drafts appear.</strong> Go to Gmail, scan drafts in 2 minutes, hit send. What used to take 30 minutes of inbox chaos now takes 2 minutes of light reviewing.
+            <div class="tip">
+              <em class="tip-i">⚡</em>
+              Always do a final review before sending. Claude will be very close — but a 2-minute scan is what separates good automation from embarrassing automation.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SKILL DESIGN PRINCIPLES -->
+<section>
+  <div class="s-label">Going deeper</div>
+  <h2 class="s-title">What makes a great email skill</h2>
+  <p class="s-sub">The output quality of your automation = the quality of your instructions.</p>
+
+  <div class="principles">
+    <div class="p-card">
+      <div class="p-icon">🗣️</div>
+      <div class="p-title">Voice accuracy</div>
+      <div class="p-body">
+        Show, don't describe. Adjectives like "professional but warm" are useless. Five real emails you've written are gold.
+        <ul>
+          <li>5–10 real sent emails minimum</li>
+          <li>Include different reply types</li>
+          <li>Add at least one polite decline</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="p-card">
+      <div class="p-icon">🎯</div>
+      <div class="p-title">Tight scope</div>
+      <div class="p-body">
+        Define exactly what Claude should touch and what to ignore. No scope = Claude drafting replies to newsletters.
+        <ul>
+          <li>Filter by sender type explicitly</li>
+          <li>Set a date range (7–14 days)</li>
+          <li>List what to skip, not just what to do</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="p-card">
+      <div class="p-icon">🔒</div>
+      <div class="p-title">Drafts only, always</div>
+      <div class="p-body">
+        Never let automation send directly. Drafts give you a review layer that costs 2 minutes and prevents costly mistakes.
+        <ul>
+          <li>Explicitly say "save as draft"</li>
+          <li>Always review before sending</li>
+          <li>Add personal touch where needed</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="p-card">
+      <div class="p-icon">🔁</div>
+      <div class="p-title">Iterate, don't perfect</div>
+      <div class="p-body">
+        Don't try to write the perfect skill on day one. Run → review → refine. It gets sharper fast.
+        <ul>
+          <li>2–3 test runs is usually enough</li>
+          <li>Fix tone issues first, then length</li>
+          <li>Add edge case rules as they appear</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="divider"></div>
+<footer class="footer">
+  <div class="footer-title">Your inbox.<br><em>Your rules.</em></div>
+  <p class="footer-sub">This is one automation. The same framework applies to any repetitive task you do every single week.</p>
+  <p class="footer-brand">By <span>Wiser With Vidhaan</span> &nbsp;·&nbsp; wisermoney.vercel.app</p>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        e.target.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.step, .p-card, .prereq-item, .flow-node, .anatomy-card, .skill-intro').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(14px)';
+    io.observe(el);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wiser Resources — Free Tools & Guides by Vidhaan</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#060b0d;--surface:#0a1218;--teal:#00e5cc;--teal-glow:rgba(0,229,204,0.1);
+    --text:#dff2ef;--text-muted:#5e8c85;--text-dim:#2d5550;
+    --border:rgba(0,229,204,0.12);--border-bright:rgba(0,229,204,0.28);
+    --mono:'DM Mono',monospace;--sans:'Plus Jakarta Sans',sans-serif;--serif:'Instrument Serif',serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);padding:60px 48px;min-height:100vh;}
+  .tag{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:28px;display:block;}
+  h1{font-size:clamp(40px,7vw,80px);font-weight:800;letter-spacing:-0.04em;line-height:1.0;margin-bottom:20px;}
+  h1 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--teal);}
+  .sub{font-size:16px;color:var(--text-muted);margin-bottom:64px;max-width:480px;line-height:1.7;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;text-decoration:none;color:inherit;display:block;transition:all 0.2s;}
+  .card:hover{border-color:var(--border-bright);transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,229,204,0.07);}
+  .card-cat{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;}
+  .card-title{font-size:18px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em;}
+  .card-desc{font-size:13px;color:var(--text-muted);line-height:1.65;}
+  .brand{font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-top:80px;letter-spacing:0.06em;}
+  .brand span{color:var(--teal);}
+</style>
+</head>
+<body>
+  <span class="tag">Wiser With Vidhaan · Free Resources</span>
+  <h1>Learn. Build.<br><em>Automate.</em></h1>
+  <p class="sub">Practical guides from every reel. Free, detailed, ready to implement today.</p>
+  <div class="grid">
+    <a class="card" href="/one-tap-email-automation">
+      <div class="card-cat">AI & Automation · WR-001</div>
+      <div class="card-title">One-Tap Email Automation</div>
+      <div class="card-desc">iPhone Shortcut + Claude skill + Gmail MCP = all pending emails replied in one tap, in your voice.</div>
+    </a>
+  </div>
+  <p class="brand">By <span>Wiser With Vidhaan</span> · wisermoney.vercel.app</p>
+</body>
+</html>
