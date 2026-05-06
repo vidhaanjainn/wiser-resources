@@ -1,5 +1,6 @@
 {
   "rewrites": [
-    { "source": "/one-tap-email-automation", "destination": "/one-tap-email-automation.html" }
+    { "source": "/one-tap-email-automation", "destination": "/one-tap-email-automation.html" },
+    { "source": "/system1-system2-decision-framework", "destination": "/system1-system2-decision-framework.html" }
   ]
 }
