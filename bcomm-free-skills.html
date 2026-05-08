@@ -4,39 +4,42 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Free Skills for BComm Students — Wiser Resources</title>
-  <meta name="description" content="College ne nahi sikhaya. Yahan sikhoge. 20+ free resources for AI tools, TallyPrime, Excel, tax & career — curated for Indian commerce students." />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <meta name="description" content="Your degree didn't teach you this. 20+ free resources for AI tools, TallyPrime, Excel, Indian tax & career platforms — curated for commerce students." />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #060b0d;
-      --surface: #0a1218;
-      --surface2: #0f1a22;
-      --surface3: #132030;
-      --teal: #00e5cc;
-      --teal-dim: #00b8a4;
-      --teal-glow: rgba(0,229,204,0.08);
-      --teal-glow-strong: rgba(0,229,204,0.16);
-      --teal-border: rgba(0,229,204,0.12);
-      --teal-border-bright: rgba(0,229,204,0.28);
-      --text: #dff2ef;
-      --text-muted: #5e8c85;
-      --text-dim: #2d5550;
+      --bg:        #f5f3ee;
+      --surface:   #ffffff;
+      --border:    #e8e4dc;
+      --text:      #141210;
+      --muted:     #6b6560;
+      --dim:       #a8a09a;
+
+      --teal:      #00b89c;
+      --teal-bg:   #e6faf6;
+      --teal-bdr:  #b3ede4;
+
+      --amber:     #d97706;
+      --amber-bg:  #fef3e2;
+      --amber-bdr: #fcd88a;
+
+      --blue:      #2563eb;
+      --blue-bg:   #eff4ff;
+      --blue-bdr:  #bfcfff;
+
+      --green:     #059669;
+      --green-bg:  #ecfdf5;
+      --green-bdr: #a7f3d0;
+
+      --purple:    #7c3aed;
+      --purple-bg: #f5f0ff;
+      --purple-bdr:#ddd6fe;
+
       --mono: 'DM Mono', monospace;
       --sans: 'Plus Jakarta Sans', sans-serif;
       --serif: 'Instrument Serif', serif;
-      --amber: #f5a623;
-      --amber-glow: rgba(245,166,35,0.08);
-      --amber-border: rgba(245,166,35,0.2);
-      --blue: #4f9eff;
-      --blue-glow: rgba(79,158,255,0.08);
-      --blue-border: rgba(79,158,255,0.2);
-      --green: #4ade80;
-      --green-glow: rgba(74,222,128,0.08);
-      --green-border: rgba(74,222,128,0.2);
-      --purple: #c084fc;
-      --purple-glow: rgba(192,132,252,0.08);
-      --purple-border: rgba(192,132,252,0.2);
     }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -46,205 +49,208 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
-    body::after {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 999;
-    }
-    ::-webkit-scrollbar { width: 3px; }
+
+    ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--teal-border-bright); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
     /* ── NAV ── */
     .nav {
-      padding: 18px 48px;
+      padding: 16px 48px;
       display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--teal-border);
+      border-bottom: 1px solid var(--border);
       position: sticky; top: 0;
-      background: rgba(6,11,13,0.9);
-      backdrop-filter: blur(16px);
+      background: rgba(245,243,238,0.9);
+      backdrop-filter: blur(12px);
       z-index: 100;
     }
-    .nav-brand { font-family: var(--mono); font-size: 12px; color: var(--teal); text-decoration: none; letter-spacing: 0.08em; }
-    .nav-right { display: flex; align-items: center; gap: 20px; }
-    .nav-tag { font-family: var(--mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; }
-    .nav-cta {
-      font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
-      color: var(--teal); text-decoration: none;
-      border: 1px solid var(--teal-border-bright);
-      padding: 6px 14px; border-radius: 6px;
-      transition: background 0.2s;
+    .nav-brand {
+      font-family: var(--mono); font-size: 12px; color: var(--teal);
+      text-decoration: none; letter-spacing: 0.06em; font-weight: 500;
     }
-    .nav-cta:hover { background: var(--teal-glow); }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-tag { font-family: var(--mono); font-size: 11px; color: var(--dim); letter-spacing: 0.04em; }
+    .nav-cta {
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+      color: var(--surface); background: var(--text);
+      text-decoration: none; padding: 7px 16px; border-radius: 999px;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.75; }
+
+    /* ── WRAP ── */
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 48px; }
 
     /* ── HERO ── */
-    .hero {
-      padding: 96px 48px 80px;
-      position: relative; overflow: hidden;
-      max-width: 1100px; margin: 0 auto;
-    }
-    .hero-glow {
-      position: absolute; top: -100px; right: -100px;
-      width: 500px; height: 500px;
-      background: radial-gradient(ellipse, rgba(0,229,204,0.05) 0%, transparent 70%);
-      pointer-events: none;
-    }
+    .hero { padding: 80px 0 64px; }
     .hero-eyebrow {
-      font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
       text-transform: uppercase; color: var(--teal);
-      margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+      background: var(--teal-bg); border: 1px solid var(--teal-bdr);
+      padding: 5px 12px; border-radius: 999px; margin-bottom: 28px;
     }
-    .hero-eyebrow::before {
-      content: ''; display: inline-block;
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--teal); flex-shrink: 0;
-    }
+    .hero-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
     .hero-title {
-      font-size: clamp(38px, 6vw, 80px);
+      font-size: clamp(40px, 6vw, 80px);
       font-weight: 800; letter-spacing: -0.04em;
-      line-height: 1.05; margin-bottom: 24px;
-      max-width: 820px;
+      line-height: 1.05; margin-bottom: 20px;
+      max-width: 800px; color: var(--text);
     }
     .hero-title em {
       font-family: var(--serif); font-style: italic;
-      color: var(--teal); font-weight: 400;
+      font-weight: 400;
+      background: linear-gradient(135deg, #00b89c, #2563eb);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .hero-title .muted { color: var(--text-dim); }
     .hero-sub {
-      font-size: 16px; color: var(--text-muted);
+      font-size: 17px; color: var(--muted);
       max-width: 560px; line-height: 1.75; margin-bottom: 48px;
     }
     .hero-sub strong { color: var(--text); font-weight: 600; }
-    .hero-stats { display: flex; gap: 40px; flex-wrap: wrap; }
-    .stat { display: flex; flex-direction: column; gap: 4px; }
-    .stat-val { font-family: var(--mono); font-size: 18px; color: var(--teal); font-weight: 500; }
-    .stat-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; }
 
-    /* ── DIVIDER ── */
-    .divider {
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--teal-border), transparent);
-      margin: 0 48px;
+    /* Stats */
+    .hero-stats { display: flex; gap: 0; flex-wrap: wrap; }
+    .stat {
+      display: flex; flex-direction: column; gap: 3px;
+      padding: 16px 28px; border: 1px solid var(--border);
+      background: var(--surface); margin-right: -1px; margin-bottom: -1px;
     }
-
-    /* ── WRAPPER ── */
-    .wrap { max-width: 1100px; margin: 0 auto; }
+    .stat:first-child { border-radius: 12px 0 0 12px; }
+    .stat:last-child { border-radius: 0 12px 12px 0; }
+    .stat-val { font-family: var(--mono); font-size: 22px; color: var(--text); font-weight: 500; }
+    .stat-label { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: 0.08em; text-transform: uppercase; }
 
     /* ── USAGE BANNER ── */
     .usage-banner {
-      margin: 48px 48px 0;
-      background: var(--teal-glow);
-      border: 1px solid var(--teal-border-bright);
-      border-radius: 12px; padding: 20px 24px;
-      display: flex; gap: 16px; align-items: flex-start;
+      margin: 40px 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--teal);
+      border-radius: 12px; padding: 18px 22px;
+      display: flex; gap: 14px; align-items: flex-start;
     }
-    .usage-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
-    .usage-text { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
-    .usage-text strong { color: var(--teal); font-weight: 600; }
+    .usage-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .usage-text { font-size: 13.5px; color: var(--muted); line-height: 1.7; }
+    .usage-text strong { color: var(--text); font-weight: 600; }
+
+    /* ── SECTION DIVIDER ── */
+    .section-divider {
+      height: 1px; background: var(--border);
+      margin: 16px 0;
+    }
 
     /* ── CATEGORY SECTION ── */
-    .cat-section { padding: 64px 48px 16px; }
-    .cat-header {
-      display: flex; align-items: flex-start; gap: 18px; margin-bottom: 10px;
-    }
+    .cat-section { padding: 56px 0 8px; }
+    .cat-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 8px; }
     .cat-icon-wrap {
-      width: 52px; height: 52px; border-radius: 14px;
+      width: 48px; height: 48px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 24px; flex-shrink: 0; border: 1px solid;
+      font-size: 22px; flex-shrink: 0; border: 1px solid;
     }
     .cat-meta { flex: 1; }
-    .cat-meta-top { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-    .cat-num { font-family: var(--mono); font-size: 11px; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.08em; }
-    .cat-title { font-size: clamp(20px, 2.5vw, 26px); font-weight: 800; letter-spacing: -0.02em; }
-    .cat-tagline { font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
-    .cat-divider {
-      height: 1px; margin: 20px 0 28px;
+    .cat-meta-top { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+    .cat-num {
+      font-family: var(--mono); font-size: 10px; padding: 2px 7px;
+      border-radius: 4px; letter-spacing: 0.06em; border: 1px solid;
     }
+    .cat-title { font-size: clamp(18px, 2.2vw, 24px); font-weight: 800; letter-spacing: -0.02em; color: var(--text); }
+    .cat-tagline { font-size: 13px; color: var(--muted); font-family: var(--mono); }
+    .cat-rule { height: 1px; margin: 20px 0 24px; }
 
     /* ── RESOURCE GRID ── */
     .res-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px; padding-bottom: 32px;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 14px; padding-bottom: 16px;
     }
     .res-card {
       background: var(--surface);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 14px; padding: 22px;
-      display: flex; flex-direction: column; gap: 0;
-      transition: border-color 0.2s, transform 0.15s;
-      text-decoration: none; color: inherit;
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px;
+      display: flex; flex-direction: column;
+      transition: box-shadow 0.2s, transform 0.15s, border-color 0.2s;
     }
-    .res-card:hover { transform: translateY(-2px); }
-    .res-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
-    .res-name { font-size: 15px; font-weight: 700; line-height: 1.3; color: var(--text); }
+    .res-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.07); }
+    .res-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+    .res-name { font-size: 14px; font-weight: 700; line-height: 1.35; color: var(--text); }
     .res-badge {
-      font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
-      padding: 3px 8px; border-radius: 4px; border: 1px solid; flex-shrink: 0;
-      white-space: nowrap;
-    }
-    .res-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-bottom: 14px; }
-    .res-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-    .res-tag {
       font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em;
-      padding: 3px 9px; border-radius: 4px; border: 1px solid;
+      padding: 3px 8px; border-radius: 4px; border: 1px solid; flex-shrink: 0;
+      white-space: nowrap; font-weight: 400;
+    }
+    .res-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+    .res-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+    .res-tag {
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.03em;
+      padding: 3px 8px; border-radius: 4px; border: 1px solid;
     }
     .res-note {
-      font-family: var(--mono); font-size: 11px; color: var(--text-dim);
-      font-style: italic; margin-bottom: 16px; flex: 1;
+      font-family: var(--mono); font-size: 11px; color: var(--dim);
+      margin-bottom: 14px; flex: 1; line-height: 1.5;
     }
     .res-link {
       display: flex; align-items: center; justify-content: center; gap: 6px;
       padding: 10px 14px; border-radius: 8px; border: 1px solid;
-      font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
-      text-decoration: none; transition: background 0.2s;
+      font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.04em;
+      text-decoration: none; transition: opacity 0.15s;
+      margin-top: auto;
     }
+    .res-link:hover { opacity: 0.75; }
 
     /* ── FOOTER ── */
     .footer {
-      padding: 80px 48px 72px;
+      padding: 72px 0 64px;
       text-align: center;
-      border-top: 1px solid var(--teal-border);
-      margin-top: 48px;
+      border-top: 1px solid var(--border);
+      margin-top: 56px;
     }
     .footer-eyebrow {
-      font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
-      text-transform: uppercase; color: var(--teal); margin-bottom: 20px;
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--dim); margin-bottom: 18px;
     }
     .footer-title {
       font-size: clamp(28px, 4vw, 52px);
       font-weight: 800; letter-spacing: -0.03em;
-      line-height: 1.1; margin-bottom: 16px;
+      line-height: 1.1; margin-bottom: 14px; color: var(--text);
     }
-    .footer-title em { font-family: var(--serif); font-style: italic; color: var(--teal); font-weight: 400; }
-    .footer-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; max-width: 380px; margin-left: auto; margin-right: auto; }
+    .footer-title em {
+      font-family: var(--serif); font-style: italic;
+      font-weight: 400;
+      background: linear-gradient(135deg, #00b89c, #7c3aed);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .footer-sub {
+      font-size: 14px; color: var(--muted); margin-bottom: 32px;
+      max-width: 360px; margin-left: auto; margin-right: auto; line-height: 1.7;
+    }
     .footer-btn {
       display: inline-flex; align-items: center; gap: 8px;
-      padding: 14px 28px; border-radius: 10px;
-      background: var(--teal); color: #060b0d;
-      font-family: var(--mono); font-size: 13px; font-weight: 500;
+      padding: 13px 28px; border-radius: 999px;
+      background: var(--text); color: var(--bg);
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
       letter-spacing: 0.04em; text-decoration: none;
       transition: opacity 0.2s;
     }
-    .footer-btn:hover { opacity: 0.85; }
+    .footer-btn:hover { opacity: 0.75; }
     .footer-brand {
-      font-family: var(--mono); font-size: 11px; color: var(--text-dim);
-      margin-top: 48px;
+      font-family: var(--mono); font-size: 11px; color: var(--dim);
+      margin-top: 40px;
     }
     .footer-brand a { color: var(--teal); text-decoration: none; }
 
     /* ── MOBILE ── */
-    @media (max-width: 700px) {
-      .nav { padding: 16px 20px; }
+    @media (max-width: 680px) {
+      .nav { padding: 14px 20px; }
       .nav-tag { display: none; }
-      .hero { padding: 64px 20px 56px; }
-      .divider { margin: 0 20px; }
-      .usage-banner { margin: 32px 20px 0; }
-      .cat-section { padding: 48px 20px 8px; }
+      .wrap { padding: 0 20px; }
+      .hero { padding: 52px 0 44px; }
+      .hero-stats { flex-direction: column; gap: 0; }
+      .stat:first-child { border-radius: 12px 12px 0 0; }
+      .stat:last-child { border-radius: 0 0 12px 12px; }
+      .cat-section { padding: 44px 0 4px; }
       .res-grid { grid-template-columns: 1fr; }
-      .hero-stats { gap: 24px; }
-      .footer { padding: 56px 20px; }
+      .footer { padding: 52px 0 48px; }
     }
   </style>
 </head>
@@ -259,22 +265,23 @@
   </div>
 </nav>
 
+
 <!-- HERO -->
 <div class="wrap">
   <section class="hero">
-    <div class="hero-glow"></div>
-
-    <p class="hero-eyebrow">Free Resource Kit · BComm Edition · 2026</p>
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-dot"></span>
+      Free Resource Kit · BComm Edition · 2026
+    </div>
 
     <h1 class="hero-title">
-      College ne <em>nahi sikhaya.</em><br/>
-      <span class="muted">Yahan</span> sikhoge.
+      Your degree didn't<br/>teach you <em>any of this.</em>
     </h1>
 
     <p class="hero-sub">
-      80% BComm graduates employability crisis mein hain — kyunki colleges 10 saal purani theory padhate hain.
-      <strong>Ye kit aapko woh skills deti hai jo Indian companies actually hire karte waqt dhundhhti hain.</strong>
-      Sab kuch free.
+      80% of BComm graduates are struggling to get hired — because colleges are teaching
+      decade-old theory. <strong>This kit gives you the skills Indian companies actually look for
+      when they're hiring.</strong> Everything here is free.
     </p>
 
     <div class="hero-stats">
@@ -296,430 +303,404 @@
       </div>
     </div>
   </section>
-</div>
 
-<div class="divider"></div>
-
-<!-- USAGE BANNER -->
-<div class="wrap">
+  <!-- USAGE BANNER -->
   <div class="usage-banner">
     <span class="usage-icon">💡</span>
     <p class="usage-text">
-      <strong>How to use this kit:</strong> Start with <strong>Section 01 — AI Tools</strong>, even 3 hours here changes how you work.
-      Then pick <strong>Tally + Tax</strong> for core accounting roles.
-      After every course, <strong>add the certificate to LinkedIn</strong> immediately. That's the entire edge.
+      <strong>How to use this:</strong> Start with <strong>Section 01 — AI Tools</strong>. Even 3 hours here changes how you work.
+      Then go through <strong>Tally + Tax</strong> for core accounting roles.
+      After every course, <strong>add the certificate to LinkedIn immediately</strong>. That's the entire edge over your classmates.
     </p>
   </div>
 </div>
 
 
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<!--  SECTION 01 — AI TOOLS                                            -->
-<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 01 — AI TOOLS                                                  -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="wrap">
   <section class="cat-section">
     <div class="cat-header">
-      <div class="cat-icon-wrap" style="background:var(--teal-glow);border-color:var(--teal-border-bright);">🤖</div>
+      <div class="cat-icon-wrap" style="background:var(--teal-bg);border-color:var(--teal-bdr);">🤖</div>
       <div class="cat-meta">
         <div class="cat-meta-top">
           <span class="cat-title">AI Tools & Productivity</span>
-          <span class="cat-num" style="color:var(--teal);background:var(--teal-glow);border:1px solid var(--teal-border-bright);">01</span>
+          <span class="cat-num" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">01</span>
         </div>
-        <p class="cat-tagline">Jo ab har company expect karti hai — aur college ne kabhi nahi sikhaya</p>
+        <p class="cat-tagline">What every company now expects on day one — and no college teaches it</p>
       </div>
     </div>
-    <div class="cat-divider" style="background:linear-gradient(to right,var(--teal-border-bright),transparent);"></div>
+    <div class="cat-rule" style="background:linear-gradient(to right,var(--teal-bdr),var(--border));"></div>
 
     <div class="res-grid">
 
-      <!-- Claude / Anthropic Academy -->
-      <div class="res-card" style="border-color:rgba(0,229,204,0.12);">
-        <style>.res-card:hover{border-color:rgba(0,229,204,0.28) !important;}</style>
+      <div class="res-card" style="border-color:var(--teal-bdr);">
         <div class="res-top">
           <span class="res-name">Anthropic Academy</span>
-          <span class="res-badge" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border-bright);">Free + Certificate</span>
+          <span class="res-badge" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">Free + Certificate</span>
         </div>
-        <p class="res-desc">Claude ke official courses — 13 self-paced modules covering AI fluency, prompt engineering, agents, and Claude Code. Real certificate, no credit card.</p>
+        <p class="res-desc">Claude's official learning platform — 13 self-paced courses covering AI fluency, prompt engineering, building agents, and Claude Code. Real certificate, no credit card needed.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border);">Claude AI</span>
-          <span class="res-tag" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border);">Prompt Engineering</span>
-          <span class="res-tag" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border);">AI Agents</span>
+          <span class="res-tag" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">Claude AI</span>
+          <span class="res-tag" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">Prompt Engineering</span>
+          <span class="res-tag" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">AI Agents</span>
         </div>
-        <p class="res-note">Official Anthropic platform — most credible AI cert you can get for free</p>
-        <a href="https://anthropic.skilljar.com" target="_blank" rel="noopener" class="res-link" style="color:var(--teal);border-color:var(--teal-border-bright);background:var(--teal-glow);">
+        <p class="res-note">Official Anthropic platform — the most credible free AI certificate available</p>
+        <a href="https://anthropic.skilljar.com" target="_blank" rel="noopener" class="res-link" style="color:var(--teal);border-color:var(--teal-bdr);background:var(--teal-bg);">
           Open for free ↗
         </a>
       </div>
 
-      <!-- Google AI Essentials -->
-      <div class="res-card" style="border-color:rgba(0,229,204,0.08);">
+      <div class="res-card">
         <div class="res-top">
           <span class="res-name">Google AI Essentials</span>
-          <span class="res-badge" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border-bright);">Free Course</span>
+          <span class="res-badge" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">Free Course</span>
         </div>
-        <p class="res-desc">Gemini use karna seekho — content generation, summarizing, and workplace AI. No coding needed. Google official. Rated 4.6 ⭐ by students.</p>
+        <p class="res-desc">Learn to use Gemini for content generation, summarizing, and day-to-day workplace tasks. No coding required. Google official. Rated 4.6 ⭐ by students globally.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border);">Gemini</span>
-          <span class="res-tag" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border);">AI at Work</span>
-          <span class="res-tag" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border);">Workplace Productivity</span>
+          <span class="res-tag" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">Gemini</span>
+          <span class="res-tag" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">AI at Work</span>
+          <span class="res-tag" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">Workplace Productivity</span>
         </div>
-        <p class="res-note">Google official — beginner friendly, no prior AI knowledge needed</p>
-        <a href="https://grow.google/intl/en_in/google-ai-essentials/" target="_blank" rel="noopener" class="res-link" style="color:var(--teal);border-color:var(--teal-border-bright);background:var(--teal-glow);">
+        <p class="res-note">Google official — beginner-friendly, no prior AI knowledge needed</p>
+        <a href="https://grow.google/intl/en_in/google-ai-essentials/" target="_blank" rel="noopener" class="res-link" style="color:var(--teal);border-color:var(--teal-bdr);background:var(--teal-bg);">
           Open for free ↗
         </a>
       </div>
 
-      <!-- Microsoft GenAI -->
-      <div class="res-card" style="border-color:rgba(0,229,204,0.08);">
+      <div class="res-card">
         <div class="res-top">
           <span class="res-name">Microsoft GenAI Certificate</span>
-          <span class="res-badge" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border-bright);">Free + Certificate</span>
+          <span class="res-badge" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">Free + Certificate</span>
         </div>
-        <p class="res-desc">Career Essentials in Generative AI by Microsoft + LinkedIn. Covers AI fundamentals and practical workplace applications. Widely recognized by recruiters.</p>
+        <p class="res-desc">Career Essentials in Generative AI by Microsoft + LinkedIn. Covers AI fundamentals and practical workplace applications. The certificate shows up directly on your LinkedIn profile.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border);">Microsoft Copilot</span>
-          <span class="res-tag" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border);">AI Fundamentals</span>
-          <span class="res-tag" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border);">LinkedIn Learning</span>
+          <span class="res-tag" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">Microsoft Copilot</span>
+          <span class="res-tag" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">AI Fundamentals</span>
+          <span class="res-tag" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">LinkedIn Learning</span>
         </div>
-        <p class="res-note">LinkedIn Learning certificate — recruiters see this directly on your profile</p>
-        <a href="https://www.linkedin.com/learning/career-essentials-in-generative-ai-by-microsoft-and-linkedin" target="_blank" rel="noopener" class="res-link" style="color:var(--teal);border-color:var(--teal-border-bright);background:var(--teal-glow);">
+        <p class="res-note">Widely recognized by recruiters — certificate appears directly on your profile</p>
+        <a href="https://www.linkedin.com/learning/career-essentials-in-generative-ai-by-microsoft-and-linkedin" target="_blank" rel="noopener" class="res-link" style="color:var(--teal);border-color:var(--teal-bdr);background:var(--teal-bg);">
           Open for free ↗
         </a>
       </div>
 
-      <!-- Learn Prompting -->
-      <div class="res-card" style="border-color:rgba(0,229,204,0.08);">
+      <div class="res-card">
         <div class="res-top">
           <span class="res-name">Learn Prompting</span>
-          <span class="res-badge" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border-bright);">Free Guide</span>
+          <span class="res-badge" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">Free Guide</span>
         </div>
-        <p class="res-desc">ChatGPT se actually kaam lena seekho — the original prompt engineering guide, built with OpenAI partnership. Covers DALL·E, AI safety, and real workflows.</p>
+        <p class="res-desc">The original prompt engineering guide — built with OpenAI. Learn how to actually get useful work out of ChatGPT, DALL·E, and other AI tools in real workflows.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border);">ChatGPT</span>
-          <span class="res-tag" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border);">Prompt Engineering</span>
-          <span class="res-tag" style="color:var(--teal);background:var(--teal-glow);border-color:var(--teal-border);">Practical AI</span>
+          <span class="res-tag" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">ChatGPT</span>
+          <span class="res-tag" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">Prompt Engineering</span>
+          <span class="res-tag" style="color:var(--teal);background:var(--teal-bg);border-color:var(--teal-bdr);">Practical AI</span>
         </div>
-        <p class="res-note">Created with OpenAI partnership — most practical "AI at work" guide online</p>
-        <a href="https://learnprompting.org" target="_blank" rel="noopener" class="res-link" style="color:var(--teal);border-color:var(--teal-border-bright);background:var(--teal-glow);">
+        <p class="res-note">Created with OpenAI partnership — the most practical "AI at work" guide online</p>
+        <a href="https://learnprompting.org" target="_blank" rel="noopener" class="res-link" style="color:var(--teal);border-color:var(--teal-bdr);background:var(--teal-bg);">
           Open for free ↗
         </a>
       </div>
 
     </div>
   </section>
-</div>
 
-<div class="divider"></div>
+  <div class="section-divider"></div>
 
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<!--  SECTION 02 — TALLYPRIME & ACCOUNTING                             -->
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 02 — TALLYPRIME                                                -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
   <section class="cat-section">
     <div class="cat-header">
-      <div class="cat-icon-wrap" style="background:var(--amber-glow);border-color:var(--amber-border);">📊</div>
+      <div class="cat-icon-wrap" style="background:var(--amber-bg);border-color:var(--amber-bdr);">📊</div>
       <div class="cat-meta">
         <div class="cat-meta-top">
-          <span class="cat-title">TallyPrime & Accounting Tools</span>
-          <span class="cat-num" style="color:var(--amber);background:var(--amber-glow);border:1px solid var(--amber-border);">02</span>
+          <span class="cat-title">TallyPrime & Accounting</span>
+          <span class="cat-num" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">02</span>
         </div>
-        <p class="cat-tagline">7 million Indian businesses use Tally — aur ab ye AI bhi use kar raha hai</p>
+        <p class="cat-tagline">7 million Indian businesses run on Tally — and it's now AI-powered</p>
       </div>
     </div>
-    <div class="cat-divider" style="background:linear-gradient(to right,var(--amber-border),transparent);"></div>
+    <div class="cat-rule" style="background:linear-gradient(to right,var(--amber-bdr),var(--border));"></div>
 
     <div class="res-grid">
 
-      <!-- Tally Education Coursera -->
-      <div class="res-card" style="border-color:rgba(245,166,35,0.1);">
+      <div class="res-card" style="border-color:var(--amber-bdr);">
         <div class="res-top">
           <span class="res-name">Tally Education (Coursera)</span>
-          <span class="res-badge" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">Free to Audit</span>
+          <span class="res-badge" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">Free to Audit</span>
         </div>
-        <p class="res-desc">Official Tally Bookkeeper Professional Certificate — 100+ hours, 50+ practice activities. GST, TDS, TallyPrime end-to-end. Industry-verified learning path.</p>
+        <p class="res-desc">The official Tally Bookkeeper Professional Certificate — 100+ hours, 50+ practice activities. Covers GST, TDS, payroll, and TallyPrime end-to-end. Industry-verified path.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">TallyPrime</span>
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">GST Filing</span>
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">TDS</span>
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">Payroll</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">TallyPrime</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">GST Filing</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">TDS</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">Payroll</span>
         </div>
-        <p class="res-note">Tally Education platform has 1M+ learners — the official learning path</p>
-        <a href="https://www.coursera.org/professional-certificates/bookkeeper" target="_blank" rel="noopener" class="res-link" style="color:var(--amber);border-color:var(--amber-border);background:var(--amber-glow);">
+        <p class="res-note">Tally Education has 1M+ learners — this is the official learning path</p>
+        <a href="https://www.coursera.org/professional-certificates/bookkeeper" target="_blank" rel="noopener" class="res-link" style="color:var(--amber);border-color:var(--amber-bdr);background:var(--amber-bg);">
           Open for free ↗
         </a>
       </div>
 
-      <!-- Great Learning TallyPrime -->
-      <div class="res-card" style="border-color:rgba(245,166,35,0.08);">
+      <div class="res-card">
         <div class="res-top">
           <span class="res-name">Great Learning — TallyPrime</span>
-          <span class="res-badge" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">Free + Certificate</span>
+          <span class="res-badge" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">Free + Certificate</span>
         </div>
-        <p class="res-desc">Covers GST, inventory management, vouchers, and payroll — free certificate on completion. Start today with no prior accounting software experience.</p>
+        <p class="res-desc">Covers GST, inventory management, vouchers, and payroll — with a free certificate on completion. No prior accounting software experience required. Start today.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">TallyPrime Basics</span>
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">GST</span>
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">Inventory</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">TallyPrime Basics</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">GST</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">Inventory</span>
         </div>
         <p class="res-note">Free certificate on completion — add it to LinkedIn immediately</p>
-        <a href="https://www.mygreatlearning.com/academy/learn-for-free/courses/tally-prime" target="_blank" rel="noopener" class="res-link" style="color:var(--amber);border-color:var(--amber-border);background:var(--amber-glow);">
+        <a href="https://www.mygreatlearning.com/academy/learn-for-free/courses/tally-prime" target="_blank" rel="noopener" class="res-link" style="color:var(--amber);border-color:var(--amber-bdr);background:var(--amber-bg);">
           Open for free ↗
         </a>
       </div>
 
-      <!-- Tally Offline Centres -->
-      <div class="res-card" style="border-color:rgba(245,166,35,0.08);">
+      <div class="res-card">
         <div class="res-top">
           <span class="res-name">Tally Offline Training Centers</span>
-          <span class="res-badge" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">Classroom + Hands-On</span>
+          <span class="res-badge" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">Classroom · Hands-On</span>
         </div>
-        <p class="res-desc">Physical training across India — real business scenario simulations with TallyPrime's AI-integrated workflows. Auto-fill, AI ledger suggestions, smart validation.</p>
+        <p class="res-desc">Physical training centres across India with real business scenario simulations — including TallyPrime's AI-integrated workflows: auto-fill, smart ledger suggestions, and data validation.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">AI Accounting</span>
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">Classroom Training</span>
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">Job Placement</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">AI Accounting</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">Classroom Training</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">Job Placement</span>
         </div>
         <p class="res-note">1,00,000+ centres across India — best for hands-on simulation training</p>
-        <a href="https://tallysolutions.com/tally-education/" target="_blank" rel="noopener" class="res-link" style="color:var(--amber);border-color:var(--amber-border);background:var(--amber-glow);">
+        <a href="https://tallysolutions.com/tally-education/" target="_blank" rel="noopener" class="res-link" style="color:var(--amber);border-color:var(--amber-bdr);background:var(--amber-bg);">
           Find a centre ↗
         </a>
       </div>
 
-      <!-- Letstute Hindi YouTube -->
-      <div class="res-card" style="border-color:rgba(245,166,35,0.08);">
+      <div class="res-card">
         <div class="res-top">
-          <span class="res-name">Letstute — TallyPrime Hindi</span>
-          <span class="res-badge" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">YouTube · Free</span>
+          <span class="res-name">Letstute — TallyPrime in Hindi</span>
+          <span class="res-badge" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">YouTube · Free</span>
         </div>
-        <p class="res-desc">"Tally Prime Full Course 2025" — complete Hindi playlist from absolute scratch. Covers real-world transactions exactly like a working accountant would face.</p>
+        <p class="res-desc">"Tally Prime Full Course 2025" — a complete Hindi playlist from absolute scratch. Covers real-world transactions exactly the way a working accountant encounters them.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">Hindi Medium</span>
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">Full Course</span>
-          <span class="res-tag" style="color:var(--amber);background:var(--amber-glow);border-color:var(--amber-border);">Real Business Cases</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">Hindi Medium</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">Full Course</span>
+          <span class="res-tag" style="color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bdr);">Real Business Cases</span>
         </div>
-        <p class="res-note">Best Hindi resource for TallyPrime — no cost, no login needed</p>
-        <a href="https://www.youtube.com/@LetsTute" target="_blank" rel="noopener" class="res-link" style="color:var(--amber);border-color:var(--amber-border);background:var(--amber-glow);">
+        <p class="res-note">Best Hindi resource for TallyPrime — no cost, no login required</p>
+        <a href="https://www.youtube.com/@LetsTute" target="_blank" rel="noopener" class="res-link" style="color:var(--amber);border-color:var(--amber-bdr);background:var(--amber-bg);">
           Open for free ↗
         </a>
       </div>
 
     </div>
   </section>
-</div>
 
-<div class="divider"></div>
+  <div class="section-divider"></div>
 
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<!--  SECTION 03 — EXCEL & FINANCIAL MODELING                          -->
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 03 — EXCEL & FINANCIAL MODELING                                -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
   <section class="cat-section">
     <div class="cat-header">
-      <div class="cat-icon-wrap" style="background:var(--blue-glow);border-color:var(--blue-border);">📈</div>
+      <div class="cat-icon-wrap" style="background:var(--blue-bg);border-color:var(--blue-bdr);">📈</div>
       <div class="cat-meta">
         <div class="cat-meta-top">
           <span class="cat-title">Excel & Financial Modeling</span>
-          <span class="cat-num" style="color:var(--blue);background:var(--blue-glow);border:1px solid var(--blue-border);">03</span>
+          <span class="cat-num" style="color:var(--blue);background:var(--blue-bg);border-color:var(--blue-bdr);">03</span>
         </div>
-        <p class="cat-tagline">Jo finance mein actually job dilata hai — global standard</p>
+        <p class="cat-tagline">The skill that actually gets you finance jobs — global standard content</p>
       </div>
     </div>
-    <div class="cat-divider" style="background:linear-gradient(to right,var(--blue-border),transparent);"></div>
+    <div class="cat-rule" style="background:linear-gradient(to right,var(--blue-bdr),var(--border));"></div>
 
     <div class="res-grid">
 
-      <!-- CFI -->
-      <div class="res-card" style="border-color:rgba(79,158,255,0.1);">
+      <div class="res-card" style="border-color:var(--blue-bdr);">
         <div class="res-top">
           <span class="res-name">CFI — Corporate Finance Institute</span>
-          <span class="res-badge" style="color:var(--blue);background:var(--blue-glow);border-color:var(--blue-border);">YouTube · Free</span>
+          <span class="res-badge" style="color:var(--blue);background:var(--blue-bg);border-color:var(--blue-bdr);">YouTube · Free</span>
         </div>
-        <p class="res-desc">Global standard for financial modeling, budgeting, and Excel for finance. Goldman Sachs, KPMG, and Big 4 professionals use CFI. Free YouTube channel with 100s of tutorials.</p>
+        <p class="res-desc">The global standard for financial modeling, budgeting, forecasting, and Excel for finance. Trusted by Goldman Sachs, KPMG, and Big 4 professionals. Free YouTube channel with hundreds of tutorials.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--blue);background:var(--blue-glow);border-color:var(--blue-border);">Financial Modeling</span>
-          <span class="res-tag" style="color:var(--blue);background:var(--blue-glow);border-color:var(--blue-border);">Excel</span>
-          <span class="res-tag" style="color:var(--blue);background:var(--blue-glow);border-color:var(--blue-border);">Valuation</span>
-          <span class="res-tag" style="color:var(--blue);background:var(--blue-glow);border-color:var(--blue-border);">Forecasting</span>
+          <span class="res-tag" style="color:var(--blue);background:var(--blue-bg);border-color:var(--blue-bdr);">Financial Modeling</span>
+          <span class="res-tag" style="color:var(--blue);background:var(--blue-bg);border-color:var(--blue-bdr);">Excel</span>
+          <span class="res-tag" style="color:var(--blue);background:var(--blue-bg);border-color:var(--blue-bdr);">Valuation</span>
+          <span class="res-tag" style="color:var(--blue);background:var(--blue-bg);border-color:var(--blue-bdr);">Forecasting</span>
         </div>
-        <p class="res-note">Trusted by Big 4 and investment banks — global gold standard</p>
-        <a href="https://www.youtube.com/@corporatefinanceinstitute" target="_blank" rel="noopener" class="res-link" style="color:var(--blue);border-color:var(--blue-border);background:var(--blue-glow);">
+        <p class="res-note">Trusted by Big 4 and investment banks — the global gold standard</p>
+        <a href="https://www.youtube.com/@corporatefinanceinstitute" target="_blank" rel="noopener" class="res-link" style="color:var(--blue);border-color:var(--blue-bdr);background:var(--blue-bg);">
           Open for free ↗
         </a>
       </div>
 
-      <!-- Kenji Explains -->
-      <div class="res-card" style="border-color:rgba(79,158,255,0.08);">
+      <div class="res-card">
         <div class="res-top">
           <span class="res-name">Kenji Explains</span>
-          <span class="res-badge" style="color:var(--blue);background:var(--blue-glow);border-color:var(--blue-border);">YouTube · Free</span>
+          <span class="res-badge" style="color:var(--blue);background:var(--blue-bg);border-color:var(--blue-bdr);">YouTube · Free</span>
         </div>
-        <p class="res-desc">Practical Excel for finance — data analysis, dashboards, and financial analysis with real working examples. Highly technical but explained in plain language.</p>
+        <p class="res-desc">Practical Excel for finance professionals — data analysis, dashboards, and financial modeling with real working examples. Highly technical content explained in plain language.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--blue);background:var(--blue-glow);border-color:var(--blue-border);">Excel for Finance</span>
-          <span class="res-tag" style="color:var(--blue);background:var(--blue-glow);border-color:var(--blue-border);">Data Analysis</span>
-          <span class="res-tag" style="color:var(--blue);background:var(--blue-glow);border-color:var(--blue-border);">Dashboards</span>
+          <span class="res-tag" style="color:var(--blue);background:var(--blue-bg);border-color:var(--blue-bdr);">Excel for Finance</span>
+          <span class="res-tag" style="color:var(--blue);background:var(--blue-bg);border-color:var(--blue-bdr);">Data Analysis</span>
+          <span class="res-tag" style="color:var(--blue);background:var(--blue-bg);border-color:var(--blue-bdr);">Dashboards</span>
         </div>
         <p class="res-note">Best for hands-on Excel mastery — practical over theoretical</p>
-        <a href="https://www.youtube.com/@KenjiExplains" target="_blank" rel="noopener" class="res-link" style="color:var(--blue);border-color:var(--blue-border);background:var(--blue-glow);">
+        <a href="https://www.youtube.com/@KenjiExplains" target="_blank" rel="noopener" class="res-link" style="color:var(--blue);border-color:var(--blue-bdr);background:var(--blue-bg);">
           Open for free ↗
         </a>
       </div>
 
     </div>
   </section>
-</div>
 
-<div class="divider"></div>
+  <div class="section-divider"></div>
 
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<!--  SECTION 04 — TAX & COMPLIANCE                                    -->
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 04 — TAX & COMPLIANCE                                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
   <section class="cat-section">
     <div class="cat-header">
-      <div class="cat-icon-wrap" style="background:var(--green-glow);border-color:var(--green-border);">🧾</div>
+      <div class="cat-icon-wrap" style="background:var(--green-bg);border-color:var(--green-bdr);">🧾</div>
       <div class="cat-meta">
         <div class="cat-meta-top">
           <span class="cat-title">Tax & Compliance — India</span>
-          <span class="cat-num" style="color:var(--green);background:var(--green-glow);border:1px solid var(--green-border);">04</span>
+          <span class="cat-num" style="color:var(--green);background:var(--green-bg);border-color:var(--green-bdr);">04</span>
         </div>
-        <p class="cat-tagline">GST, ITR, TDS — every Indian business needs this, and no one teaches it properly</p>
+        <p class="cat-tagline">GST, ITR, TDS — every Indian business needs this and no college teaches it properly</p>
       </div>
     </div>
-    <div class="cat-divider" style="background:linear-gradient(to right,var(--green-border),transparent);"></div>
+    <div class="cat-rule" style="background:linear-gradient(to right,var(--green-bdr),var(--border));"></div>
 
     <div class="res-grid">
 
-      <!-- ClearTax -->
-      <div class="res-card" style="border-color:rgba(74,222,128,0.1);">
+      <div class="res-card" style="border-color:var(--green-bdr);">
         <div class="res-top">
           <span class="res-name">ClearTax India</span>
-          <span class="res-badge" style="color:var(--green);background:var(--green-glow);border-color:var(--green-border);">YouTube · Free</span>
+          <span class="res-badge" style="color:var(--green);background:var(--green-bg);border-color:var(--green-bdr);">YouTube · Free</span>
         </div>
-        <p class="res-desc">India's most practical tax channel — GST filing, ITR preparation, TDS, and compliance updates explained in plain language. Always updated for latest rules.</p>
+        <p class="res-desc">India's most practical tax channel — GST filing, ITR preparation, TDS, and compliance updates explained in plain language. Always up to date with the latest rules.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--green);background:var(--green-glow);border-color:var(--green-border);">GST Filing</span>
-          <span class="res-tag" style="color:var(--green);background:var(--green-glow);border-color:var(--green-border);">ITR</span>
-          <span class="res-tag" style="color:var(--green);background:var(--green-glow);border-color:var(--green-border);">TDS</span>
-          <span class="res-tag" style="color:var(--green);background:var(--green-glow);border-color:var(--green-border);">Compliance</span>
+          <span class="res-tag" style="color:var(--green);background:var(--green-bg);border-color:var(--green-bdr);">GST Filing</span>
+          <span class="res-tag" style="color:var(--green);background:var(--green-bg);border-color:var(--green-bdr);">ITR</span>
+          <span class="res-tag" style="color:var(--green);background:var(--green-bg);border-color:var(--green-bdr);">TDS</span>
+          <span class="res-tag" style="color:var(--green);background:var(--green-bg);border-color:var(--green-bdr);">Compliance</span>
         </div>
-        <p class="res-note">Updated for latest GST rules — most reliable India-specific tax content</p>
-        <a href="https://www.youtube.com/@ClearTax" target="_blank" rel="noopener" class="res-link" style="color:var(--green);border-color:var(--green-border);background:var(--green-glow);">
+        <p class="res-note">Updated for the latest GST rules — most reliable India-specific tax content</p>
+        <a href="https://www.youtube.com/@ClearTax" target="_blank" rel="noopener" class="res-link" style="color:var(--green);border-color:var(--green-bdr);background:var(--green-bg);">
           Open for free ↗
         </a>
       </div>
 
-      <!-- CA Guru Ji -->
-      <div class="res-card" style="border-color:rgba(74,222,128,0.08);">
+      <div class="res-card">
         <div class="res-top">
           <span class="res-name">CA Guru Ji</span>
-          <span class="res-badge" style="color:var(--green);background:var(--green-glow);border-color:var(--green-border);">YouTube · Free</span>
+          <span class="res-badge" style="color:var(--green);background:var(--green-bg);border-color:var(--green-bdr);">YouTube · Free</span>
         </div>
-        <p class="res-desc">2M+ subscribers. One of India's most-followed tax YouTubers — GST, ITR, TallyPrime tutorials in Hindi with CA-level depth in simple language.</p>
+        <p class="res-desc">2M+ subscribers. One of India's most-followed tax educators — GST, ITR, and TallyPrime in Hindi, with CA-level accuracy in language anyone can understand.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--green);background:var(--green-glow);border-color:var(--green-border);">GST in Hindi</span>
-          <span class="res-tag" style="color:var(--green);background:var(--green-glow);border-color:var(--green-border);">ITR Filing</span>
-          <span class="res-tag" style="color:var(--green);background:var(--green-glow);border-color:var(--green-border);">TallyPrime</span>
-          <span class="res-tag" style="color:var(--green);background:var(--green-glow);border-color:var(--green-border);">Tax Updates</span>
+          <span class="res-tag" style="color:var(--green);background:var(--green-bg);border-color:var(--green-bdr);">GST in Hindi</span>
+          <span class="res-tag" style="color:var(--green);background:var(--green-bg);border-color:var(--green-bdr);">ITR Filing</span>
+          <span class="res-tag" style="color:var(--green);background:var(--green-bg);border-color:var(--green-bdr);">TallyPrime</span>
+          <span class="res-tag" style="color:var(--green);background:var(--green-bg);border-color:var(--green-bdr);">Tax Updates</span>
         </div>
-        <p class="res-note">2M+ subscribers — highly trusted, CA-level accuracy in Hindi</p>
-        <a href="https://www.youtube.com/@CAGuruJi" target="_blank" rel="noopener" class="res-link" style="color:var(--green);border-color:var(--green-border);background:var(--green-glow);">
+        <p class="res-note">2M+ subscribers — CA-level accuracy, explained simply in Hindi</p>
+        <a href="https://www.youtube.com/@CAGuruJi" target="_blank" rel="noopener" class="res-link" style="color:var(--green);border-color:var(--green-bdr);background:var(--green-bg);">
           Open for free ↗
         </a>
       </div>
 
     </div>
   </section>
-</div>
 
-<div class="divider"></div>
+  <div class="section-divider"></div>
 
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<!--  SECTION 05 — CAREER PLATFORMS                                    -->
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 05 — CAREER PLATFORMS                                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
   <section class="cat-section">
     <div class="cat-header">
-      <div class="cat-icon-wrap" style="background:var(--purple-glow);border-color:var(--purple-border);">🚀</div>
+      <div class="cat-icon-wrap" style="background:var(--purple-bg);border-color:var(--purple-bdr);">🚀</div>
       <div class="cat-meta">
         <div class="cat-meta-top">
           <span class="cat-title">Career Platforms</span>
-          <span class="cat-num" style="color:var(--purple);background:var(--purple-glow);border:1px solid var(--purple-border);">05</span>
+          <span class="cat-num" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">05</span>
         </div>
-        <p class="cat-tagline">Seekh ke dekho — fir yahan apply karo. Certificate add karo, job lo.</p>
+        <p class="cat-tagline">Learn the skills above, then show up here. Add certificates, apply, get hired.</p>
       </div>
     </div>
-    <div class="cat-divider" style="background:linear-gradient(to right,var(--purple-border),transparent);"></div>
+    <div class="cat-rule" style="background:linear-gradient(to right,var(--purple-bdr),var(--border));"></div>
 
     <div class="res-grid">
 
-      <!-- Internshala -->
-      <div class="res-card" style="border-color:rgba(192,132,252,0.1);">
+      <div class="res-card" style="border-color:var(--purple-bdr);">
         <div class="res-top">
           <span class="res-name">Internshala</span>
-          <span class="res-badge" style="color:var(--purple);background:var(--purple-glow);border-color:var(--purple-border);">Internships + Jobs</span>
+          <span class="res-badge" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">Internships + Jobs</span>
         </div>
-        <p class="res-desc">India's largest internship platform — commerce, finance, accounting, and digital roles. Start with internships to build a portfolio, then convert to full-time.</p>
+        <p class="res-desc">India's largest internship platform — commerce, finance, accounting, and digital roles. Start with internships to build a portfolio, then convert to a full-time offer.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--purple);background:var(--purple-glow);border-color:var(--purple-border);">Internships</span>
-          <span class="res-tag" style="color:var(--purple);background:var(--purple-glow);border-color:var(--purple-border);">Entry-Level Jobs</span>
-          <span class="res-tag" style="color:var(--purple);background:var(--purple-glow);border-color:var(--purple-border);">Commerce Roles</span>
+          <span class="res-tag" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">Internships</span>
+          <span class="res-tag" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">Entry-Level Jobs</span>
+          <span class="res-tag" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">Commerce Roles</span>
         </div>
-        <p class="res-note">Best platform for fresh BComm graduates — start here first</p>
-        <a href="https://internshala.com" target="_blank" rel="noopener" class="res-link" style="color:var(--purple);border-color:var(--purple-border);background:var(--purple-glow);">
+        <p class="res-note">Best starting point for fresh BComm graduates — start here first</p>
+        <a href="https://internshala.com" target="_blank" rel="noopener" class="res-link" style="color:var(--purple);border-color:var(--purple-bdr);background:var(--purple-bg);">
           Open for free ↗
         </a>
       </div>
 
-      <!-- Unstop -->
-      <div class="res-card" style="border-color:rgba(192,132,252,0.08);">
+      <div class="res-card">
         <div class="res-top">
           <span class="res-name">Unstop</span>
-          <span class="res-badge" style="color:var(--purple);background:var(--purple-glow);border-color:var(--purple-border);">Competitions + Hiring</span>
+          <span class="res-badge" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">Competitions + Hiring</span>
         </div>
-        <p class="res-desc">Formerly D2C — competitions, case challenges, and hiring contests. Win a competition, get hired. Companies actively headhunt performers on this platform.</p>
+        <p class="res-desc">Competitions, case challenges, and hiring contests. Win a challenge, get noticed. Companies actively headhunt top performers here — a genuine shortcut past the resume stack.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--purple);background:var(--purple-glow);border-color:var(--purple-border);">Competitions</span>
-          <span class="res-tag" style="color:var(--purple);background:var(--purple-glow);border-color:var(--purple-border);">Case Challenges</span>
-          <span class="res-tag" style="color:var(--purple);background:var(--purple-glow);border-color:var(--purple-border);">Hiring</span>
+          <span class="res-tag" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">Competitions</span>
+          <span class="res-tag" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">Case Challenges</span>
+          <span class="res-tag" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">Hiring</span>
         </div>
-        <p class="res-note">Companies actively recruit competition winners here — unique edge</p>
-        <a href="https://unstop.com" target="_blank" rel="noopener" class="res-link" style="color:var(--purple);border-color:var(--purple-border);background:var(--purple-glow);">
+        <p class="res-note">Companies actively recruit competition winners here — a unique edge</p>
+        <a href="https://unstop.com" target="_blank" rel="noopener" class="res-link" style="color:var(--purple);border-color:var(--purple-bdr);background:var(--purple-bg);">
           Open for free ↗
         </a>
       </div>
 
-      <!-- LinkedIn -->
-      <div class="res-card" style="border-color:rgba(192,132,252,0.08);">
+      <div class="res-card">
         <div class="res-top">
           <span class="res-name">LinkedIn</span>
-          <span class="res-badge" style="color:var(--purple);background:var(--purple-glow);border-color:var(--purple-border);">Career Network</span>
+          <span class="res-badge" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">Career Network</span>
         </div>
-        <p class="res-desc">After every course — add the certificate to LinkedIn immediately. Recruiters filter by skills and certifications. Your LinkedIn profile is your actual resume in 2026.</p>
+        <p class="res-desc">After every course — add the certificate to LinkedIn immediately. Recruiters filter candidates by skills and certifications. In 2026, your LinkedIn profile is your actual resume.</p>
         <div class="res-tags">
-          <span class="res-tag" style="color:var(--purple);background:var(--purple-glow);border-color:var(--purple-border);">Certificate Showcase</span>
-          <span class="res-tag" style="color:var(--purple);background:var(--purple-glow);border-color:var(--purple-border);">Networking</span>
-          <span class="res-tag" style="color:var(--purple);background:var(--purple-glow);border-color:var(--purple-border);">Job Applications</span>
+          <span class="res-tag" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">Certificate Showcase</span>
+          <span class="res-tag" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">Networking</span>
+          <span class="res-tag" style="color:var(--purple);background:var(--purple-bg);border-color:var(--purple-bdr);">Job Applications</span>
         </div>
         <p class="res-note">Add every single certificate here — recruiters filter by this</p>
-        <a href="https://linkedin.com" target="_blank" rel="noopener" class="res-link" style="color:var(--purple);border-color:var(--purple-border);background:var(--purple-glow);">
+        <a href="https://linkedin.com" target="_blank" rel="noopener" class="res-link" style="color:var(--purple);border-color:var(--purple-bdr);background:var(--purple-bg);">
           Open for free ↗
         </a>
       </div>
 
     </div>
   </section>
-</div>
 
-<!-- FOOTER CTA -->
-<div class="wrap">
+
+<!-- FOOTER -->
   <footer class="footer">
     <p class="footer-eyebrow">That's the entire kit</p>
     <h2 class="footer-title">
-      Har hafte naye resources.<br/>
-      <em>Miss mat karo.</em>
+      New resources,<br/><em>every week.</em>
     </h2>
-    <p class="footer-sub">AI, finance, aur career ke baare mein honest content — jaise sibling bata raha ho.</p>
+    <p class="footer-sub">Honest content on AI, finance, and career — the kind your older sibling would share if they actually knew this stuff.</p>
     <a href="https://instagram.com/wiservidhaan" target="_blank" rel="noopener" class="footer-btn">
       Follow @wiservidhaan ↗
     </a>
@@ -728,7 +709,8 @@
       All resources verified free · Updated May 2026
     </p>
   </footer>
-</div>
+
+</div><!-- /wrap -->
 
 </body>
 </html>
