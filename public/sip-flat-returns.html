@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zero Returns. The Best Time to Be In. | Wiser Resources</title>
+  <meta name="description" content="25 years of data on what happens after markets go flat for 18 months. The answer will make you hold tighter, not sell." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dark:           #090909;
+      --dark-2:         #111111;
+      --dark-3:         #1a1a1a;
+      --dark-border:    rgba(255,255,255,0.07);
+      --light:          #F5F0E8;
+      --light-2:        #EDE6D8;
+      --light-border:   rgba(0,0,0,0.10);
+      --orange:         #D34921;
+      --orange-dim:     rgba(211,73,33,0.15);
+      --orange-border:  rgba(211,73,33,0.25);
+      --text-dark:        #E8E2D8;
+      --text-dark-muted:  rgba(232,226,216,0.5);
+      --text-light:       #111111;
+      --text-light-muted: rgba(17,17,17,0.5);
+      --font-display: 'Anton', sans-serif;
+      --font-serif:   'Cormorant Garamond', serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'Space Mono', monospace;
+      --max-w:        1200px;
+      --pad:          clamp(1.5rem, 5vw, 4rem);
+      --section-pad:  clamp(4rem, 8vw, 7rem);
+      --ease:         cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--dark); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 999;
+    }
+    ::-webkit-scrollbar { width: 3px; height: 3px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--orange-border); border-radius: 2px; }
+
+    /* NAV */
+    .nav {
+      padding: 18px var(--pad);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(9,9,9,0.93);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--dark-border);
+    }
+    .nav-brand { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--orange); text-decoration: none; }
+    .nav-tag { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.07em; color: var(--text-dark-muted); }
+
+    /* SECTIONS */
+    .section { width: 100%; }
+    .section--dark  { background: var(--dark);  color: var(--text-dark); }
+    .section--light { background: var(--light); color: var(--text-light); }
+    .section-inner  { max-width: var(--max-w); margin: 0 auto; padding: var(--section-pad) var(--pad); }
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--orange-border), transparent);
+      margin: 0 var(--pad);
+    }
+
+    /* HERO */
+    .hero { position: relative; overflow: hidden; }
+    .hero-glow {
+      position: absolute; top: -120px; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 500px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(211,73,33,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 9vw, 7.5rem);
+      line-height: 0.95; letter-spacing: -0.02em;
+      margin-bottom: 1.5rem; color: var(--text-dark);
+    }
+    .hero-title em { font-family: var(--font-serif); font-style: italic; font-weight: 300; color: var(--orange); }
+    .hero-sub {
+      font-family: var(--font-body); font-size: 1rem; line-height: 1.75;
+      color: var(--text-dark-muted); max-width: 560px; margin-bottom: 2.5rem;
+    }
+    .hero-stats {
+      display: flex; gap: 2.5rem; flex-wrap: wrap;
+      padding-top: 2rem; border-top: 1px solid var(--dark-border);
+    }
+    .stat { display: flex; flex-direction: column; gap: 0.2rem; }
+    .stat-val { font-family: var(--font-display); font-size: 1.6rem; color: var(--orange); }
+    .stat-label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dark-muted); }
+
+    /* SECTION LABELS & TITLES */
+    .s-label {
+      font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 1rem;
+    }
+    .section--light .s-label { color: var(--text-light-muted); }
+    .s-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.05; letter-spacing: -0.01em; margin-bottom: 1rem;
+    }
+    .s-title em { font-family: var(--font-serif); font-style: italic; font-weight: 300; color: var(--orange); }
+    .section--light .s-title em { color: var(--orange); }
+    .s-sub {
+      font-family: var(--font-body); font-size: clamp(0.9rem, 1.5vw, 1rem);
+      line-height: 1.75; max-width: 640px;
+      color: var(--text-dark-muted); margin-bottom: 2.5rem;
+    }
+    .section--light .s-sub { color: var(--text-light-muted); }
+
+    /* DATA CALLOUTS */
+    .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1px; background: var(--light-border); border: 1px solid var(--light-border); border-radius: 8px; overflow: hidden; margin-bottom: 2.5rem; }
+    .data-card { background: var(--light-2); padding: 2rem 1.5rem; }
+    .data-num { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4rem); color: var(--orange); line-height: 1; margin-bottom: 0.4rem; }
+    .data-label { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light-muted); margin-bottom: 0.5rem; }
+    .data-desc { font-family: var(--font-body); font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
+
+    /* SOURCE CALLOUT */
+    .source-bar {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.875rem 1.1rem; border: 1px solid var(--light-border);
+      border-radius: 6px; background: var(--light-2);
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.06em; color: var(--text-light-muted);
+    }
+    .source-bar strong { color: var(--text-light); font-weight: 500; }
+
+    /* FLOW DIAGRAM */
+    .flow-wrap { overflow-x: auto; padding-bottom: 0.5rem; }
+    .flow { display: flex; align-items: center; gap: 0; min-width: max-content; padding: 0.5rem 0; }
+    .flow-node {
+      flex-shrink: 0; width: 130px; padding: 1.25rem 1rem;
+      border-radius: 8px; border: 1px solid var(--dark-border);
+      background: var(--dark-2); text-align: center;
+    }
+    .flow-node.active { border-color: var(--orange-border); background: var(--orange-dim); }
+    .flow-node.bad { border-color: rgba(255,80,80,0.25); background: rgba(255,80,80,0.08); }
+    .fn-icon { font-size: 1.3rem; margin-bottom: 0.5rem; }
+    .fn-title { font-family: var(--font-body); font-weight: 500; font-size: 0.8rem; margin-bottom: 0.3rem; }
+    .fn-desc { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.04em; color: var(--text-dark-muted); line-height: 1.5; }
+    .flow-node.bad .fn-desc { color: rgba(255,180,180,0.6); }
+    .flow-connector {
+      flex-shrink: 0; width: 40px; height: 1px;
+      background: linear-gradient(to right, var(--dark-border), var(--orange-border));
+      position: relative;
+    }
+    .flow-connector::after {
+      content: '▶'; position: absolute; right: -8px; top: 50%;
+      transform: translateY(-50%); font-size: 8px; color: var(--orange); opacity: 0.6;
+    }
+    .flow-connector.bad { background: linear-gradient(to right, var(--dark-border), rgba(255,80,80,0.25)); }
+    .flow-connector.bad::after { color: rgba(255,80,80,0.5); }
+
+    /* SMART vs PANIC COMPARE */
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2.5rem; }
+    .compare-col { border-radius: 8px; overflow: hidden; }
+    .compare-header {
+      padding: 0.875rem 1.25rem;
+      font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .compare-header.smart { background: var(--orange-dim); border: 1px solid var(--orange-border); color: var(--orange); border-bottom: none; }
+    .compare-header.panic { background: rgba(255,80,80,0.08); border: 1px solid rgba(255,80,80,0.2); color: rgba(255,120,120,0.8); border-bottom: none; }
+    .compare-body { padding: 1.25rem; border: 1px solid var(--dark-border); background: var(--dark-2); border-radius: 0 0 8px 8px; }
+    .compare-body.smart { border-top: none; border-color: var(--orange-border); }
+    .compare-body.panic { border-top: none; border-color: rgba(255,80,80,0.2); }
+    .compare-item { display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.875rem; font-family: var(--font-body); font-size: 0.87rem; line-height: 1.65; color: var(--text-dark-muted); }
+    .compare-item:last-child { margin-bottom: 0; }
+    .compare-item .ci-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 0.45rem; }
+    .compare-body.smart .ci-dot { background: var(--orange); }
+    .compare-body.panic .ci-dot { background: rgba(255,80,80,0.6); }
+    .compare-item strong { color: var(--text-dark); font-weight: 500; }
+
+    /* PHASES & STEPS */
+    .phase-block { margin-bottom: 2.5rem; }
+    .phase-header {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-left: 3px solid var(--orange);
+      background: var(--orange-dim);
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 1.5rem;
+    }
+    .section--light .phase-header { background: rgba(211,73,33,0.08); }
+    .phase-num { font-family: var(--font-display); font-size: 2rem; color: var(--orange); line-height: 1; }
+    .phase-title { font-family: var(--font-body); font-weight: 500; font-size: 1rem; flex: 1; color: var(--text-light); }
+    .phase-badge { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light-muted); }
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step {
+      display: grid; grid-template-columns: 28px 1fr; gap: 1.1rem;
+      padding: 1.25rem 0; border-bottom: 1px solid var(--light-border);
+    }
+    .step:first-child { padding-top: 0; }
+    .step:last-child { border-bottom: none; padding-bottom: 0; }
+    .step-n { font-family: var(--font-mono); font-size: 0.65rem; color: var(--orange); padding-top: 3px; letter-spacing: 0.05em; }
+    .step-title { font-family: var(--font-body); font-weight: 500; font-size: 0.92rem; margin-bottom: 0.3rem; color: var(--text-light); }
+    .step-body { font-family: var(--font-body); font-size: 0.87rem; line-height: 1.7; color: var(--text-light-muted); }
+    .step-body strong { color: var(--text-light); font-weight: 500; }
+
+    /* TIP */
+    .tip {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      background: var(--orange-dim); border: 1px solid var(--orange-border); border-radius: 6px;
+      font-family: var(--font-body); font-size: 0.87rem; line-height: 1.65; color: var(--text-dark);
+      margin-top: 1.5rem;
+    }
+    .section--light .tip { color: var(--text-light); }
+    .tip-i { flex-shrink: 0; font-size: 1rem; padding-top: 1px; }
+
+    /* PRINCIPLES */
+    .principles-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1px; background: var(--dark-border);
+      border: 1px solid var(--dark-border); border-radius: 8px; overflow: hidden;
+    }
+    .p-card { padding: 1.75rem; background: var(--dark-2); }
+    .p-icon { font-size: 1.4rem; margin-bottom: 0.75rem; }
+    .p-title { font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+    .p-body { font-family: var(--font-body); font-size: 0.85rem; line-height: 1.7; color: var(--text-dark-muted); }
+
+    /* SOURCE CARDS */
+    .source-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .source-card {
+      border: 1px solid var(--light-border); border-radius: 8px; overflow: hidden;
+      text-decoration: none; color: inherit; display: block;
+      transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    }
+    .source-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+    .sc-top { padding: 1.25rem 1.25rem 1rem; background: var(--light-2); border-bottom: 1px solid var(--light-border); }
+    .sc-tag { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light-muted); margin-bottom: 0.5rem; }
+    .sc-title { font-family: var(--font-body); font-weight: 500; font-size: 0.92rem; color: var(--text-light); line-height: 1.45; }
+    .sc-bottom { padding: 0.875rem 1.25rem; display: flex; align-items: center; justify-content: space-between; }
+    .sc-author { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-light-muted); letter-spacing: 0.05em; }
+    .sc-arrow { font-family: var(--font-mono); font-size: 0.7rem; color: var(--orange); }
+
+    /* WISER RESOURCES LINK */
+    .hub-link {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border: 1px solid var(--light-border); border-radius: 8px;
+      background: var(--light); text-decoration: none; color: var(--text-light);
+      margin-top: 1.5rem;
+      transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    }
+    .hub-link:hover { border-color: var(--orange); box-shadow: 0 4px 20px rgba(211,73,33,0.08); }
+    .hub-link-left { display: flex; flex-direction: column; gap: 0.2rem; }
+    .hub-link-label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light-muted); }
+    .hub-link-title { font-family: var(--font-body); font-weight: 500; font-size: 0.92rem; }
+    .hub-link-arrow { font-family: var(--font-mono); font-size: 0.8rem; color: var(--orange); }
+
+    /* FOOTER */
+    .footer { background: var(--dark); border-top: 1px solid var(--dark-border); }
+    .footer-title { font-family: var(--font-display); font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; margin-bottom: 1rem; color: var(--text-dark); }
+    .footer-title em { font-family: var(--font-serif); font-style: italic; font-weight: 300; color: var(--orange); }
+    .footer-sub { font-family: var(--font-body); font-size: 0.9rem; color: var(--text-dark-muted); line-height: 1.7; max-width: 480px; margin-bottom: 2rem; }
+    .footer-brand { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dark-muted); }
+    .footer-brand span { color: var(--orange); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-tag   { animation: fadeUp 0.5s var(--ease-out) 0.1s both; }
+    .hero-title { animation: fadeUp 0.6s var(--ease-out) 0.2s both; }
+    .hero-sub   { animation: fadeUp 0.6s var(--ease-out) 0.35s both; }
+    .hero-stats { animation: fadeUp 0.6s var(--ease-out) 0.45s both; }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      .compare-grid { grid-template-columns: 1fr; }
+      .source-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-brand" href="/">wiser resources</a>
+  <span class="nav-tag">WR-003 · Markets</span>
+</nav>
+
+<!-- HERO -->
+<section class="section section--dark hero">
+  <div class="hero-glow"></div>
+  <div class="section-inner">
+    <div class="hero-tag">Free Resource · Wiser With Vidhaan</div>
+    <h1 class="hero-title">
+      Zero returns.<br>
+      <em>The best time to be in.</em>
+    </h1>
+    <p class="hero-sub">Since June 2024, Nifty has returned 0%. People are panicking and stopping SIPs. But 25 years of data tells a completely different story — one that rewards the investors who stayed.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-val">0%</span>
+        <span class="stat-label">Nifty since June 2024</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">13×</span>
+        <span class="stat-label">this has happened before</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">25 yrs</span>
+        <span class="stat-label">of data</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">47%</span>
+        <span class="stat-label">median 3-year return after</span>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- WHAT THE DATA SHOWS -->
+<section class="section section--light">
+  <div class="section-inner">
+    <div class="s-label">The Data</div>
+    <h2 class="s-title">What 25 years <em>actually shows.</em></h2>
+    <p class="s-sub">Edelweiss AMC pulled 25 years of Nifty data. Every time the market went flat for an extended period, here's what happened next.</p>
+
+    <div class="data-grid">
+      <div class="data-card">
+        <div class="data-num">13</div>
+        <div class="data-label">Prior instances</div>
+        <div class="data-desc">13 times in 25 years the market has been flat for an extended stretch — just like now.</div>
+      </div>
+      <div class="data-card">
+        <div class="data-num">19%</div>
+        <div class="data-label">Median 12-month return after</div>
+        <div class="data-desc">After every flat period, the market's median return in the following 12 months was 19%.</div>
+      </div>
+      <div class="data-card">
+        <div class="data-num">47%</div>
+        <div class="data-label">Median 3-year return after</div>
+        <div class="data-desc">Stretch it to three years and investors who stayed saw a median gain of 47% — even after removing outliers.</div>
+      </div>
+      <div class="data-card">
+        <div class="data-num">100%</div>
+        <div class="data-label">Recovery rate</div>
+        <div class="data-desc">In all 13 instances, the market recovered and went higher. It has never permanently stayed flat.</div>
+      </div>
+    </div>
+
+    <div class="source-bar">
+      <span>📊</span>
+      <span>Source: <strong>Edelweiss AMC</strong> — 25 years of Nifty data analysis. Outliers like 2003 (248% in 3 years) were removed and the median was still 47%.</span>
+    </div>
+
+    <div class="tip" style="margin-top:1.5rem;">
+      <span class="tip-i">💡</span>
+      <span>The pattern is consistent enough that <strong>a flat market is now predictive, not alarming</strong>. The data doesn't say "it might recover." It says it always has — in every single instance.</span>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- THE PANIC CYCLE -->
+<section class="section section--dark">
+  <div class="section-inner">
+    <div class="s-label">The Mistake</div>
+    <h2 class="s-title">The panic cycle <em>people keep repeating.</em></h2>
+    <p class="s-sub">This exact sequence has played out 13 times. And each time, investors who left the game missed the rally that came right after.</p>
+
+    <div class="flow-wrap">
+      <div class="flow">
+        <div class="flow-node active">
+          <div class="fn-icon">📉</div>
+          <div class="fn-title">Market goes flat</div>
+          <div class="fn-desc">0% returns for<br>12–18 months</div>
+        </div>
+        <div class="flow-connector bad"></div>
+        <div class="flow-node bad">
+          <div class="fn-icon">😰</div>
+          <div class="fn-title">Panic sets in</div>
+          <div class="fn-desc">"The market<br>is dead"</div>
+        </div>
+        <div class="flow-connector bad"></div>
+        <div class="flow-node bad">
+          <div class="fn-icon">🛑</div>
+          <div class="fn-title">Stop SIP</div>
+          <div class="fn-desc">Miss cheap<br>unit accumulation</div>
+        </div>
+        <div class="flow-connector bad"></div>
+        <div class="flow-node bad">
+          <div class="fn-icon">🚀</div>
+          <div class="fn-title">Rally happens</div>
+          <div class="fn-desc">19% in 12M<br>47% in 3Y</div>
+        </div>
+        <div class="flow-connector bad"></div>
+        <div class="flow-node bad">
+          <div class="fn-icon">😔</div>
+          <div class="fn-title">Regret</div>
+          <div class="fn-desc">Re-enter at<br>higher prices</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col">
+        <div class="compare-header smart">✓ Investor who stayed</div>
+        <div class="compare-body smart">
+          <div class="compare-item"><div class="ci-dot"></div><span>Kept buying units at <strong>flat/low prices</strong> throughout the stagnation period</span></div>
+          <div class="compare-item"><div class="ci-dot"></div><span>Rupee cost averaging worked in their favour — <strong>more units, lower average cost</strong></span></div>
+          <div class="compare-item"><div class="ci-dot"></div><span>When the rally hit, <strong>all those cheap units compounded hard</strong></span></div>
+          <div class="compare-item"><div class="ci-dot"></div><span>Captured the full <strong>19% 12-month / 47% 3-year</strong> median return</span></div>
+        </div>
+      </div>
+      <div class="compare-col">
+        <div class="compare-header panic">✗ Investor who panicked</div>
+        <div class="compare-body panic">
+          <div class="compare-item"><div class="ci-dot"></div><span>Stopped buying during the <strong>cheapest window</strong> in the market cycle</span></div>
+          <div class="compare-item"><div class="ci-dot"></div><span>Missed accumulating low-cost units — <strong>the foundation of every SIP's future return</strong></span></div>
+          <div class="compare-item"><div class="ci-dot"></div><span>Saw the rally, re-entered — but now at <strong>higher prices with less invested</strong></span></div>
+          <div class="compare-item"><div class="ci-dot"></div><span>Made the same mistake as the <strong>12 times before this</strong></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- WHY STOPPING IS WRONG -->
+<section class="section section--light">
+  <div class="section-inner">
+    <div class="s-label">The Math</div>
+    <h2 class="s-title">Why stopping kills <em>your actual return.</em></h2>
+    <p class="s-sub">It's not just emotional — stopping a SIP during a flat market is mathematically the worst thing you can do. Here's why, broken down.</p>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">01</div>
+        <div class="phase-title">How a SIP actually makes money</div>
+        <div class="phase-badge">Rupee Cost Averaging</div>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-n">1.1</div>
+          <div>
+            <div class="step-title">You buy more units when prices are low</div>
+            <div class="step-body">A fixed monthly SIP means you buy more units when markets are down or flat, and fewer units when markets are high. This is the entire mechanism behind SIP compounding — <strong>it thrives in exactly this environment.</strong></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">1.2</div>
+          <div>
+            <div class="step-title">Flat markets are unit accumulation windows</div>
+            <div class="step-body">When the market stays flat for 12–18 months, every SIP instalment buys units at low prices. <strong>These are the units that deliver outsized returns when the market eventually rallies</strong> — and it always has.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">1.3</div>
+          <div>
+            <div class="step-title">The rally rewards the units you accumulated, not the ones you missed</div>
+            <div class="step-body">When the 19% or 47% return arrives, it applies to every unit you hold. Stop your SIP during the flat phase and <strong>you simply own fewer units when the multiplier hits.</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-num">02</div>
+        <div class="phase-title">The timing problem no one can solve</div>
+        <div class="phase-badge">Why you can't time the bottom</div>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-n">2.1</div>
+          <div>
+            <div class="step-title">You cannot see the rally coming</div>
+            <div class="step-body">The 13 prior instances show the rally arrives suddenly and without warning. The market doesn't announce its recovery. <strong>By the time the news confirms it's happening, a significant portion of the return is already gone.</strong></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">2.2</div>
+          <div>
+            <div class="step-title">Re-entering costs you more than staying ever would have</div>
+            <div class="step-body">When you exit and then re-enter after seeing the recovery, you're buying at higher prices, potentially paying exit loads or taxes, and resetting your investment timeline. <strong>The cost of panic is compounded by the cost of re-entry.</strong></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">2.3</div>
+          <div>
+            <div class="step-title">The data removes the guesswork</div>
+            <div class="step-body">Every prior investor who "waited for the right time" to get back in underperformed the investor who just kept the SIP running. <strong>Consistency beats timing, every single time the data has been checked.</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <span class="tip-i">📌</span>
+      <span>If your portfolio is flat right now, that is exactly where you want to be — <strong>accumulating units at low prices before a historically consistent rally.</strong> The discomfort you feel is the price of future returns.</span>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- PRINCIPLES -->
+<section class="section section--dark">
+  <div class="section-inner">
+    <div class="s-label">Going Deeper</div>
+    <h2 class="s-title">Four things worth <em>internalising.</em></h2>
+    <p class="s-sub">The mental models behind staying invested when it's hardest to do so.</p>
+
+    <div class="principles-grid">
+      <div class="p-card">
+        <div class="p-icon">📊</div>
+        <div class="p-title">DATA DOESN'T CARE ABOUT FEELING</div>
+        <div class="p-body">Your gut says the market is broken. The data says it's done this 13 times and recovered every single time. When your emotion and 25 years of evidence disagree, trust the 25 years. The discomfort of holding through a flat period is the mechanism, not the warning.</div>
+      </div>
+      <div class="p-card">
+        <div class="p-icon">🔄</div>
+        <div class="p-title">BOREDOM IS A FEATURE, NOT A BUG</div>
+        <div class="p-body">A flat market feels like nothing is happening. But for a SIP investor, everything is happening — you're buying units at the most favourable prices in the cycle. Boring markets are when SIPs do their best structural work. The excitement comes later, at the rally.</div>
+      </div>
+      <div class="p-card">
+        <div class="p-icon">⏳</div>
+        <div class="p-title">THE INVESTOR WHO STOPS IS ALWAYS THE SAME PERSON</div>
+        <div class="p-body">Across all 13 instances, the investors who exited during the flat period are statistically the same cohort as those who re-entered higher and felt regret. The pattern repeats not because the market is cruel but because emotional decisions are predictably timed badly.</div>
+      </div>
+      <div class="p-card">
+        <div class="p-icon">🏗️</div>
+        <div class="p-title">LONG-TERM WEALTH IS BUILT IN THE BORING PERIODS</div>
+        <div class="p-body">The rally gets the headlines. The flat period builds the foundation. Every unit bought during stagnation is the structural layer that the rally compounds on. Wealth in public markets is almost never built during excitement — it's built during the stretches that make people question whether to stay.</div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- SOURCES -->
+<section class="section section--light">
+  <div class="section-inner">
+    <div class="s-label">Sources</div>
+    <h2 class="s-title">Read the <em>original reports.</em></h2>
+    <p class="s-sub">The data in this resource comes directly from these two pieces. Both are worth reading in full.</p>
+
+    <div class="source-cards">
+      <a class="source-card" href="https://economictimes.indiatimes.com/mf/mf-news/worried-about-18-months-of-flat-returns-radhika-gupta-shares-a-reality-check/articleshow/128960562.cms" target="_blank" rel="noopener">
+        <div class="sc-top">
+          <div class="sc-tag">Economic Times · Mutual Funds</div>
+          <div class="sc-title">Worried about 18 months of flat returns? Radhika Gupta shares a reality check</div>
+        </div>
+        <div class="sc-bottom">
+          <div class="sc-author">Radhika Gupta · Edelweiss AMC</div>
+          <div class="sc-arrow">→</div>
+        </div>
+      </a>
+      <a class="source-card" href="https://www.valueresearchonline.com/stories/228276/almost-0-returns-after-3-years-sips-time-stop/" target="_blank" rel="noopener">
+        <div class="sc-top">
+          <div class="sc-tag">Value Research · Analysis</div>
+          <div class="sc-title">Almost 0% returns after 3 years of SIPs — time to stop?</div>
+        </div>
+        <div class="sc-bottom">
+          <div class="sc-author">Value Research Online</div>
+          <div class="sc-arrow">→</div>
+        </div>
+      </a>
+    </div>
+
+    <a class="hub-link" href="https://wiser-resources.vercel.app" target="_blank" rel="noopener">
+      <div class="hub-link-left">
+        <div class="hub-link-label">More free resources</div>
+        <div class="hub-link-title">wiser-resources.vercel.app — every guide from every reel</div>
+      </div>
+      <div class="hub-link-arrow">→</div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="section-inner">
+    <div class="footer-title">
+      Stay in.<br>
+      <em>The data is on your side.</em>
+    </div>
+    <p class="footer-sub">Share this with every investor in your life who's thinking about stopping their SIP. The people who stay through this are the ones who look back and say it was obvious.</p>
+    <p class="footer-brand">By <span>Wiser With Vidhaan</span> · wisermoney.vercel.app</p>
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        e.target.style.transition = `opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out)`;
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.step, .p-card, .prereq-item, .flow-node, .data-card, .compare-col, .source-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    io.observe(el);
+  });
+</script>
+</body>
+</html>
