@@ -20,7 +20,7 @@ function doPost(e) {
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
       sheet.appendRow([
-        "Timestamp", "Name", "Email", "Phone",
+        "Timestamp", "Source", "Name", "Email", "Phone",
         "Persona", "Equity %", "Debt %", "Gold %", "Quiz Score"
       ]);
       sheet.setFrozenRows(1);
@@ -31,9 +31,10 @@ function doPost(e) {
 
     sheet.appendRow([
       new Date(),
-      data.name  || "",
-      data.email || "",
-      data.phone || "",
+      data.source  || "investor-dna",
+      data.name    || "",
+      data.email   || "",
+      data.phone   || "",
       data.persona || "",
       data.equity  != null ? data.equity  : "",
       data.debt    != null ? data.debt    : "",
