@@ -402,11 +402,11 @@
                 <span style={{ fontSize: 13, color: GOLD, fontWeight: 500 }}>Almost there</span>
               </div>
               <h2 style={{ fontFamily: "DM Serif Display, serif", fontSize: "clamp(28px, 7vw, 38px)", lineHeight: 1.15, color: TEXT, marginBottom: 12, fontWeight: 400 }}>
-                Where should we<br />
-                <span style={{ color: GOLD, fontStyle: "italic" }}>send your results?</span>
+                Who are these<br />
+                <span style={{ color: GOLD, fontStyle: "italic" }}>results for?</span>
               </h2>
               <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.65 }}>
-                Your investor persona + full allocation breakdown — saved to you.
+                Your results appear right after. We'll occasionally share personalised investing insights — no spam.
               </p>
             </div>
             <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -432,7 +432,6 @@
                 See My Results →
               </button>
             </form>
-            <p style={{ textAlign: "center", marginTop: 18, fontSize: 12, color: FAINT }}>No spam. Ever.</p>
           </div>
         </div>
       );
@@ -711,7 +710,33 @@
             )}
           </div>
 
-          <div style={{ textAlign: "center", marginTop: 48 }}>
+          <div style={{ marginTop: 48, display: "flex", flexDirection: "column", gap: 14 }}>
+            <a href="https://calendly.com/vidhaanjain/investmentfirst" target="_blank" rel="noopener noreferrer" style={{ display: "block", background: CARD, border: `1px solid rgba(245,200,66,0.22)`, borderRadius: 16, padding: "28px 30px", textDecoration: "none", transition: "transform 0.15s, border-color 0.15s" }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "rgba(245,200,66,0.45)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.borderColor = "rgba(245,200,66,0.22)"; }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
+                <div>
+                  <div style={{ fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: GOLD, fontWeight: 600, marginBottom: 10 }}>1:1 Consultation · ₹999 · 45 min</div>
+                  <div style={{ fontFamily: "DM Serif Display, serif", fontSize: "clamp(19px, 3vw, 24px)", color: TEXT, fontWeight: 400, lineHeight: 1.3, marginBottom: 8 }}>Book a session with Vidhaan</div>
+                  <div style={{ fontSize: 13.5, color: MUTED, lineHeight: 1.7 }}>We'll look at your actual numbers — income, EMIs, goals — and build a plan you'll actually follow. Payment details shared after booking.</div>
+                </div>
+                <span style={{ fontSize: 22, color: GOLD, flexShrink: 0 }}>→</span>
+              </div>
+            </a>
+            <a href="https://wisermoney.vercel.app" target="_blank" rel="noopener noreferrer" style={{ display: "block", background: CARD, border: `1px solid ${BORDER}`, borderRadius: 16, padding: "22px 30px", textDecoration: "none", transition: "transform 0.15s, border-color 0.15s" }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "#2E2E52"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.borderColor = BORDER; }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
+                <div>
+                  <div style={{ fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: TEAL, fontWeight: 600, marginBottom: 8 }}>Full Assessment · wisermoney.vercel.app</div>
+                  <div style={{ fontSize: 13.5, color: MUTED, lineHeight: 1.65 }}>Want the complete picture? Income, expenses, insurance, EMIs — a full financial health assessment across 8 investor archetypes.</div>
+                </div>
+                <span style={{ fontSize: 18, color: MUTED, flexShrink: 0 }}>↗</span>
+              </div>
+            </a>
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: 40 }}>
             <span style={{ fontSize: 11, color: FAINT, letterSpacing: "0.12em", textTransform: "uppercase" }}>Wiser With Vidhaan</span>
           </div>
         </div>
