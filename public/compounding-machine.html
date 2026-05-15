@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Compounding Machine — Wiser With Vidhaan</title>
+  <meta name="description" content="Drag the sliders and watch what compounding does after year 10. SIP calculator with milestone timeline." />
+  <meta name="theme-color" content="#090B0F" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body,#root{min-height:100%;background:#090B0F;}
+    .app{min-height:100vh;background:#090B0F;color:#EDE9E3;font-family:'DM Sans',sans-serif;}
+    .glow-bg{position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 80% 5%,rgba(245,200,66,0.06) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 10% 90%,rgba(0,217,160,0.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+    .wrap{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:56px 24px 96px;}
+    .eyebrow{font-size:11px;font-weight:600;letter-spacing:3.5px;text-transform:uppercase;color:#F5C842;margin-bottom:16px;}
+    .hero-title{font-family:'DM Serif Display',serif;font-size:clamp(44px,7vw,76px);line-height:1.0;color:#EDE9E3;margin-bottom:18px;letter-spacing:-1px;}
+    .hero-title em{font-style:italic;color:#F5C842;}
+    .hero-sub{font-size:16px;color:#5A5A70;line-height:1.75;max-width:500px;margin-bottom:60px;font-weight:300;}
+    .card{background:#0D0D18;border:1px solid #1A1A28;border-radius:20px;padding:32px;margin-bottom:20px;}
+    .card-label{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#2E2E42;margin-bottom:28px;}
+    .sg{margin-bottom:32px;}
+    .sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+    .sn{font-size:13px;color:#606078;font-weight:400;}
+    .sv{font-family:'DM Serif Display',serif;font-size:26px;color:#EDE9E3;line-height:1;}
+    .sv small{font-size:13px;color:#404058;font-family:'DM Sans',sans-serif;margin-left:4px;font-weight:400;}
+    .sv-input{font-family:'DM Serif Display',serif;font-size:26px;color:#EDE9E3;background:transparent;border:none;border-bottom:1.5px solid transparent;outline:none;text-align:right;max-width:200px;padding-bottom:2px;cursor:pointer;transition:border-color .15s,color .15s;line-height:1;}
+    .sv-input:hover{border-bottom-color:#2A2A3A;}
+    .sv-input:focus{border-bottom-color:#F5C842;cursor:text;color:#F5C842;}
+    .sv-hint{font-size:10px;color:#2A2A3A;text-align:right;margin-top:4px;letter-spacing:.5px;}
+    input[type=range]{-webkit-appearance:none;width:100%;height:2px;border-radius:2px;outline:none;cursor:pointer;}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+    input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
+    .rng-gold::-webkit-slider-thumb{background:#F5C842;box-shadow:0 0 0 5px rgba(245,200,66,0.14);}
+    .rng-teal::-webkit-slider-thumb{background:#00D9A0;box-shadow:0 0 0 5px rgba(0,217,160,0.14);}
+    .cta-btn{width:100%;padding:19px;background:#F5C842;color:#090B0F;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;border:none;border-radius:12px;cursor:pointer;text-transform:uppercase;transition:background .15s,transform .15s,box-shadow .2s;margin-top:4px;}
+    .cta-btn:hover{background:#FFD84A;transform:translateY(-2px);box-shadow:0 16px 48px rgba(245,200,66,0.22);}
+    .results{animation:fadeUp .55s ease forwards;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+    .badge-row{display:flex;justify-content:center;margin-bottom:28px;}
+    .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.22);border-radius:100px;padding:8px 20px;font-size:12px;color:#F5C842;font-weight:500;}
+    .corpus-card{background:#0A0B10;border:1px solid rgba(245,200,66,0.2);border-radius:20px;padding:44px 32px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden;}
+    .corpus-glow{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:400px;height:200px;background:radial-gradient(ellipse,rgba(245,200,66,0.1),transparent 65%);pointer-events:none;}
+    .corpus-label{font-size:10px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:#F5C842;margin-bottom:20px;position:relative;}
+    .corpus-amount{font-family:'DM Serif Display',serif;font-size:clamp(52px,10vw,96px);color:#F5C842;line-height:1;letter-spacing:-2px;margin-bottom:10px;position:relative;}
+    .corpus-sub{font-size:13px;color:#4A4A28;position:relative;}
+    .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;}
+    @media(max-width:560px){.stat-grid{grid-template-columns:1fr 1fr;}}
+    .stat-card{background:#0D0D18;border:1px solid #1A1A28;border-radius:16px;padding:22px 20px;}
+    .stat-tag{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+    .stat-tag.gold{color:#F5C842;}.stat-tag.teal{color:#00D9A0;}.stat-tag.mute{color:#404058;}
+    .stat-num{font-family:'DM Serif Display',serif;font-size:clamp(22px,3.5vw,28px);color:#EDE9E3;line-height:1;margin-bottom:6px;}
+    .stat-desc{font-size:11px;color:#363650;line-height:1.5;}
+    .r72{display:flex;justify-content:center;margin-bottom:20px;}
+    .r72-inner{display:inline-flex;align-items:center;gap:10px;background:#0D0D18;border:1px solid #1A1A28;border-radius:100px;padding:12px 24px;font-size:13px;color:#5A5A70;}
+    .r72-inner strong{color:#EDE9E3;font-weight:500;}
+    .chart-card{background:#0D0D18;border:1px solid #1A1A28;border-radius:20px;padding:32px;margin-bottom:20px;}
+    .ctitle{font-family:'DM Serif Display',serif;font-size:21px;color:#EDE9E3;margin-bottom:7px;}
+    .cdesc{font-size:13px;color:#363650;margin-bottom:22px;line-height:1.6;}
+    .legend{display:flex;gap:22px;margin-bottom:20px;flex-wrap:wrap;}
+    .li{display:flex;align-items:center;gap:8px;font-size:12px;color:#5A5A70;}
+    .ld{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .milestone-card{background:#0D0D18;border:1px solid #1A1A28;border-radius:20px;padding:32px;margin-bottom:20px;}
+    .m-title{font-family:'DM Serif Display',serif;font-size:21px;color:#EDE9E3;margin-bottom:6px;}
+    .m-desc{font-size:13px;color:#363650;margin-bottom:24px;}
+    .m-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #141420;}
+    .m-row:last-child{border-bottom:none;}
+    .m-left{display:flex;align-items:center;gap:14px;}
+    .m-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    .m-label{font-size:14px;color:#9090A8;}
+    .m-right{text-align:right;}
+    .m-year{font-family:'DM Serif Display',serif;font-size:18px;color:#EDE9E3;}
+    .m-year-sub{font-size:11px;color:#363650;margin-top:2px;}
+    .m-na{font-size:13px;color:#2A2A38;font-style:italic;}
+    .cta-end{background:#0A0A14;border:1px solid rgba(245,200,66,0.14);border-radius:20px;padding:38px;text-align:center;}
+    .cta-title{font-family:'DM Serif Display',serif;font-size:clamp(20px,3vw,27px);color:#EDE9E3;margin-bottom:10px;line-height:1.35;}
+    .cta-sub{font-size:14px;color:#404058;line-height:1.8;}
+    .div-line{height:1px;background:#1A1A28;margin:24px 0;}
+    .tool-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+    .tool-link{display:inline-flex;align-items:center;gap:6px;padding:11px 20px;border-radius:12px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;text-decoration:none;transition:transform .12s,opacity .12s;cursor:pointer;}
+    .tool-link:hover{transform:translateY(-1px);opacity:.88;}
+    .tool-link.gold{background:#F5C842;color:#090B0F;}
+    .tool-link.ghost{background:transparent;border:1px solid #1A1A28;color:#5A5A70;}
+    .footer-line{margin-top:56px;text-align:center;font-size:10px;color:#20202E;letter-spacing:2.5px;}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const fmt = (n) => {
+      if (!n || isNaN(n) || n < 0) return "₹0";
+      if (n >= 1e7) return `₹${(n / 1e7).toFixed(2)} Cr`;
+      if (n >= 1e5) return `₹${(n / 1e5).toFixed(1)} L`;
+      return `₹${Math.round(n).toLocaleString("en-IN")}`;
+    };
+    const fmtDisplay = (v) => {
+      if (v === 0) return "₹0";
+      if (v >= 1e7) return `₹${(v / 1e7).toFixed(2)} Cr`;
+      if (v >= 1e5) return `₹${(v / 1e5).toFixed(1)} L`;
+      return `₹${v.toLocaleString("en-IN")}`;
+    };
+    const fmtY = (n) => {
+      if (n >= 1e7) return `${(n/1e7).toFixed(0)}Cr`;
+      if (n >= 1e5) return `${(n/1e5).toFixed(0)}L`;
+      if (n >= 1e3) return `${(n/1e3).toFixed(0)}K`;
+      return `${n}`;
+    };
+    const trackBg = (val, min, max, col) => {
+      const pct = Math.round(((Math.min(val,max)-min)/(max-min))*100);
+      return { background: `linear-gradient(to right,${col} ${pct}%,#1A1A28 ${pct}%)` };
+    };
+
+    const MILESTONES = [
+      { label: "₹10 Lakhs", value: 1e6,   col: "#00D9A0" },
+      { label: "₹25 Lakhs", value: 2.5e6, col: "#7ECFB8" },
+      { label: "₹50 Lakhs", value: 5e6,   col: "#F5C842" },
+      { label: "₹1 Crore",  value: 1e7,   col: "#F5C842" },
+      { label: "₹2 Crore",  value: 2e7,   col: "#FFB347" },
+      { label: "₹5 Crore",  value: 5e7,   col: "#FF9A3C" },
+      { label: "₹10 Crore", value: 1e8,   col: "#FF7A2A" },
+    ];
+
+    function NumInput({ value, min, max, set }) {
+      const [editing, setEditing] = useState(false);
+      const [draft,   setDraft]   = useState("");
+      const inputRef = useRef();
+      const handleFocus = () => { setEditing(true); setDraft(String(value)); setTimeout(() => inputRef.current?.select(), 0); };
+      const handleChange = (e) => {
+        const raw = e.target.value.replace(/[^0-9]/g, "");
+        setDraft(raw);
+        const n = parseInt(raw, 10);
+        if (!isNaN(n)) set(Math.min(max, Math.max(min, n)));
+      };
+      const handleBlur = () => {
+        setEditing(false);
+        const n = parseInt(draft.replace(/[^0-9]/g, ""), 10);
+        set(isNaN(n) ? min : Math.min(max, Math.max(min, n)));
+      };
+      return (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+          <input ref={inputRef} type="text" inputMode="numeric" className="sv-input"
+            value={editing ? draft : fmtDisplay(value)}
+            onFocus={handleFocus} onChange={handleChange} onBlur={handleBlur}
+            onKeyDown={e => e.key === "Enter" && inputRef.current?.blur()} />
+          <div className="sv-hint">{editing ? `max ${fmtDisplay(max)}` : "tap to edit"}</div>
+        </div>
+      );
+    }
+
+    function useCountUp(target, dur = 1900) {
+      const [val, setVal] = useState(0);
+      const prev = useRef(null);
+      useEffect(() => {
+        if (target === prev.current) return;
+        prev.current = target;
+        const t0 = performance.now();
+        const run = (t) => {
+          const p = Math.min((t - t0) / dur, 1);
+          setVal(target * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(run);
+        };
+        requestAnimationFrame(run);
+      }, [target, dur]);
+      return val;
+    }
+
+    function SVGStackedArea({ data, years }) {
+      const W = 600, H = 260;
+      const pad = { t: 10, r: 10, b: 28, l: 48 };
+      const chartW = W - pad.l - pad.r, chartH = H - pad.t - pad.b;
+      const n = data.length;
+      const maxVal = Math.max(...data.map(d => d.principal + d.returns)) || 1;
+      const xS = (i) => pad.l + (i / Math.max(n-1,1)) * chartW;
+      const yS = (v) => pad.t + chartH - (v / maxVal) * chartH;
+
+      // Principal area (bottom)
+      const pTops = data.map((d,i) => [xS(i), yS(d.principal)]);
+      const pBots = data.map((_,i) => [xS(i), yS(0)]);
+      const pArea = `M ${pTops.map(p=>p.join(",")).join(" L ")} L ${[...pBots].reverse().map(p=>p.join(",")).join(" L ")} Z`;
+      const pLine = `M ${pTops.map(p=>p.join(",")).join(" L ")}`;
+
+      // Returns area (stacked on top of principal)
+      const rTops = data.map((d,i) => [xS(i), yS(d.principal + d.returns)]);
+      const rArea = `M ${rTops.map(p=>p.join(",")).join(" L ")} L ${[...pTops].reverse().map(p=>p.join(",")).join(" L ")} Z`;
+      const rLine = `M ${rTops.map(p=>p.join(",")).join(" L ")}`;
+
+      // Y ticks
+      const yTicks = [0, 0.25, 0.5, 0.75, 1].map(t => ({ v: t*maxVal, y: yS(t*maxVal), label: fmtY(Math.round(t*maxVal)) }));
+      // X ticks
+      const step = Math.max(1, Math.ceil(n/6));
+      const xTicks = data.reduce((a,d,i) => { if (i===0||i===n-1||i%step===0) a.push({x:xS(i),label:d.year}); return a; }, []);
+
+      return (
+        <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{display:"block"}}>
+          <defs>
+            <linearGradient id="pG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#6A5820" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#3A3010" stopOpacity="0.7" />
+            </linearGradient>
+            <linearGradient id="rG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#F5C842" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#C89A20" stopOpacity="0.6" />
+            </linearGradient>
+          </defs>
+          {yTicks.map((t,i) => <line key={i} x1={pad.l} x2={W-pad.r} y1={t.y} y2={t.y} stroke="#1A1A28" strokeWidth="1"/>)}
+          {yTicks.map((t,i) => <text key={i} x={pad.l-6} y={t.y} textAnchor="end" dominantBaseline="middle" fill="#323248" fontSize="11" fontFamily="DM Sans,sans-serif">{t.label}</text>)}
+          {xTicks.map((t,i) => <text key={i} x={t.x} y={H-5} textAnchor="middle" fill="#323248" fontSize="11" fontFamily="DM Sans,sans-serif">{t.label}</text>)}
+          <path d={pArea} fill="url(#pG)" />
+          <path d={rArea} fill="url(#rG)" />
+          <path d={pLine} fill="none" stroke="#6A5820" strokeWidth="1" />
+          <path d={rLine} fill="none" stroke="#F5C842" strokeWidth="2" />
+        </svg>
+      );
+    }
+
+    function App() {
+      const [monthly, setMonthly] = useState(5000);
+      const [years,   setYears]   = useState(20);
+      const [rate,    setRate]    = useState(12);
+      const [lumpsum, setLumpsum] = useState(0);
+      const [res,     setRes]     = useState(null);
+
+      const animCorpus  = useCountUp(res?.corpus       || 0);
+      const animReturns = useCountUp(res?.totalReturns || 0);
+
+      const calculate = () => {
+        const mr    = rate / 100 / 12;
+        const sipFV = (y) => y <= 0 ? 0 : monthly * ((Math.pow(1+mr, y*12)-1) / mr) * (1+mr);
+        const lumFV = (y) => lumpsum * Math.pow(1 + rate/100, y);
+        const corpus        = sipFV(years) + lumFV(years);
+        const totalInvested = monthly * 12 * years + lumpsum;
+        const totalReturns  = Math.max(0, corpus - totalInvested);
+        const ratio         = totalInvested > 0 ? (corpus / totalInvested).toFixed(2) : "—";
+        const doublingYrs   = (72 / rate).toFixed(1);
+        const data = [];
+        for (let y = 1; y <= years; y++) {
+          const c   = sipFV(y) + lumFV(y);
+          const inv = monthly * 12 * y + lumpsum;
+          data.push({ year: y, principal: Math.round(inv), returns: Math.round(Math.max(0, c - inv)) });
+        }
+        const milestoneHits = MILESTONES.map(m => ({
+          ...m, hitYear: (data.find(d => d.principal + d.returns >= m.value) || {}).year || null
+        }));
+        setRes({ corpus, totalInvested, totalReturns, ratio, doublingYrs, data, milestoneHits });
+      };
+
+      return (
+        <div className="app">
+          <div className="glow-bg" />
+          <div className="wrap">
+            <div className="eyebrow">Financial Reality Check · Wiser With Vidhaan</div>
+            <h1 className="hero-title">The <em>Compounding</em><br />Machine</h1>
+            <p className="hero-sub">Drag the sliders — or tap any number and type yours directly. Watch what happens to the curve after year 10.</p>
+
+            <div className="card">
+              <div className="card-label">Your Numbers</div>
+              <div className="sg">
+                <div className="sh">
+                  <span className="sn">Monthly SIP amount</span>
+                  <NumInput value={monthly} min={500} max={1000000} set={setMonthly} />
+                </div>
+                <input type="range" className="rng-gold" min={500} max={1000000} step={1000}
+                  value={Math.min(monthly,1000000)} style={trackBg(monthly,500,1000000,"#F5C842")}
+                  onChange={e => setMonthly(parseInt(e.target.value))} />
+              </div>
+              <div className="sg">
+                <div className="sh">
+                  <span className="sn">Investment duration</span>
+                  <div className="sv">{years}<small>yrs</small></div>
+                </div>
+                <input type="range" className="rng-gold" min={1} max={40} step={1}
+                  value={years} style={trackBg(years,1,40,"#F5C842")}
+                  onChange={e => setYears(parseInt(e.target.value))} />
+              </div>
+              <div className="sg">
+                <div className="sh">
+                  <span className="sn">Expected annual return</span>
+                  <div className="sv">{rate}<small>%</small></div>
+                </div>
+                <input type="range" className="rng-teal" min={6} max={18} step={0.5}
+                  value={rate} style={trackBg(rate,6,18,"#00D9A0")}
+                  onChange={e => setRate(parseFloat(e.target.value))} />
+              </div>
+              <div className="sg">
+                <div className="sh">
+                  <span className="sn">Current portfolio / lump sum</span>
+                  <NumInput value={lumpsum} min={0} max={10000000} set={setLumpsum} />
+                </div>
+                <input type="range" className="rng-teal" min={0} max={10000000} step={100000}
+                  value={Math.min(lumpsum,10000000)} style={trackBg(lumpsum,0,10000000,"#00D9A0")}
+                  onChange={e => setLumpsum(parseInt(e.target.value))} />
+              </div>
+              <button className="cta-btn" onClick={calculate}>Run The Machine →</button>
+            </div>
+
+            {res && (
+              <div className="results">
+                <div className="badge-row">
+                  <div className="badge">✦ Compounding Simulation Complete</div>
+                </div>
+
+                <div className="corpus-card">
+                  <div className="corpus-glow" />
+                  <div className="corpus-label">Your Corpus in {years} Years</div>
+                  <div className="corpus-amount">{fmt(animCorpus)}</div>
+                  <div className="corpus-sub">On a total investment of {fmt(res.totalInvested)}</div>
+                </div>
+
+                <div className="stat-grid">
+                  <div className="stat-card">
+                    <div className="stat-tag teal">Wealth Created</div>
+                    <div className="stat-num">{fmt(animReturns)}</div>
+                    <div className="stat-desc">Money the market added — you never put this in</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-tag gold">Compounding Ratio</div>
+                    <div className="stat-num">{res.ratio}x</div>
+                    <div className="stat-desc">Every ₹1 invested became ₹{res.ratio}</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-tag mute">Total Invested</div>
+                    <div className="stat-num">{fmt(res.totalInvested)}</div>
+                    <div className="stat-desc">Your actual out-of-pocket contribution</div>
+                  </div>
+                </div>
+
+                <div className="r72">
+                  <div className="r72-inner">
+                    Rule of 72 — at {rate}%, your money doubles every <strong>{res.doublingYrs} years</strong>
+                  </div>
+                </div>
+
+                <div className="chart-card">
+                  <div className="ctitle">Where Your Wealth Comes From</div>
+                  <div className="cdesc">Dark layer = money you put in. Gold layer = money the market created. Watch the gold take over after the halfway mark.</div>
+                  <div className="legend">
+                    <div className="li"><div className="ld" style={{background:"#6A5820"}} /><span>Your contributions</span></div>
+                    <div className="li"><div className="ld" style={{background:"#F5C842"}} /><span>Returns (compounding)</span></div>
+                  </div>
+                  <SVGStackedArea data={res.data} years={years} />
+                </div>
+
+                <div className="milestone-card">
+                  <div className="m-title">Milestone Timeline</div>
+                  <div className="m-desc">When your portfolio crosses each landmark.</div>
+                  {res.milestoneHits.map((m, i) => (
+                    <div className="m-row" key={i}>
+                      <div className="m-left">
+                        <div className="m-dot" style={{background: m.hitYear ? m.col : "#1A1A28"}} />
+                        <span className="m-label">{m.label}</span>
+                      </div>
+                      <div className="m-right">
+                        {m.hitYear ? (
+                          <>
+                            <div className="m-year">Year {m.hitYear}</div>
+                            <div className="m-year-sub">
+                              {years - m.hitYear > 0 ? `${years - m.hitYear} yrs before your target` : "at your target date"}
+                            </div>
+                          </>
+                        ) : (
+                          <span className="m-na">not reached in {years} years</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="cta-end">
+                  <div className="cta-title">The machine doesn't care about<br />your motivation. Only consistency.</div>
+                  <div className="cta-sub">Miss one year of SIPs and the compounding gap compounds too.</div>
+                  <div className="div-line" />
+                  <div className="tool-links">
+                    <a href="/delay-engine" className="tool-link gold">The Delay Cost Engine →</a>
+                    <a href="/investor-dna" className="tool-link ghost">Find Your Investor DNA</a>
+                    <a href="/sip-flat-returns" className="tool-link ghost">SIP Flat Returns</a>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="footer-line">WISER WITH VIDHAAN · CALCULATIONS ARE ILLUSTRATIVE · NOT FINANCIAL ADVICE</div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

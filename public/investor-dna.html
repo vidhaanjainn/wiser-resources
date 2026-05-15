@@ -41,12 +41,10 @@
 
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
-    const { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } = Recharts;
 
     /* ── TOKENS ── */
     const BG     = "#090B0F";
@@ -536,17 +534,50 @@
       );
     }
 
-    /* ── RESULTS ── */
-    const CustomTooltip = ({ active, payload }) => {
-      if (!active || !payload || !payload.length) return null;
-      const d = payload[0];
+    /* ── SVG DONUT ── */
+    function SVGDonut({ data }) {
+      const size = 236;
+      const cx = size / 2, cy = size / 2;
+      const outerR = 118, innerR = 78;
+      const GAP = 0.04;
+      const total = data.reduce((s, d) => s + d.value, 0);
+      const segs = [];
+      let angle = -Math.PI / 2;
+      data.forEach(d => {
+        const full = (d.value / total) * 2 * Math.PI;
+        const a0 = angle + GAP / 2;
+        const a1 = angle + full - GAP / 2;
+        angle += full;
+        const sweep = a1 - a0;
+        const large = sweep > Math.PI ? 1 : 0;
+        const p = (a, r) => [(cx + r * Math.cos(a)).toFixed(2), (cy + r * Math.sin(a)).toFixed(2)];
+        const [x1o,y1o] = p(a0, outerR); const [x2o,y2o] = p(a1, outerR);
+        const [x1i,y1i] = p(a1, innerR); const [x2i,y2i] = p(a0, innerR);
+        const path = `M${x1o} ${y1o} A${outerR} ${outerR} 0 ${large} 1 ${x2o} ${y2o} L${x1i} ${y1i} A${innerR} ${innerR} 0 ${large} 0 ${x2i} ${y2i}Z`;
+        const mid = a0 + sweep / 2;
+        const lr = innerR + (outerR - innerR) / 2;
+        segs.push({ path, color: d.color, value: d.value, lx: (cx + lr * Math.cos(mid)).toFixed(1), ly: (cy + lr * Math.sin(mid)).toFixed(1) });
+      });
       return (
-        <div style={{ background: "#0D0D18", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "10px 14px", fontFamily: "DM Sans, sans-serif" }}>
-          <p style={{ fontSize: 13, color: TEXT, fontWeight: 600 }}>{d.name}</p>
-          <p style={{ fontSize: 22, color: d.payload.color, fontFamily: "DM Serif Display, serif", fontWeight: 400 }}>{d.value}%</p>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 36 }}>
+          <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
+            {segs.map((s, i) => (
+              <g key={i}>
+                <path d={s.path} fill={s.color} />
+                {s.value >= 6 && (
+                  <text x={s.lx} y={s.ly} textAnchor="middle" dominantBaseline="central"
+                    fill="#090B0F" fontSize="13" fontWeight="700" fontFamily="DM Sans, sans-serif">
+                    {s.value}%
+                  </text>
+                )}
+              </g>
+            ))}
+          </svg>
         </div>
       );
-    };
+    }
+
+    /* ── RESULTS ── */
 
     function AllocationPill({ label, target, color, delay }) {
       const value = useCountUp(target, 1400, delay);
@@ -623,26 +654,7 @@
             ))}
           </div>
 
-          <div style={{ height: 280, marginBottom: 36 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={pieData} cx="50%" cy="50%" innerRadius={78} outerRadius={118}
-                  paddingAngle={3} dataKey="value" animationBegin={300} animationDuration={1100}
-                  label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
-                    if (value < 6) return null;
-                    const RADIAN = Math.PI / 180;
-                    const r = innerRadius + (outerRadius - innerRadius) * 0.5;
-                    const x = cx + r * Math.cos(-midAngle * RADIAN);
-                    const y = cy + r * Math.sin(-midAngle * RADIAN);
-                    return <text x={x} y={y} fill={BG} textAnchor="middle" dominantBaseline="central" style={{ fontSize: 13, fontWeight: 700, fontFamily: "DM Sans, sans-serif" }}>{value}%</text>;
-                  }}
-                  labelLine={false}>
-                  {pieData.map((entry, i) => <Cell key={i} fill={entry.color} stroke="transparent" />)}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+          <SVGDonut data={pieData} />
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
             {breakdown.map(({ label, pct, desc, color, links }) => (
