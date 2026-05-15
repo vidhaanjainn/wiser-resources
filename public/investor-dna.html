@@ -344,7 +344,25 @@
           setScreen("landing");
         }
       }
-      function handleLeadSubmit() { setAnswers(pendingAnswers); setScreen("results"); }
+      const LEADS_URL = "APPS_SCRIPT_URL_HERE";
+      function handleLeadSubmit(leadData) {
+        const o = getOutcome(pendingAnswers);
+        if (LEADS_URL !== "APPS_SCRIPT_URL_HERE") {
+          try {
+            fetch(LEADS_URL, {
+              method: "POST", mode: "no-cors",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                name: leadData.name, email: leadData.email, phone: leadData.phone,
+                persona: o.persona.name,
+                equity: o.persona.equity, debt: o.persona.debt, gold: o.persona.gold,
+                score: o.totalScore,
+              }),
+            });
+          } catch (_) {}
+        }
+        setAnswers(pendingAnswers); setScreen("results");
+      }
       function retake() { setScreen("landing"); setCurrentQ(0); setAnswers([]); setSelected(null); setPendingAnswers([]); }
 
       return (
