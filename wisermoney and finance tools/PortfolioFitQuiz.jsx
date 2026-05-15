@@ -1,0 +1,836 @@
+import { useState, useEffect, useRef } from "react";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+const BG     = "#090B0F";
+const CARD   = "#0D0D18";
+const BORDER = "#1A1A28";
+const GOLD   = "#F5C842";
+const TEAL   = "#00D9A0";
+const TEXT   = "#EDE9E3";
+const MUTED  = "#5A5A70";
+const FAINT  = "#363650";
+const ORANGE = "#E09B6D";
+const AMBER  = "#FFB347";
+
+/* ============================================================
+   FUND COMPARISON LINKS — Groww category pages (trusted, independent)
+   ============================================================ */
+const FL = {
+  liquid:     { label: "Compare Liquid Funds",        url: "https://groww.in/mutual-funds/category/liquid-funds" },
+  arbitrage:  { label: "Compare Arbitrage Funds",     url: "https://groww.in/mutual-funds/category/arbitrage-funds" },
+  shortDebt:  { label: "Short Duration Funds",        url: "https://groww.in/mutual-funds/category/short-duration-funds" },
+  mediumDebt: { label: "Medium Duration Funds",       url: "https://groww.in/mutual-funds/category/medium-duration-funds" },
+  index:      { label: "Compare Index Funds",         url: "https://groww.in/mutual-funds/category/index-funds" },
+  largeCap:   { label: "Compare Large Cap Funds",     url: "https://groww.in/mutual-funds/category/large-cap-funds" },
+  flexiCap:   { label: "Compare Flexi Cap Funds",     url: "https://groww.in/mutual-funds/category/flexi-cap-funds" },
+  multiCap:   { label: "Compare Multi Cap Funds",     url: "https://groww.in/mutual-funds/category/multi-cap-funds" },
+  midCap:     { label: "Compare Mid Cap Funds",       url: "https://groww.in/mutual-funds/category/mid-cap-funds" },
+  smallCap:   { label: "Compare Small Cap Funds",     url: "https://groww.in/mutual-funds/category/small-cap-funds" },
+  goldEtf:    { label: "Compare Gold ETFs",           url: "https://groww.in/mutual-funds/category/gold-etfs" },
+  egr:        { label: "Electronic Gold Receipts (EGR)", url: "https://www.nseindia.com/invest/equity-gold-receipts" },
+};
+
+/* ============================================================
+   QUESTIONS
+   ============================================================ */
+const QUESTIONS = [
+  {
+    eyebrow: "Time Horizon",
+    question: "When do you plan to use this money?",
+    options: [
+      { letter: "A", text: "Within 2 years — I need it soon", score: 1 },
+      { letter: "B", text: "3–5 years — medium term goal", score: 2 },
+      { letter: "C", text: "5–10 years — building for the future", score: 3 },
+      { letter: "D", text: "10+ years — long game, no rush", score: 4 },
+    ],
+  },
+  {
+    eyebrow: "Risk Reaction",
+    question: "Your portfolio drops ₹3L in a month. What do you do?",
+    options: [
+      { letter: "A", text: "Sell everything. I can't handle this.", score: 1 },
+      { letter: "B", text: "Worry a lot, but hold", score: 2 },
+      { letter: "C", text: "Hold and wait it out calmly", score: 3 },
+      { letter: "D", text: "Buy more. This is a discount.", score: 4 },
+    ],
+  },
+  {
+    eyebrow: "Income Stability",
+    question: "How stable is your monthly income?",
+    options: [
+      { letter: "A", text: "Very unstable — freelance / business, varies a lot", score: 1 },
+      { letter: "B", text: "Somewhat stable — mostly regular with gaps", score: 2 },
+      { letter: "C", text: "Stable — salaried, predictable", score: 3 },
+      { letter: "D", text: "Very stable — government / PSU / large corp", score: 4 },
+    ],
+  },
+  {
+    eyebrow: "Goal Type",
+    question: "What are you primarily investing for?",
+    options: [
+      { letter: "A", text: "Emergency / safety cushion", score: 1 },
+      { letter: "B", text: "A specific goal — house, wedding, education", score: 2 },
+      { letter: "C", text: "Wealth building over time", score: 3 },
+      { letter: "D", text: "Early retirement / financial freedom", score: 4 },
+    ],
+  },
+  {
+    eyebrow: "Current Portfolio",
+    question: "What does your current portfolio look like?",
+    options: [
+      { letter: "A", text: "Mostly in savings account / FDs", score: 1 },
+      { letter: "B", text: "Some mutual funds, mostly conservative", score: 2 },
+      { letter: "C", text: "Mix of equity MFs, maybe some direct stocks", score: 3 },
+      { letter: "D", text: "Heavily in equity, comfortable with volatility", score: 4 },
+    ],
+  },
+];
+
+/* ============================================================
+   PERSONAS — personality read based on total score
+   ============================================================ */
+const PERSONAS = {
+  anchor: {
+    icon: "⚓", name: "The Anchor",
+    tagline: "You protect before you grow. That's not weakness — that's wisdom.",
+    equity: 20, debt: 70, gold: 10,
+    accent: TEAL, accentRgb: "0,217,160",
+    about: "You're early in your journey, have near-term goals, or your income isn't fully stable yet. Capital preservation matters more than growth right now. Build your emergency fund first, then revisit this quiz in 12 months.",
+  },
+  builder: {
+    icon: "🧱", name: "The Builder",
+    tagline: "You're planting seeds. The harvest is 5–8 years away.",
+    equity: 50, debt: 40, gold: 10,
+    accent: GOLD, accentRgb: "245,200,66",
+    about: "You have a specific goal in sight and a moderate tolerance for volatility. You won't panic in a crash but you're not comfortable being all-in on equity. This balance lets you grow meaningfully while keeping a cushion.",
+  },
+  grower: {
+    icon: "🌱", name: "The Grower",
+    tagline: "You understand the game. Now you just have to play it long enough.",
+    equity: 75, debt: 20, gold: 5,
+    accent: TEAL, accentRgb: "0,217,160",
+    about: "You're in the accumulation phase, have 7+ years, and can stomach market swings without losing sleep. You know downturns are temporary. Equity is your primary engine — debt is just your seatbelt.",
+  },
+  maximiser: {
+    icon: "🚀", name: "The Maximiser",
+    tagline: "You're playing a different game. Most people aren't even on the board yet.",
+    equity: 90, debt: 8, gold: 2,
+    accent: GOLD, accentRgb: "245,200,66",
+    about: "Long horizon, stable income, high risk tolerance, and the temperament to hold through 40–50% drawdowns without blinking. You're not speculating — you're just giving compounding the maximum runway it needs.",
+  },
+};
+
+function getBasePersona(totalScore) {
+  if (totalScore <= 8)  return PERSONAS.anchor;
+  if (totalScore <= 12) return PERSONAS.builder;
+  if (totalScore <= 16) return PERSONAS.grower;
+  return PERSONAS.maximiser;
+}
+
+/* ============================================================
+   ALLOCATION ENGINE — Institutional-grade safety gates
+   ------------------------------------------------------------
+   HARD GATE 1: Q1 = "Within 2 years" → 0% equity, regardless of persona
+   HARD GATE 2: Q1 = "3-5 years"      → cap equity at 30%, Large Cap only
+   SOFT GATE:   Q2 ≠ "Buy more"       → strip small cap from equity description
+   ============================================================ */
+function getOutcome(answers) {
+  const totalScore = answers.reduce((a, b) => a + b, 0);
+  const q1 = answers[0]; // 1=<2y, 2=3-5y, 3=5-10y, 4=10+y
+  const q2 = answers[1]; // 1=sell, 2=worry, 3=hold, 4=buy more
+  const persona = getBasePersona(totalScore);
+
+  // HARD GATE 1: Sub-2-year horizon
+  if (q1 === 1) {
+    return {
+      persona,
+      totalScore,
+      override: "short-horizon",
+      overrideTitle: "Capital Preservation Mode",
+      overrideNote: "You said you need this money within 2 years. Equity is too volatile for that timeline regardless of your risk profile. Allocation adjusted to prioritise capital preservation. Your persona profile returns when your horizon extends to 5+ years.",
+      pieData: [
+        { name: "Liquid Funds",         value: 70, color: TEAL    },
+        { name: "Arbitrage Funds",      value: 25, color: "#00A87E" },
+        { name: "Short-duration Debt",  value: 5,  color: "#007258" },
+      ],
+      breakdown: [
+        { label: "Liquid Funds",        pct: 70, color: TEAL,      desc: "Daily liquidity, capital safe, minor yield over savings account. Your default parking spot for short-term money.", links: [FL.liquid] },
+        { label: "Arbitrage Funds",     pct: 25, color: "#00A87E", desc: "Treated as equity for tax (12.5% LTCG after 1 year), but functionally as safe as a liquid fund — slightly better post-tax for higher brackets.", links: [FL.arbitrage] },
+        { label: "Short-duration Debt", pct: 5,  color: "#007258", desc: "Slightly higher yield for the portion you definitely won't touch in 6+ months. Optional.", links: [FL.shortDebt] },
+      ],
+      cardSummary: "100% Capital Preservation",
+    };
+  }
+
+  // HARD GATE 2: 3-5 year horizon — cap equity at 30%, Large Cap only
+  if (q1 === 2 && persona.equity > 30) {
+    return {
+      persona,
+      totalScore,
+      override: "medium-horizon",
+      overrideTitle: "Equity Capped for 3–5 Year Horizon",
+      overrideNote: "You said you need this money in 3–5 years. Equity exposure has been capped at 30% and restricted to Large Cap only, regardless of your risk profile. Mid Cap, Small Cap, and sectoral exposure require a 7+ year runway.",
+      pieData: [
+        { name: "Large Cap Equity", value: 30, color: GOLD   },
+        { name: "Debt Funds",       value: 60, color: TEAL   },
+        { name: "Gold (EGR)",       value: 10, color: ORANGE },
+      ],
+      breakdown: [
+        { label: "Large Cap Equity", pct: 30, color: GOLD,   desc: "Nifty 50 index fund only. No Flexi Cap, no Mid Cap, no Small Cap on this timeline.", links: [FL.index, FL.largeCap] },
+        { label: "Debt Funds",       pct: 60, color: TEAL,   desc: "Mix of short-duration debt funds and corporate bond funds. Target Maturity Funds also work well for a defined 3–5 year window.", links: [FL.shortDebt, FL.mediumDebt] },
+        { label: "Gold (EGR)",       pct: 10, color: ORANGE, desc: "Electronic Gold Receipts (EGR) — hold physical gold in demat form via NSE/BSE. Low cost, transparent pricing.", links: [FL.egr, FL.goldEtf] },
+      ],
+      cardSummary: "30% Equity · 60% Debt · 10% Gold",
+    };
+  }
+
+  // NORMAL FLOW — persona-based allocation with Q2 small-cap gate
+  const equityDesc = buildEquityDescription(persona, q1, q2);
+  const debtDesc   = buildDebtDescription(persona);
+  const goldDesc   = buildGoldDescription(persona);
+
+  return {
+    persona,
+    totalScore,
+    override: null,
+    pieData: [
+      { name: "Equity",     value: persona.equity, color: GOLD   },
+      { name: "Debt",       value: persona.debt,   color: TEAL   },
+      { name: "Gold/Other", value: persona.gold,   color: ORANGE },
+    ],
+    breakdown: [
+      { label: "Equity",       pct: persona.equity, color: GOLD,   desc: equityDesc, links: buildEquityLinks(persona, q1, q2) },
+      { label: "Debt",         pct: persona.debt,   color: TEAL,   desc: debtDesc,   links: buildDebtLinks(persona) },
+      { label: "Gold / Other", pct: persona.gold,   color: ORANGE, desc: goldDesc,   links: buildGoldLinks(persona) },
+    ],
+    cardSummary: `${persona.equity}% Equity · ${persona.debt}% Debt · ${persona.gold}% Gold`,
+  };
+}
+
+function buildEquityDescription(persona, q1, q2) {
+  if (persona.name === "The Anchor") {
+    return "Large Cap index funds (Nifty 50) or Balanced Advantage funds. Conservative equity exposure only.";
+  }
+  if (persona.name === "The Builder") {
+    return "Flexi Cap or Multi Cap index funds. Manager dynamically shifts between large/mid/small based on market conditions.";
+  }
+  if (persona.name === "The Grower") {
+    // Small-cap gate: requires 10+ year horizon AND calm-or-buy temperament
+    if (q1 >= 4 && q2 >= 3) {
+      return "Nifty 50 + Nifty Next 50 index funds as the core, with a small-cap index allocation as the satellite.";
+    }
+    return "Nifty 50 + Nifty Next 50 index funds. Small Cap is not recommended for your profile until horizon and risk tolerance both extend.";
+  }
+  if (persona.name === "The Maximiser") {
+    // Small-cap requires 10+ years AND "buy more on dip"
+    if (q1 >= 4 && q2 >= 4) {
+      return "Nifty 50, Nifty Next 50, Mid-cap 150, and Small-cap 250 — index-first. You have the horizon and the temperament for the full curve.";
+    }
+    if (q1 >= 4) {
+      return "Nifty 50, Nifty Next 50, and Mid-cap 150 index funds. Small Cap unlocks only when you can confidently buy a 30% dip without flinching.";
+    }
+    return "Nifty 50 + Nifty Next 50 index funds. Mid Cap and Small Cap require a 10+ year horizon you haven't committed to yet.";
+  }
+  return "";
+}
+
+function buildDebtDescription(persona) {
+  if (persona.name === "The Anchor")    return "Short-duration debt funds, liquid funds, and FDs. Predictable returns with minimal drawdown risk.";
+  if (persona.name === "The Builder")   return "Medium-duration debt funds or hybrid funds. Some duration risk for slightly higher yield over savings/FDs.";
+  if (persona.name === "The Grower")    return "Liquid fund as emergency buffer, not as a return-generating asset.";
+  if (persona.name === "The Maximiser") return "Liquid fund only — pure liquidity buffer for emergencies and rebalancing dry powder.";
+  return "";
+}
+
+function buildGoldDescription(persona) {
+  if (persona.gold <= 2) return "Negligible allocation — optional inflation hedge via Electronic Gold Receipts (EGR) or Gold ETFs.";
+  if (persona.gold <= 5) return "Electronic Gold Receipts (EGR) — physical gold in demat form, tradeable on NSE/BSE.";
+  return "Electronic Gold Receipts (EGR) — hold physical gold in demat form, tradeable on NSE/BSE. Or Gold ETFs for daily liquidity.";
+}
+
+function buildEquityLinks(persona, q1, q2) {
+  if (persona.name === "The Anchor")  return [FL.largeCap, FL.index];
+  if (persona.name === "The Builder") return [FL.flexiCap, FL.multiCap];
+  if (persona.name === "The Grower") {
+    if (q1 >= 4 && q2 >= 3) return [FL.index, FL.smallCap];
+    return [FL.index];
+  }
+  if (persona.name === "The Maximiser") {
+    if (q1 >= 4 && q2 >= 4) return [FL.index, FL.midCap, FL.smallCap];
+    if (q1 >= 4)             return [FL.index, FL.midCap];
+    return [FL.index];
+  }
+  return [];
+}
+function buildDebtLinks(persona) {
+  if (persona.name === "The Anchor")    return [FL.liquid, FL.shortDebt];
+  if (persona.name === "The Builder")   return [FL.mediumDebt, FL.shortDebt];
+  return [FL.liquid];
+}
+function buildGoldLinks(persona) {
+  return persona.gold <= 2 ? [FL.egr] : [FL.egr, FL.goldEtf];
+}
+
+/* ============================================================
+   COUNT-UP HOOK
+   ============================================================ */
+function useCountUp(target, duration = 1200, delay = 0) {
+  const [value, setValue] = useState(0);
+  const rafRef = useRef();
+
+  useEffect(() => {
+    setValue(0);
+    const startTime = performance.now() + delay;
+    const tick = (now) => {
+      if (now < startTime) {
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+      const elapsed = now - startTime;
+      const t = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      setValue(target * eased);
+      if (t < 1) rafRef.current = requestAnimationFrame(tick);
+      else setValue(target);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [target]);
+
+  return value;
+}
+
+/* ============================================================
+   GLOBAL CSS
+   ============================================================ */
+const globalCSS = `
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body, #root { background: ${BG}; }
+  @keyframes slideUp   { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes scaleIn   { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+  @keyframes popIn     { 0% { opacity: 0; transform: scale(0.3); } 60% { opacity: 1; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes glowOnce  { 0% { box-shadow: 0 0 0 0 rgba(245,200,66,0.55); } 100% { box-shadow: 0 0 0 14px rgba(245,200,66,0); } }
+  @keyframes iconBurst { 0% { opacity: 0; transform: scale(0.5); } 35% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0; transform: scale(2); } }
+  @keyframes toastIn   { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .anim-slide  { animation: slideUp 0.4s cubic-bezier(0.22,1,0.36,1) both; }
+  .anim-fade   { animation: fadeIn 0.45s ease both; }
+  .anim-scale  { animation: scaleIn 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+  .anim-pop    { animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+  .anim-glow   { animation: glowOnce 0.55s ease-out; }
+  .anim-toast  { animation: toastIn 0.25s ease both; }
+  .opt-card    { transition: border-color 0.14s, background 0.14s, transform 0.12s, opacity 0.18s; cursor: pointer; user-select: none; }
+  .opt-card:hover:not([data-locked="true"]) { transform: translateY(-2px); border-color: rgba(245,200,66,0.35) !important; background: rgba(245,200,66,0.035) !important; }
+  .wbtn        { transition: transform 0.12s, opacity 0.12s, background 0.15s; cursor: pointer; }
+  .wbtn:hover  { opacity: 0.88; transform: translateY(-1px); }
+  .wbtn:active { transform: translateY(0) scale(0.98); }
+`;
+
+/* ============================================================
+   MAIN APP
+   ============================================================ */
+export default function App() {
+  const [screen,   setScreen]   = useState("landing");
+  const [currentQ, setCurrentQ] = useState(0);
+  const [answers,  setAnswers]  = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [animKey,  setAnimKey]  = useState(0);
+  const [pendingAnswers, setPendingAnswers] = useState([]);
+
+  const outcome = screen === "results" ? getOutcome(answers) : null;
+
+  function startQuiz() {
+    setCurrentQ(0); setAnswers([]); setSelected(null);
+    setScreen("quiz"); setAnimKey(k => k + 1);
+  }
+
+  function handleAnswer(score, idx) {
+    if (selected !== null) return;
+    setSelected(idx);
+    const next = [...answers, score];
+    setTimeout(() => {
+      if (currentQ < 4) {
+        setAnswers(next); setCurrentQ(q => q + 1);
+        setSelected(null); setAnimKey(k => k + 1);
+      } else {
+        setPendingAnswers(next); setScreen("lead");
+      }
+    }, 440);
+  }
+
+  function handleBack() {
+    if (currentQ > 0) {
+      setCurrentQ(q => q - 1); setAnswers(a => a.slice(0, -1));
+      setSelected(null); setAnimKey(k => k + 1);
+    } else {
+      setScreen("landing");
+    }
+  }
+
+  function handleLeadSubmit() {
+    setAnswers(pendingAnswers); setScreen("results");
+  }
+
+  function retake() {
+    setScreen("landing"); setCurrentQ(0); setAnswers([]); setSelected(null); setPendingAnswers([]);
+  }
+
+  return (
+    <div style={{ background: BG, minHeight: "100vh", fontFamily: "DM Sans, sans-serif", color: TEXT, overflowX: "hidden" }}>
+      <style>{globalCSS}</style>
+
+      {screen === "landing" && <Landing onStart={startQuiz} />}
+
+      {screen === "quiz" && (
+        <QuizQuestion
+          key={animKey}
+          q={QUESTIONS[currentQ]}
+          num={currentQ + 1}
+          selected={selected}
+          onAnswer={handleAnswer}
+          onBack={handleBack}
+        />
+      )}
+
+      {screen === "lead" && <LeadCapture onSubmit={handleLeadSubmit} />}
+
+      {screen === "results" && outcome && (
+        <Results outcome={outcome} onRetake={retake} />
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   LEAD CAPTURE
+   ============================================================ */
+function LeadCapture({ onSubmit }) {
+  const [name,  setName]  = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [errors, setErrors] = useState({});
+
+  function validate() {
+    const e = {};
+    if (!name.trim())                              e.name  = "Please enter your name";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Enter a valid email address";
+    if (!/^\d{10}$/.test(phone.replace(/\s/g, ""))) e.phone = "Enter a valid 10-digit mobile number";
+    return e;
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const e2 = validate();
+    if (Object.keys(e2).length) { setErrors(e2); return; }
+    onSubmit({ name: name.trim(), email: email.trim(), phone: phone.trim() });
+  }
+
+  const inputStyle = (hasErr) => ({
+    width: "100%", background: CARD, border: `1px solid ${hasErr ? "#E57373" : BORDER}`,
+    borderRadius: 12, padding: "14px 16px", fontSize: 15, color: TEXT,
+    fontFamily: "DM Sans, sans-serif", outline: "none",
+    transition: "border-color 0.15s",
+  });
+
+  return (
+    <div className="anim-fade" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 24px" }}>
+      <div style={{ width: "100%", maxWidth: 440 }}>
+        <div style={{ textAlign: "center", marginBottom: 36 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(245,200,66,0.07)", border: "1px solid rgba(245,200,66,0.22)", borderRadius: 100, padding: "6px 18px", marginBottom: 24 }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: GOLD, display: "inline-block" }} />
+            <span style={{ fontSize: 13, color: GOLD, fontWeight: 500 }}>Almost there</span>
+          </div>
+          <h2 style={{ fontFamily: "DM Serif Display, serif", fontSize: "clamp(28px, 7vw, 38px)", lineHeight: 1.15, color: TEXT, marginBottom: 12, fontWeight: 400 }}>
+            Where should we<br />
+            <span style={{ color: GOLD, fontStyle: "italic" }}>send your results?</span>
+          </h2>
+          <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.65 }}>
+            Your investor persona + full allocation breakdown — saved to you.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div>
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={name}
+              onChange={e => { setName(e.target.value); setErrors(ev => ({ ...ev, name: "" })); }}
+              style={inputStyle(errors.name)}
+            />
+            {errors.name && <p style={{ fontSize: 12, color: "#E57373", marginTop: 5, paddingLeft: 4 }}>{errors.name}</p>}
+          </div>
+
+          <div>
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={e => { setEmail(e.target.value); setErrors(ev => ({ ...ev, email: "" })); }}
+              style={inputStyle(errors.email)}
+            />
+            {errors.email && <p style={{ fontSize: 12, color: "#E57373", marginTop: 5, paddingLeft: 4 }}>{errors.email}</p>}
+          </div>
+
+          <div>
+            <input
+              type="tel"
+              placeholder="Mobile Number (10 digits)"
+              value={phone}
+              maxLength={10}
+              onChange={e => { setPhone(e.target.value.replace(/\D/g, "")); setErrors(ev => ({ ...ev, phone: "" })); }}
+              style={inputStyle(errors.phone)}
+            />
+            {errors.phone && <p style={{ fontSize: 12, color: "#E57373", marginTop: 5, paddingLeft: 4 }}>{errors.phone}</p>}
+          </div>
+
+          <button type="submit" className="wbtn" style={{ background: GOLD, color: BG, border: "none", borderRadius: 14, padding: "16px", fontSize: 15, fontWeight: 600, fontFamily: "DM Sans, sans-serif", marginTop: 6, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            See My Results →
+          </button>
+        </form>
+
+        <p style={{ textAlign: "center", marginTop: 18, fontSize: 12, color: FAINT }}>
+          No spam. Ever.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   LANDING
+   ============================================================ */
+function Landing({ onStart }) {
+  return (
+    <div className="anim-fade" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 24px", textAlign: "center", position: "relative" }}>
+      <div style={{ position: "fixed", inset: 0, background: "radial-gradient(ellipse at 50% 10%, rgba(245,200,66,0.04) 0%, transparent 55%)", pointerEvents: "none" }} />
+      <div style={{ position: "fixed", inset: 0, background: "radial-gradient(ellipse at 80% 90%, rgba(0,217,160,0.03) 0%, transparent 50%)", pointerEvents: "none" }} />
+
+      <p style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: FAINT, marginBottom: 40, fontWeight: 500 }}>
+        Wiser With Vidhaan
+      </p>
+
+      <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(245,200,66,0.07)", border: "1px solid rgba(245,200,66,0.22)", borderRadius: 100, padding: "6px 18px", marginBottom: 32 }}>
+        <span style={{ width: 6, height: 6, borderRadius: "50%", background: GOLD, display: "inline-block" }} />
+        <span style={{ fontSize: 13, color: GOLD, fontWeight: 500 }}>5 questions · 2 minutes</span>
+      </div>
+
+      <h1 style={{ fontFamily: "DM Serif Display, serif", fontSize: "clamp(44px, 10vw, 72px)", lineHeight: 1.03, marginBottom: 22, maxWidth: 620 }}>
+        Find Your<br />
+        <span style={{ color: GOLD, fontStyle: "italic" }}>Investor DNA</span>
+      </h1>
+
+      <p style={{ fontSize: 17, lineHeight: 1.7, color: MUTED, maxWidth: 400, marginBottom: 52 }}>
+        Answer honestly. The output is only as good as your answers.
+      </p>
+
+      <button className="wbtn" onClick={onStart} style={{ background: GOLD, color: BG, border: "none", borderRadius: 14, padding: "17px 40px", fontSize: 16, fontWeight: 600, fontFamily: "DM Sans, sans-serif", display: "flex", alignItems: "center", gap: 10, letterSpacing: "0.01em" }}>
+        Start the Quiz
+        <span style={{ fontSize: 20, lineHeight: 1 }}>→</span>
+      </button>
+
+      <div style={{ marginTop: 72, display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+        {["⚓ The Anchor", "🧱 The Builder", "🌱 The Grower", "🚀 The Maximiser"].map(p => (
+          <span key={p} style={{ fontSize: 12, color: FAINT, padding: "5px 14px", border: `1px solid ${BORDER}`, borderRadius: 100 }}>{p}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   QUIZ QUESTION
+   ============================================================ */
+function QuizQuestion({ q, num, selected, onAnswer, onBack }) {
+  const pct = (num / 5) * 100;
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", maxWidth: 580, margin: "0 auto", padding: "0 24px" }}>
+      <div style={{ paddingTop: 28, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <button className="wbtn" onClick={onBack} style={{ background: "transparent", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "8px 16px", fontSize: 13, color: MUTED, fontFamily: "DM Sans, sans-serif", cursor: "pointer" }}>
+          ← Back
+        </button>
+        <span style={{ fontSize: 13, color: MUTED, fontWeight: 500 }}>{num} of 5</span>
+        <span style={{ fontSize: 11, color: FAINT, letterSpacing: "0.1em", textTransform: "uppercase" }}>{q.eyebrow}</span>
+      </div>
+
+      <div style={{ height: 2, background: BORDER, borderRadius: 2, marginTop: 20, overflow: "hidden" }}>
+        <div style={{ height: "100%", width: `${pct}%`, background: `linear-gradient(90deg, ${TEAL} 0%, ${GOLD} 100%)`, borderRadius: 2, transition: "width 0.5s cubic-bezier(0.4,0,0.2,1)" }} />
+      </div>
+
+      <div className="anim-slide" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "40px 0" }}>
+        <h2 style={{ fontFamily: "DM Serif Display, serif", fontSize: "clamp(22px, 5vw, 30px)", lineHeight: 1.28, color: TEXT, marginBottom: 34, fontWeight: 400 }}>
+          {q.question}
+        </h2>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 11 }}>
+          {q.options.map((opt, idx) => {
+            const isSelected = selected === idx;
+            const isLocked   = selected !== null;
+            return (
+              <div
+                key={idx}
+                className="opt-card"
+                data-locked={isLocked}
+                onClick={() => onAnswer(opt.score, idx)}
+                style={{
+                  background: isSelected ? "rgba(245,200,66,0.08)" : CARD,
+                  border: `1px solid ${isSelected ? GOLD : BORDER}`,
+                  borderRadius: 16,
+                  padding: "15px 18px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 14,
+                  opacity: (isLocked && !isSelected) ? 0.38 : 1,
+                }}
+              >
+                <span
+                  className={isSelected ? "anim-glow" : ""}
+                  style={{
+                    width: 32, height: 32, borderRadius: 8, flexShrink: 0,
+                    background: isSelected ? GOLD : "rgba(255,255,255,0.03)",
+                    border: `1px solid ${isSelected ? GOLD : BORDER}`,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 12, fontWeight: 700,
+                    color: isSelected ? BG : MUTED,
+                    transition: "background 0.18s, color 0.18s, border-color 0.18s",
+                  }}
+                >
+                  {opt.letter}
+                </span>
+                <span style={{ fontSize: 15, lineHeight: 1.5, color: isSelected ? TEXT : "#BEB9B3", flex: 1 }}>
+                  {opt.text}
+                </span>
+                {isSelected && (
+                  <span className="anim-pop" style={{ color: GOLD, fontSize: 17, flexShrink: 0, fontWeight: 600 }}>
+                    ✓
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div style={{ paddingBottom: 24, textAlign: "center" }}>
+        <span style={{ fontSize: 11, color: FAINT, letterSpacing: "0.12em", textTransform: "uppercase" }}>Wiser With Vidhaan</span>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+const CustomTooltip = ({ active, payload }) => {
+  if (!active || !payload?.length) return null;
+  const d = payload[0];
+  return (
+    <div style={{ background: "#0D0D18", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "10px 14px", fontFamily: "DM Sans, sans-serif" }}>
+      <p style={{ fontSize: 13, color: TEXT, fontWeight: 600 }}>{d.name}</p>
+      <p style={{ fontSize: 22, color: d.payload.color, fontFamily: "DM Serif Display, serif", fontWeight: 400 }}>{d.value}%</p>
+    </div>
+  );
+};
+
+function AllocationPill({ label, target, color, delay }) {
+  const value = useCountUp(target, 1400, delay);
+  return (
+    <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 100, padding: "9px 22px", display: "flex", alignItems: "center", gap: 8 }}>
+      <span style={{ fontFamily: "DM Serif Display, serif", fontSize: 22, color, fontWeight: 400, minWidth: 36, display: "inline-block", textAlign: "right" }}>
+        {Math.round(value)}%
+      </span>
+      <span style={{ fontSize: 13, color: MUTED }}>{label}</span>
+    </div>
+  );
+}
+
+function Results({ outcome, onRetake }) {
+  const { persona, totalScore, override, overrideTitle, overrideNote, pieData, breakdown, cardSummary } = outcome;
+  const score = useCountUp(totalScore, 1200, 100);
+  const [shareStatus, setShareStatus] = useState(null);
+
+  async function handleShare() {
+    const text = `I'm ${persona.name} on Wiser With Vidhaan's Investor DNA quiz — ${cardSummary}. Find yours.`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "My Investor DNA", text });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text);
+        setShareStatus("Copied to clipboard");
+        setTimeout(() => setShareStatus(null), 2200);
+      }
+    } catch { /* user cancelled share — silent */ }
+  }
+
+  return (
+    <div className="anim-fade" style={{ minHeight: "100vh", padding: "40px 24px 60px", maxWidth: 580, margin: "0 auto" }}>
+
+      <div style={{ textAlign: "center", marginBottom: 36 }}>
+        <span style={{ fontSize: 11, color: MUTED, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+          Score {Math.round(score)} / 20
+        </span>
+      </div>
+
+      <div className="anim-scale" style={{ textAlign: "center", marginBottom: 36 }}>
+        <div style={{ position: "relative", display: "inline-block", marginBottom: 16 }}>
+          <div style={{
+            position: "absolute",
+            inset: "-40px",
+            background: `radial-gradient(circle, rgba(${persona.accentRgb},0.22) 0%, transparent 65%)`,
+            animation: "iconBurst 1.6s ease-out 0.15s 1 both",
+            pointerEvents: "none",
+            borderRadius: "50%",
+          }} />
+          <div style={{ fontSize: 58, position: "relative", lineHeight: 1 }}>{persona.icon}</div>
+        </div>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: `rgba(${persona.accentRgb},0.09)`, border: `1px solid rgba(${persona.accentRgb},0.25)`, borderRadius: 100, padding: "5px 18px", marginBottom: 14 }}>
+          <span style={{ fontSize: 11, color: persona.accent, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>Your Investor Persona</span>
+        </div>
+        <h1 style={{ fontFamily: "DM Serif Display, serif", fontSize: "clamp(36px, 9vw, 54px)", lineHeight: 1.05, color: TEXT, marginBottom: 14, fontWeight: 400 }}>
+          {persona.name}
+        </h1>
+        <p style={{ fontSize: 16, lineHeight: 1.65, color: MUTED, maxWidth: 440, margin: "0 auto" }}>
+          {persona.tagline}
+        </p>
+      </div>
+
+      {/* TIMELINE OVERRIDE NOTICE — only shows when financial safety logic triggers */}
+      {override && (
+        <div className="anim-slide" style={{
+          background: "rgba(255,179,71,0.05)",
+          border: "1px solid rgba(255,179,71,0.25)",
+          borderRadius: 14,
+          padding: "16px 18px",
+          marginBottom: 28,
+          display: "flex",
+          gap: 12,
+          alignItems: "flex-start",
+        }}>
+          <span style={{ fontSize: 18, lineHeight: 1.2, flexShrink: 0 }}>⚠️</span>
+          <div>
+            <p style={{ fontSize: 11, color: AMBER, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>
+              {overrideTitle}
+            </p>
+            <p style={{ fontSize: 13.5, color: "#C4BFBA", lineHeight: 1.65 }}>
+              {overrideNote}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div style={{ display: "flex", justifyContent: "center", gap: 10, marginBottom: 36, flexWrap: "wrap" }}>
+        {pieData.map((slice, i) => (
+          <AllocationPill
+            key={slice.name}
+            label={slice.name}
+            target={slice.value}
+            color={slice.color}
+            delay={400 + i * 100}
+          />
+        ))}
+      </div>
+
+      <div style={{ height: 280, marginBottom: 36 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={pieData}
+              cx="50%"
+              cy="50%"
+              innerRadius={78}
+              outerRadius={118}
+              paddingAngle={3}
+              dataKey="value"
+              animationBegin={300}
+              animationDuration={1100}
+              label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+                if (value < 6) return null;
+                const RADIAN = Math.PI / 180;
+                const r = innerRadius + (outerRadius - innerRadius) * 0.5;
+                const x = cx + r * Math.cos(-midAngle * RADIAN);
+                const y = cy + r * Math.sin(-midAngle * RADIAN);
+                return (
+                  <text x={x} y={y} fill={BG} textAnchor="middle" dominantBaseline="central"
+                    style={{ fontSize: 13, fontWeight: 700, fontFamily: "DM Sans, sans-serif" }}>
+                    {value}%
+                  </text>
+                );
+              }}
+              labelLine={false}
+            >
+              {pieData.map((entry, i) => (
+                <Cell key={i} fill={entry.color} stroke="transparent" />
+              ))}
+            </Pie>
+            <Tooltip content={<CustomTooltip />} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
+        {breakdown.map(({ label, pct, desc, color, links }) => (
+          <div key={label} style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 16, padding: "16px 20px", display: "flex", gap: 16, alignItems: "flex-start" }}>
+            <div style={{ flexShrink: 0, width: 56, paddingTop: 2 }}>
+              <span style={{ fontFamily: "DM Serif Display, serif", fontSize: 22, color, fontWeight: 400, lineHeight: 1 }}>{pct}%</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 12, fontWeight: 600, color: TEXT, marginBottom: 5, letterSpacing: "0.05em", textTransform: "uppercase" }}>{label}</p>
+              <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.6 }}>{desc}</p>
+              {links && links.length > 0 && (
+                <div style={{ marginTop: 10, display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  {links.map(link => (
+                    <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: TEAL, border: `1px solid rgba(0,217,160,0.25)`, borderRadius: 100, padding: "4px 11px", textDecoration: "none", background: "rgba(0,217,160,0.06)", display: "inline-flex", alignItems: "center", gap: 3, transition: "background 0.15s" }}>
+                      {link.label} ↗
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* WHO THIS IS — only when no override (the persona context doesn't apply to override allocations) */}
+      {!override && (
+        <div style={{ background: `rgba(${persona.accentRgb},0.05)`, border: `1px solid rgba(${persona.accentRgb},0.15)`, borderRadius: 16, padding: "20px 22px", marginBottom: 28 }}>
+          <p style={{ fontSize: 11, color: persona.accent, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 10 }}>
+            Who this is
+          </p>
+          <p style={{ fontSize: 15, lineHeight: 1.75, color: "#C4BFBA" }}>{persona.about}</p>
+        </div>
+      )}
+
+      <div style={{ background: "rgba(255,255,255,0.018)", border: `1px solid ${BORDER}`, borderRadius: 14, padding: "16px 18px", marginBottom: 36 }}>
+        <p style={{ fontSize: 12, color: MUTED, lineHeight: 1.7 }}>
+          This quiz is for educational purposes only. Asset allocation suggestions are generic and based on your self-reported profile — they are not personalised investment advice. Past performance of any asset class is not indicative of future returns. Please consult a SEBI Registered Investment Adviser (RIA) before making investment decisions.
+        </p>
+      </div>
+
+      <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", position: "relative" }}>
+        <button className="wbtn" onClick={onRetake} style={{ background: "transparent", border: `1px solid ${BORDER}`, borderRadius: 12, padding: "13px 22px", fontSize: 13.5, fontWeight: 500, color: MUTED, fontFamily: "DM Sans, sans-serif", cursor: "pointer" }}>
+          ↩ Retake
+        </button>
+        <button className="wbtn" onClick={handleShare} style={{ background: "transparent", border: `1px solid ${BORDER}`, borderRadius: 12, padding: "13px 22px", fontSize: 13.5, fontWeight: 500, color: TEXT, fontFamily: "DM Sans, sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ fontSize: 14 }}>↗</span> Share
+        </button>
+        <button className="wbtn" style={{ background: GOLD, border: "none", borderRadius: 12, padding: "13px 26px", fontSize: 13.5, fontWeight: 600, color: BG, fontFamily: "DM Sans, sans-serif", cursor: "pointer" }}>
+          Explore Calculators →
+        </button>
+        {shareStatus && (
+          <div className="anim-toast" style={{ position: "absolute", top: -42, left: "50%", transform: "translateX(-50%)", background: CARD, border: `1px solid ${TEAL}40`, borderRadius: 100, padding: "6px 16px", fontSize: 12, color: TEAL, fontWeight: 500, whiteSpace: "nowrap" }}>
+            ✓ {shareStatus}
+          </div>
+        )}
+      </div>
+
+      <div style={{ textAlign: "center", marginTop: 48 }}>
+        <span style={{ fontSize: 11, color: FAINT, letterSpacing: "0.12em", textTransform: "uppercase" }}>Wiser With Vidhaan</span>
+      </div>
+    </div>
+  );
+}
