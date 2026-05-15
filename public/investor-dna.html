@@ -60,18 +60,17 @@
 
     /* ── FUND LINKS (Groww category pages — trusted, independent) ── */
     const FL = {
-      liquid:     { label: "Compare Liquid Funds",           url: "https://groww.in/mutual-funds/category/best-liquid-mutual-funds" },
-      arbitrage:  { label: "Compare Arbitrage Funds",        url: "https://groww.in/mutual-funds/category/best-arbitrage-mutual-funds" },
-      shortDebt:  { label: "Short Duration Funds",           url: "https://groww.in/mutual-funds/category/best-short-term-mutual-funds" },
-      mediumDebt: { label: "Medium Duration Funds",          url: "https://groww.in/mutual-funds/category/best-medium-duration-mutual-funds" },
-      index:      { label: "Compare Index ETFs",             url: "https://groww.in/etfs/indices" },
-      largeCap:   { label: "Compare Large Cap Funds",        url: "https://groww.in/mutual-funds/category/best-large-cap-mutual-funds" },
-      flexiCap:   { label: "Compare Flexi Cap Funds",        url: "https://groww.in/mutual-funds/category/best-flexi-cap-mutual-funds" },
-      multiCap:   { label: "Compare Multi Cap Funds",        url: "https://groww.in/mutual-funds/category/best-multi-cap-mutual-funds" },
-      midCap:     { label: "Compare Mid Cap Funds",          url: "https://groww.in/mutual-funds/category/best-mid-cap-mutual-funds" },
-      smallCap:   { label: "Compare Small Cap Funds",        url: "https://groww.in/mutual-funds/category/best-small-cap-mutual-funds" },
-      goldEtf:    { label: "Compare Gold ETFs",              url: "https://groww.in/etfs/gold" },
-      egr:        { label: "Electronic Gold Receipts (EGR)", url: "https://www.nseindia.com/invest/equity-gold-receipts" },
+      liquid:     { label: "Liquid Funds — Value Research",         url: "https://www.valueresearchonline.com/funds/selector/category/125/debt-liquid/?star-rating=5&plan-type=direct&tab=returns-long-term" },
+      arbitrage:  { label: "Arbitrage Funds — Value Research",       url: "https://www.valueresearchonline.com/funds/selector/category/141/hybrid-arbitrage/?star-rating=5&plan-type=direct&tab=returns-long-term" },
+      shortDebt:  { label: "Short Duration — Value Research",        url: "https://www.valueresearchonline.com/funds/selector/category/122/debt-short-duration/?star-rating=5&plan-type=direct&tab=returns-long-term" },
+      mediumDebt: { label: "Medium Duration — Value Research",       url: "https://www.valueresearchonline.com/funds/selector/category/121/debt-medium-duration/?star-rating=5&plan-type=direct&tab=returns-long-term" },
+      index:      { label: "Large Cap / Index — Value Research",     url: "https://www.valueresearchonline.com/funds/selector/category/100/equity-large-cap/?star-rating=5&plan-type=direct&tab=returns-long-term" },
+      largeCap:   { label: "Large Cap Funds — Value Research",       url: "https://www.valueresearchonline.com/funds/selector/category/100/equity-large-cap/?star-rating=5&plan-type=direct&tab=returns-long-term" },
+      flexiCap:   { label: "Flexi Cap Funds — Value Research",       url: "https://www.valueresearchonline.com/funds/selector/category/102/equity-flexi-cap/?star-rating=5&plan-type=direct&tab=returns-long-term" },
+      multiCap:   { label: "Multi Cap Funds — Value Research",       url: "https://www.valueresearchonline.com/funds/selector/category/145/equity-multi-cap/?star-rating=5&plan-type=direct&tab=returns-long-term" },
+      midCap:     { label: "Mid Cap Funds — Value Research",         url: "https://www.valueresearchonline.com/funds/selector/category/103/equity-mid-cap/?star-rating=5&plan-type=direct&tab=returns-long-term" },
+      smallCap:   { label: "Small Cap Funds — Value Research",       url: "https://www.valueresearchonline.com/funds/selector/category/104/equity-small-cap/?star-rating=5&plan-type=direct&tab=returns-long-term" },
+      goldEtf:    { label: "Gold ETFs — Value Research",             url: "https://www.valueresearchonline.com/funds/selector/category/144/commodities-gold/?plan-type=direct&tab=returns-long-term" },
     };
 
     /* ── QUESTIONS ── */
@@ -205,12 +204,12 @@
           pieData: [
             { name: "Large Cap Equity", value: 30, color: GOLD   },
             { name: "Debt Funds",       value: 60, color: TEAL   },
-            { name: "Gold (EGR)",       value: 10, color: ORANGE },
+            { name: "Gold",             value: 10, color: ORANGE },
           ],
           breakdown: [
             { label: "Large Cap Equity", pct: 30, color: GOLD,   desc: "Nifty 50 index fund only. No Flexi Cap, no Mid Cap, no Small Cap on this timeline.", links: [FL.index, FL.largeCap] },
             { label: "Debt Funds",       pct: 60, color: TEAL,   desc: "Mix of short-duration debt funds and corporate bond funds. Target Maturity Funds also work well for a defined 3–5 year window.", links: [FL.shortDebt, FL.mediumDebt] },
-            { label: "Gold (EGR)",       pct: 10, color: ORANGE, desc: "Electronic Gold Receipts (EGR) — hold physical gold in demat form via NSE/BSE. Low cost, transparent pricing.", links: [FL.egr, FL.goldEtf] },
+            { label: "Gold",             pct: 10, color: ORANGE, desc: "Gold ETFs — hold gold in demat form, tradeable on NSE/BSE. Low cost, transparent pricing, no storage risk.", links: [FL.goldEtf] },
           ],
           cardSummary: "30% Equity · 60% Debt · 10% Gold",
         };
@@ -259,9 +258,9 @@
       return "";
     }
     function buildGoldDescription(persona) {
-      if (persona.gold <= 2) return "Negligible allocation — optional inflation hedge via Electronic Gold Receipts (EGR) or Gold ETFs.";
-      if (persona.gold <= 5) return "Electronic Gold Receipts (EGR) — physical gold in demat form, tradeable on NSE/BSE.";
-      return "Electronic Gold Receipts (EGR) — hold physical gold in demat form, tradeable on NSE/BSE. Or Gold ETFs for daily liquidity.";
+      if (persona.gold <= 2) return "Negligible allocation — optional inflation hedge. Gold ETFs if you want it.";
+      if (persona.gold <= 5) return "Gold ETFs — hold gold in demat form, tradeable on NSE/BSE. Liquid, low cost, no storage risk.";
+      return "Gold ETFs — hold gold in demat form, tradeable on NSE/BSE. Liquid, low cost, tracks spot gold price directly.";
     }
     function buildEquityLinks(persona, q1, q2) {
       if (persona.name === "The Anchor")  return [FL.largeCap, FL.index];
@@ -283,7 +282,7 @@
       return [FL.liquid];
     }
     function buildGoldLinks(persona) {
-      return persona.gold <= 2 ? [FL.egr] : [FL.egr, FL.goldEtf];
+      return [FL.goldEtf];
     }
 
     /* ── COUNT-UP HOOK ── */
