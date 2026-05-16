@@ -330,20 +330,20 @@
 
   /* ── MAIN APP ── */
   function App() {
-    const [loading,    setLoading]    = useState(true);
-    const [live,       setLive]       = useState(false);
-    const [dataError,  setDataError]  = useState(false);
-    const [niftyPrice, setNiftyPrice] = useState(null);
-    const [dma200,     setDma200]     = useState(null);
-    const [vix,        setVix]        = useState(null);
-    const [pe,         setPe]         = useState(null);
-    const [peEditing,  setPeEditing]  = useState(false);
-    const [peDraft,    setPeDraft]    = useState("");
-    const [fetchedAt,  setFetchedAt]  = useState(null);
-    const [monthly,    setMonthly]    = useState(30000);
-    const [mEditing,   setMEditing]   = useState(false);
-    const [mDraft,     setMDraft]     = useState("");
-    const peRef = useRef(), mRef = useRef();
+    const [loading,     setLoading]     = useState(true);
+    const [live,        setLive]        = useState(false);
+    const [dataError,   setDataError]   = useState(false);
+    const [niftyPrice,  setNiftyPrice]  = useState(null);
+    const [dma200,      setDma200]      = useState(null);
+    const [vix,         setVix]         = useState(null);
+    const [pe,          setPe]          = useState(null);
+    const [peSource,    setPeSource]    = useState(null);
+    const [peEstimated, setPeEstimated] = useState(false);
+    const [fetchedAt,   setFetchedAt]   = useState(null);
+    const [monthly,     setMonthly]     = useState(30000);
+    const [mEditing,    setMEditing]    = useState(false);
+    const [mDraft,      setMDraft]      = useState("");
+    const mRef = useRef();
 
     /* DATA FETCH */
     useEffect(() => {
@@ -392,7 +392,23 @@
         else         { setDataError(true); }
         setLoading(false);
       }
-      load();
+
+      // ── Nifty P/E — from /api/pe serverless function ──
+      async function loadPE() {
+        try {
+          const r = await fetch("/api/pe");
+          if (!r.ok) throw new Error(r.status);
+          const data = await r.json();
+          if (data?.pe && data.pe > 5 && data.pe < 80) {
+            setPe(data.pe);
+            setPeSource(data.source || "NSE India");
+            setPeEstimated(!!data.estimated);
+          }
+        } catch {}
+      }
+
+      // Run both in parallel — market data and P/E are independent
+      Promise.all([load(), loadPE()]);
     }, []);
 
     const dmaGap       = (niftyPrice && dma200) ? ((niftyPrice / dma200) - 1) * 100 : null;
@@ -403,14 +419,6 @@
     const liquidAmt    = monthly - equityAmt;
     const animEquity   = useCountUp(equityAmt);
     const animLiquid   = useCountUp(liquidAmt);
-
-    /* P/E HANDLERS */
-    const peOpen  = () => { setPeEditing(true); setPeDraft(pe !== null ? String(pe) : ""); setTimeout(() => peRef.current?.select(), 0); };
-    const peClose = () => {
-      const n = parseFloat(peDraft);
-      if (!isNaN(n) && n > 5 && n < 60) setPe(parseFloat(n.toFixed(1)));
-      setPeEditing(false);
-    };
 
     /* MONTHLY HANDLERS */
     const mOpen  = () => { setMEditing(true); setMDraft(String(monthly)); setTimeout(() => mRef.current?.select(), 0); };
@@ -467,7 +475,7 @@
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 22 }}>
                 <div style={{ width: 7, height: 7, borderRadius: "50%", background: live ? TEAL : dataError ? RED : AMBER, animation: live ? "none" : "pulse 1.8s ease infinite", flexShrink: 0 }}/>
                 <span style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: live ? TEAL : dataError ? RED : AMBER, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                  {live ? `Live · Yahoo Finance · ${timeStr}` : dataError ? "Offline — live fetch failed. Enter P/E manually below." : "Connecting…"}
+                  {live ? `Live · Yahoo Finance · NSE India · ${timeStr}` : dataError ? "Market data unavailable — check connection and refresh." : "Connecting…"}
                 </span>
               </div>
 
@@ -500,31 +508,14 @@
                   live={live}
                   color={dmaGap !== null ? (dmaGap > 8 ? RED : dmaGap < -5 ? TEAL : TEXT) : MUTED}
                 />
-                {/* P/E — always manual, tap to set */}
+                {/* P/E — auto-fetched from /api/pe */}
                 <SignalBadge
                   label="Nifty P/E"
-                  source="NSE India · nseindia.com"
-                  live={false}
-                  editable
-                  onClick={peOpen}
-                >
-                  {peEditing ? (
-                    <input
-                      ref={peRef} type="number" step="0.1" min="5" max="60"
-                      value={peDraft} onChange={e => setPeDraft(e.target.value)}
-                      onBlur={peClose} onKeyDown={e => e.key === "Enter" && peRef.current?.blur()}
-                      autoFocus
-                      style={{ background: "transparent", border: "none", borderBottom: `1.5px solid ${GOLD}`, color: GOLD, fontFamily: "DM Serif Display, serif", fontSize: 26, width: "100%", outline: "none", padding: "2px 0" }}
-                    />
-                  ) : (
-                    <div style={{ fontFamily: "DM Serif Display, serif", fontSize: 27, color: pe !== null ? TEXT : FAINT, lineHeight: 1, marginBottom: 5 }}>
-                      {pe !== null ? pe.toFixed(1) : <span style={{ fontSize: 14 }}>Enter →</span>}
-                    </div>
-                  )}
-                  {pe === null && !peEditing && (
-                    <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, marginTop: 4 }}>Optional — improves accuracy</div>
-                  )}
-                </SignalBadge>
+                  value={pe !== null ? pe.toFixed(2) : null}
+                  source={peSource || "NSE India · fetching…"}
+                  live={pe !== null && !peEstimated}
+                  color={pe !== null ? (pe > 23 ? RED : pe > 19 ? AMBER : TEAL) : MUTED}
+                />
               </div>
 
               {/* Zone context */}
@@ -634,7 +625,7 @@
               {
                 label: "Nifty P/E Ratio", color: GOLD,
                 why: "Fundamental valuation. P/E above 23 has historically meant expensive. Below 17 has meant cheap. Adds a third dimension to the signal.",
-                source: "NSE India · nseindia.com/market-data · manual entry (no free API)"
+                source: "NSE India · fetched via /api/pe serverless function · 3hr cache"
               },
             ].map((row, i) => (
               <div key={i} style={{ display: "flex", gap: 18, padding: "16px 0", borderBottom: i < 2 ? `1px solid ${BORDER}` : "none" }}>
