@@ -348,29 +348,49 @@
     /* DATA FETCH */
     useEffect(() => {
       const proxy = "https://api.allorigins.win/raw?url=";
+      const yf1 = "https://query1.finance.yahoo.com/v8/finance/chart/";
+      const yf2 = "https://query2.finance.yahoo.com/v8/finance/chart/";
+
+      async function fetchJson(url) {
+        const res = await fetch(proxy + encodeURIComponent(url));
+        if (!res.ok) throw new Error(res.status);
+        return res.json();
+      }
+
+      async function fetchSymbol(symbol, params) {
+        try { return await fetchJson(`${yf1}${symbol}?${params}`); } catch {}
+        try { return await fetchJson(`${yf2}${symbol}?${params}`); } catch {}
+        return null;
+      }
+
       async function load() {
+        let gotAny = false;
+
+        // ── Nifty 1y history → price + 200-DMA ──
         try {
-          const nRes = await fetch(proxy + encodeURIComponent("https://query1.finance.yahoo.com/v8/finance/chart/^NSEI?interval=1d&range=1y"));
-          const nJson = await nRes.json();
-          const closes = (nJson?.chart?.result?.[0]?.indicators?.quote?.[0]?.close || []).filter(Boolean);
+          const d = await fetchSymbol("^NSEI", "interval=1d&range=1y");
+          const closes = (d?.chart?.result?.[0]?.indicators?.quote?.[0]?.close || []).filter(Boolean);
           if (closes.length >= 20) {
-            const cur = closes[closes.length - 1];
-            const last200 = closes.slice(-200);
-            const avg = last200.reduce((a, b) => a + b, 0) / last200.length;
+            const cur   = closes[closes.length - 1];
+            const l200  = closes.slice(-200);
+            const avg   = l200.reduce((a, b) => a + b, 0) / l200.length;
             setNiftyPrice(Math.round(cur));
             setDma200(Math.round(avg));
+            gotAny = true;
           }
-          const vRes = await fetch(proxy + encodeURIComponent("https://query1.finance.yahoo.com/v8/finance/chart/^INDIAVIX?interval=1d&range=5d"));
-          const vJson = await vRes.json();
-          const vVal = vJson?.chart?.result?.[0]?.meta?.regularMarketPrice;
-          if (vVal) setVix(parseFloat(vVal.toFixed(1)));
-          setLive(true);
-          setFetchedAt(new Date());
-        } catch {
-          setDataError(true);
-        } finally {
-          setLoading(false);
-        }
+        } catch {}
+
+        // ── India VIX ──
+        try {
+          const d = await fetchSymbol("^INDIAVIX", "interval=1d&range=5d");
+          const closes = (d?.chart?.result?.[0]?.indicators?.quote?.[0]?.close || []).filter(Boolean);
+          const vVal   = d?.chart?.result?.[0]?.meta?.regularMarketPrice || closes[closes.length - 1];
+          if (vVal && vVal > 0) { setVix(parseFloat(Number(vVal).toFixed(1))); gotAny = true; }
+        } catch {}
+
+        if (gotAny) { setLive(true); setFetchedAt(new Date()); }
+        else         { setDataError(true); }
+        setLoading(false);
       }
       load();
     }, []);
