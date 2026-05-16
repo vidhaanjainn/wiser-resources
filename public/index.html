@@ -4,82 +4,664 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wiser Resources — Free Tools & Guides by Vidhaan</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<meta name="description" content="Free practical guides, finance calculators, and tools from every Wiser With Vidhaan reel. Built for India.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:#060b0d;--surface:#0a1218;--teal:#00e5cc;--teal-glow:rgba(0,229,204,0.1);
-    --text:#dff2ef;--text-muted:#5e8c85;--text-dim:#2d5550;
-    --border:rgba(0,229,204,0.12);--border-bright:rgba(0,229,204,0.28);
-    --mono:'DM Mono',monospace;--sans:'Plus Jakarta Sans',sans-serif;--serif:'Instrument Serif',serif;
+    --bg:           #060b0f;
+    --surface:      #0a0d14;
+    --card:         #0c1019;
+    --card-hover:   #0f1420;
+    --gold:         #F5C842;
+    --gold-soft:    #F9DC7A;
+    --gold-pale:    rgba(245,200,66,0.07);
+    --gold-border:  rgba(245,200,66,0.2);
+    --gold-glow:    rgba(245,200,66,0.06);
+    --teal:         #00D9A0;
+    --teal-pale:    rgba(0,217,160,0.07);
+    --teal-border:  rgba(0,217,160,0.18);
+    --text:         #EDE9E3;
+    --text-soft:    rgba(237,233,227,0.62);
+    --text-muted:   rgba(237,233,227,0.3);
+    --border:       rgba(255,255,255,0.065);
+    --border-mid:   rgba(255,255,255,0.1);
+    --serif:        'DM Serif Display', serif;
+    --sans:         'Plus Jakarta Sans', sans-serif;
+    --mono:         'DM Mono', monospace;
+    --ease-spring:  cubic-bezier(0.22, 1, 0.36, 1);
   }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:var(--sans);padding:60px 48px;min-height:100vh;}
-  .tag{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:28px;display:block;}
-  h1{font-size:clamp(40px,7vw,80px);font-weight:800;letter-spacing:-0.04em;line-height:1.0;margin-bottom:20px;}
-  h1 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--teal);}
-  .sub{font-size:16px;color:var(--text-muted);margin-bottom:64px;max-width:480px;line-height:1.7;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;text-decoration:none;color:inherit;display:block;transition:all 0.2s;}
-  .card:hover{border-color:var(--border-bright);transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,229,204,0.07);}
-  .card-cat{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;}
-  .card-title{font-size:18px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em;}
-  .card-desc{font-size:13px;color:var(--text-muted);line-height:1.65;}
-  .brand{font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-top:80px;letter-spacing:0.06em;}
-  .brand span{color:var(--teal);}
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* ─── AMBIENT BACKGROUND ─── */
+  .bg-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    will-change: transform;
+  }
+  .orb-gold {
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(245,200,66,0.13) 0%, transparent 70%);
+    top: -250px; left: -150px;
+    animation: floatA 25s ease-in-out infinite;
+  }
+  .orb-teal {
+    width: 550px; height: 550px;
+    background: radial-gradient(circle, rgba(0,217,160,0.10) 0%, transparent 70%);
+    bottom: -180px; right: -120px;
+    animation: floatB 30s ease-in-out infinite;
+  }
+  .orb-mid {
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(245,200,66,0.06) 0%, transparent 70%);
+    top: 55%; right: 8%;
+    animation: floatC 20s ease-in-out infinite;
+  }
+
+  @keyframes floatA {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    40%       { transform: translate(40px, -30px) scale(1.06); }
+    70%       { transform: translate(-20px, 40px) scale(0.96); }
+  }
+  @keyframes floatB {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    35%       { transform: translate(-30px, 20px) scale(1.04); }
+    65%       { transform: translate(25px, -35px) scale(0.97); }
+  }
+  @keyframes floatC {
+    0%, 100% { transform: translate(0, 0); }
+    50%       { transform: translate(-15px, -20px); }
+  }
+
+  /* Noise texture overlay */
+  .bg-noise {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.028;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 200px 200px;
+  }
+
+  /* ─── LAYOUT ─── */
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+  @media (max-width: 680px) { .wrap { padding: 0 20px; } }
+
+  /* ─── NAV ─── */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: rgba(6,11,15,0.82);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--border);
+    margin: 0 0 0 0;
+  }
+  @media (max-width: 680px) { .nav { padding: 16px 20px; } }
+
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 21px;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo em { font-style: italic; color: var(--gold); }
+
+  .nav-pill {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    background: var(--teal-pale);
+    border: 1px solid var(--teal-border);
+    padding: 5px 14px;
+    border-radius: 20px;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 96px 0 72px;
+    max-width: 720px;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.7s var(--ease-spring) 0.1s forwards;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.45;
+    flex-shrink: 0;
+  }
+
+  .hero-h1 {
+    font-family: var(--serif);
+    font-size: clamp(54px, 9vw, 100px);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.025em;
+    color: var(--text);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s var(--ease-spring) 0.22s forwards;
+  }
+  .hero-h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-soft);
+    line-height: 1.78;
+    max-width: 440px;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.8s var(--ease-spring) 0.38s forwards;
+  }
+
+  /* ─── SECTION ─── */
+  .section { padding: 72px 0 0; }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+
+  .section-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .section-rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold-border) 0%, transparent 100%);
+  }
+
+  .section-count {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  /* ─── GRID ─── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 14px;
+  }
+
+  /* ─── CARD ─── */
+  .card {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px 28px 72px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+
+    /* scroll reveal start state */
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.6s var(--ease-spring),
+      transform 0.6s var(--ease-spring),
+      border-color 0.25s ease,
+      box-shadow 0.3s ease,
+      background 0.25s ease;
+  }
+  .card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* staggered delays per child */
+  .card:nth-child(1) { transition-delay: 0ms; }
+  .card:nth-child(2) { transition-delay: 70ms; }
+  .card:nth-child(3) { transition-delay: 140ms; }
+  .card:nth-child(4) { transition-delay: 210ms; }
+  .card:nth-child(5) { transition-delay: 280ms; }
+  .card:nth-child(6) { transition-delay: 350ms; }
+
+  /* inner glow highlight — fills from top on hover */
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(245,200,66,0.09), transparent 80%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  .card:hover::before { opacity: 1; }
+
+  /* teal variant glow */
+  .card.teal-card::before {
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,217,160,0.09), transparent 80%);
+  }
+
+  .card:hover {
+    background: var(--card-hover);
+    border-color: var(--gold-border);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(245,200,66,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
+    transform: translateY(-5px) !important;
+  }
+  .card.teal-card:hover {
+    border-color: var(--teal-border);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,217,160,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  .card-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .badge-gold {
+    color: var(--gold);
+    background: var(--gold-pale);
+    border: 1px solid var(--gold-border);
+  }
+  .badge-teal {
+    color: var(--teal);
+    background: var(--teal-pale);
+    border: 1px solid var(--teal-border);
+  }
+
+  .card-wr {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    float: right;
+    margin-top: 2px;
+  }
+
+  .card-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    line-height: 1.72;
+    color: var(--text-soft);
+    font-weight: 300;
+  }
+
+  /* arrow CTA at bottom-right */
+  .card-cta {
+    position: absolute;
+    bottom: 24px;
+    left: 28px;
+    right: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-cta-text {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+  .card:hover .card-cta-text { color: var(--gold); }
+  .card.teal-card:hover .card-cta-text { color: var(--teal); }
+
+  .card-arrow-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--border-mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: all 0.22s ease;
+    flex-shrink: 0;
+  }
+  .card:hover .card-arrow-btn {
+    border-color: var(--gold-border);
+    color: var(--gold);
+    background: var(--gold-pale);
+    transform: rotate(-45deg);
+  }
+  .card.teal-card:hover .card-arrow-btn {
+    border-color: var(--teal-border);
+    color: var(--teal);
+    background: var(--teal-pale);
+  }
+
+  /* ─── DIVIDER ─── */
+  .section-divider {
+    margin-top: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--border-mid) 30%, var(--border-mid) 70%, transparent 100%);
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    padding: 56px 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 72px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .footer-brand {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--text);
+  }
+  .footer-brand em { font-style: italic; color: var(--gold); }
+
+  .footer-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .footer-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--teal);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--teal-border);
+    border-radius: 20px;
+    background: var(--teal-pale);
+    transition: all 0.2s ease;
+  }
+  .footer-link:hover {
+    background: rgba(0,217,160,0.14);
+    border-color: rgba(0,217,160,0.35);
+    color: var(--teal);
+    transform: translateY(-1px);
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(26px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* section head reveal */
+  .section-head {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s var(--ease-spring);
+  }
+  .section-head.visible {
+    opacity: 1;
+    transform: none;
+  }
 </style>
 </head>
 <body>
-  <span class="tag">Wiser With Vidhaan · Free Resources</span>
-  <h1>Learn. Build.<br><em>Automate.</em></h1>
-  <p class="sub">Practical guides from every reel. Free, detailed, ready to implement today.</p>
-  <div class="grid">
-    <a class="card" href="/one-tap-email-automation">
-      <div class="card-cat">AI & Automation · WR-001</div>
-      <div class="card-title">One-Tap Email Automation</div>
-      <div class="card-desc">iPhone Shortcut + Claude skill + Gmail MCP = all pending emails replied in one tap, in your voice.</div>
-    </a>
-    <a class="card" href="/system1-system2-decision-framework">
-      <div class="card-cat">Psychology · WR-002</div>
-      <div class="card-title">The Decision Framework</div>
-      <div class="card-desc">System 1 vs System 2 — exactly when to trust your gut and when to slow down and actually think.</div>
-    </a>
-    <a class="card" href="/sip-flat-returns">
-      <div class="card-cat">Markets · WR-003</div>
-      <div class="card-title">Zero Returns. The Best Time to Be In.</div>
-      <div class="card-desc">25 years of data on what happens after markets go flat. Why stopping your SIP right now is the worst thing you can do.</div>
-    </a>
-    <a class="card" href="/bcomm-free-skills">
-      <div class="card-cat">Business Communication · WR-004</div>
-      <div class="card-title">BComm Free Skills</div>
-      <div class="card-desc">The business communication skills most people pay thousands for — broken down into frameworks you can use tomorrow.</div>
-    </a>
+
+<!-- Ambient background -->
+<div class="bg-canvas">
+  <div class="orb orb-gold"></div>
+  <div class="orb orb-teal"></div>
+  <div class="orb orb-mid"></div>
+</div>
+<div class="bg-noise"></div>
+
+<!-- Nav -->
+<nav class="nav">
+  <a class="nav-logo" href="/"><em>Wiser</em>Resources</a>
+  <div class="nav-pill">Free · By Vidhaan</div>
+</nav>
+
+<div class="wrap">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">Wiser With Vidhaan · Free Resources</div>
+    <h1 class="hero-h1">Learn. Build.<br><em>Automate.</em></h1>
+    <p class="hero-sub">Practical guides from every reel. Free, detailed, ready to implement today.</p>
   </div>
 
-  <span class="tag" style="margin-top:64px;display:block;">Finance Calculators</span>
-  <p class="sub" style="margin-bottom:32px;">Interactive tools that show you the numbers behind the decisions. Built for India.</p>
-  <div class="grid">
-    <a class="card" href="/investor-dna">
-      <div class="card-cat">Risk Profile · Investor DNA</div>
-      <div class="card-title">Find Your Investor DNA</div>
-      <div class="card-desc">5 questions. Discover your investor persona, get a personalised allocation — Equity, Debt, Gold — with links to compare the right funds for your profile.</div>
-    </a>
-    <a class="card" href="/compounding-machine">
-      <div class="card-cat">Calculator · SIP</div>
-      <div class="card-title">The Compounding Machine</div>
-      <div class="card-desc">Drag the sliders, watch what happens after year 10. Stacked chart shows exactly how much is your money vs. the market's money. Milestone timeline included.</div>
-    </a>
-    <a class="card" href="/delay-engine">
-      <div class="card-cat">Calculator · Delay Cost</div>
-      <div class="card-title">The Delay Cost Engine</div>
-      <div class="card-desc">What has starting late actually cost you — in rupees, not lectures. Two wealth curves, same SIP, different start dates. The gap will make you act.</div>
-    </a>
-    <a class="card" href="https://wisermoney.vercel.app" target="_blank" rel="noopener noreferrer">
-      <div class="card-cat">Full Assessment · wisermoney.vercel.app</div>
-      <div class="card-title">Complete Financial Health Check</div>
-      <div class="card-desc">Income, expenses, insurance, EMIs — the full picture. A 5-step assessment that profiles your complete financial health across 8 investor archetypes.</div>
-    </a>
+  <!-- Section: Guides & Resources -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-tag">Guides & Resources</span>
+      <div class="section-rule"></div>
+      <span class="section-count">04 guides</span>
+    </div>
+    <div class="grid">
+      <a class="card teal-card" href="/one-tap-email-automation">
+        <span class="card-wr">WR-001</span>
+        <div class="card-badge badge-teal">AI & Automation</div>
+        <div class="card-title">One-Tap Email Automation</div>
+        <div class="card-desc">iPhone Shortcut + Claude skill + Gmail MCP = all pending emails replied in one tap, in your voice.</div>
+        <div class="card-cta">
+          <span class="card-cta-text">Open guide</span>
+          <div class="card-arrow-btn">↗</div>
+        </div>
+      </a>
+
+      <a class="card teal-card" href="/system1-system2-decision-framework">
+        <span class="card-wr">WR-002</span>
+        <div class="card-badge badge-teal">Psychology</div>
+        <div class="card-title">The Decision Framework</div>
+        <div class="card-desc">System 1 vs System 2 — exactly when to trust your gut and when to slow down and actually think.</div>
+        <div class="card-cta">
+          <span class="card-cta-text">Open guide</span>
+          <div class="card-arrow-btn">↗</div>
+        </div>
+      </a>
+
+      <a class="card teal-card" href="/sip-flat-returns">
+        <span class="card-wr">WR-003</span>
+        <div class="card-badge badge-teal">Markets</div>
+        <div class="card-title">Zero Returns. The Best Time to Be In.</div>
+        <div class="card-desc">25 years of data on what happens after markets go flat. Why stopping your SIP right now is the worst thing you can do.</div>
+        <div class="card-cta">
+          <span class="card-cta-text">Open guide</span>
+          <div class="card-arrow-btn">↗</div>
+        </div>
+      </a>
+
+      <a class="card teal-card" href="/bcomm-free-skills">
+        <span class="card-wr">WR-004</span>
+        <div class="card-badge badge-teal">Business Communication</div>
+        <div class="card-title">BComm Free Skills</div>
+        <div class="card-desc">The business communication skills most people pay thousands for — broken down into frameworks you can use tomorrow.</div>
+        <div class="card-cta">
+          <span class="card-cta-text">Open guide</span>
+          <div class="card-arrow-btn">↗</div>
+        </div>
+      </a>
+    </div>
   </div>
 
-  <p class="brand">By <span>Wiser With Vidhaan</span> · wisermoney.vercel.app</p>
+  <div class="section-divider"></div>
+
+  <!-- Section: Finance Calculators -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-tag">Finance Calculators</span>
+      <div class="section-rule"></div>
+      <span class="section-count">04 tools</span>
+    </div>
+    <div class="grid">
+      <a class="card" href="/investor-dna">
+        <div class="card-badge badge-gold">Risk Profile · Investor DNA</div>
+        <div class="card-title">Find Your Investor DNA</div>
+        <div class="card-desc">5 questions. Discover your investor persona, get a personalised allocation — Equity, Debt, Gold — with links to compare the right funds for your profile.</div>
+        <div class="card-cta">
+          <span class="card-cta-text">Take the quiz</span>
+          <div class="card-arrow-btn">↗</div>
+        </div>
+      </a>
+
+      <a class="card" href="/compounding-machine">
+        <div class="card-badge badge-gold">Calculator · SIP</div>
+        <div class="card-title">The Compounding Machine</div>
+        <div class="card-desc">Drag the sliders, watch what happens after year 10. Stacked chart shows exactly how much is your money vs. the market's money. Milestone timeline included.</div>
+        <div class="card-cta">
+          <span class="card-cta-text">Open calculator</span>
+          <div class="card-arrow-btn">↗</div>
+        </div>
+      </a>
+
+      <a class="card" href="/delay-engine">
+        <div class="card-badge badge-gold">Calculator · Delay Cost</div>
+        <div class="card-title">The Delay Cost Engine</div>
+        <div class="card-desc">What has starting late actually cost you — in rupees, not lectures. Two wealth curves, same SIP, different start dates. The gap will make you act.</div>
+        <div class="card-cta">
+          <span class="card-cta-text">See your cost</span>
+          <div class="card-arrow-btn">↗</div>
+        </div>
+      </a>
+
+      <a class="card" href="https://wisermoney.vercel.app" target="_blank" rel="noopener noreferrer">
+        <div class="card-badge badge-gold">Full Assessment · wisermoney.vercel.app</div>
+        <div class="card-title">Complete Financial Health Check</div>
+        <div class="card-desc">Income, expenses, insurance, EMIs — the full picture. A 5-step assessment that profiles your complete financial health across 8 investor archetypes.</div>
+        <div class="card-cta">
+          <span class="card-cta-text">Open WiserMoney</span>
+          <div class="card-arrow-btn">↗</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-left">
+      <div class="footer-brand">By <em>Wiser</em> With Vidhaan</div>
+      <div class="footer-sub">Free forever · Built for India</div>
+    </div>
+    <a class="footer-link" href="https://wisermoney.vercel.app" target="_blank" rel="noopener noreferrer">
+      wisermoney.vercel.app ↗
+    </a>
+  </footer>
+
+</div>
+
+<script>
+  // Scroll reveal with IntersectionObserver
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.06, rootMargin: '0px 0px -32px 0px' });
+
+  document.querySelectorAll('.card, .section-head').forEach(el => io.observe(el));
+
+  // Subtle magnetic card effect
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width  - 0.5) * 8;
+      const y = ((e.clientY - rect.top)  / rect.height - 0.5) * 8;
+      card.style.setProperty('--rx', `${y}deg`);
+      card.style.setProperty('--ry', `${-x}deg`);
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.removeProperty('--rx');
+      card.style.removeProperty('--ry');
+    });
+  });
+</script>
 </body>
 </html>
