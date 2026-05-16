@@ -164,52 +164,56 @@
     return val;
   }
 
-  /* ── HEAT GAUGE ── */
-  function HeatGauge({ heat, zoneColor }) {
-    const W = 300, H = 170, cx = W / 2, cy = H - 24, r = 120;
-    const toRad = (deg) => (deg * Math.PI) / 180;
-    const arc = (rad, a1, a2) => {
-      const x1 = cx + rad * Math.cos(a1), y1 = cy - rad * Math.sin(a1);
-      const x2 = cx + rad * Math.cos(a2), y2 = cy - rad * Math.sin(a2);
-      return `M ${x1} ${y1} A ${rad} ${rad} 0 0 0 ${x2} ${y2}`;
-    };
-    // Needle: 0 heat = left (180°), 100 heat = right (0°)
-    const needleAngle = Math.PI - (heat / 100) * Math.PI;
-    const nx = cx + (r - 18) * Math.cos(needleAngle);
-    const ny = cy - (r - 18) * Math.sin(needleAngle);
+  /* ── ZONE STRIP — replaces gauge ── */
+  const ZONE_ORDER = [ZONES.CRASH, ZONES.CORRECTION, ZONES.FAIR_VALUE, ZONES.OVERHEATED];
 
-    const segments = [
-      { a1: Math.PI, a2: Math.PI * 0.75, col: GOLD, opacity: 0.25 },
-      { a1: Math.PI * 0.75, a2: Math.PI * 0.52, col: TEAL, opacity: 0.25 },
-      { a1: Math.PI * 0.52, a2: Math.PI * 0.28, col: AMBER, opacity: 0.25 },
-      { a1: Math.PI * 0.28, a2: 0, col: RED, opacity: 0.25 },
-    ];
-
+  function ZoneStrip({ activeZone, heat }) {
     return (
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ maxWidth: 300, display: "block", margin: "0 auto" }}>
-        <defs>
-          <filter id="gfx">
-            <feGaussianBlur stdDeviation="2.5" result="b"/>
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        {/* Track */}
-        <path d={arc(r, Math.PI, 0)} fill="none" stroke={BORDER} strokeWidth="13" strokeLinecap="round"/>
-        {/* Zone tints */}
-        {segments.map((seg, i) => (
-          <path key={i} d={arc(r, seg.a1, seg.a2)} fill="none" stroke={seg.col} strokeWidth="13" strokeLinecap="round" opacity={seg.opacity}/>
-        ))}
-        {/* Active fill */}
-        <path d={arc(r, Math.PI, needleAngle)} fill="none" stroke={zoneColor} strokeWidth="13" strokeLinecap="round" opacity="0.8" filter="url(#gfx)"/>
-        {/* Center dot */}
-        <circle cx={cx} cy={cy} r="7" fill={CARD} stroke={BORDER} strokeWidth="2"/>
-        {/* Needle */}
-        <line x1={cx} y1={cy} x2={nx} y2={ny} stroke={zoneColor} strokeWidth="2.5" strokeLinecap="round" filter="url(#gfx)"/>
-        {/* Labels */}
-        <text x={cx - r - 6} y={cy + 16} fontSize="8" fill={GOLD} fontFamily="Space Mono, monospace" textAnchor="middle">CRASH</text>
-        <text x={cx} y={cy - r - 6} fontSize="8" fill={MUTED} fontFamily="Space Mono, monospace" textAnchor="middle">FAIR</text>
-        <text x={cx + r + 6} y={cy + 16} fontSize="8" fill={RED} fontFamily="Space Mono, monospace" textAnchor="middle">HOT</text>
-      </svg>
+      <div style={{ display: "flex", gap: 6, margin: "20px 0 4px" }}>
+        {ZONE_ORDER.map((z) => {
+          const active = z.key === activeZone.key;
+          return (
+            <div key={z.key} style={{
+              flex: 1, borderRadius: 14, padding: "14px 6px 12px",
+              border: `1px solid ${active ? z.color : BORDER}`,
+              background: active ? z.bg : "transparent",
+              textAlign: "center",
+              transition: "all 0.5s cubic-bezier(0.22,1,0.36,1)",
+              opacity: active ? 1 : 0.35,
+            }}>
+              <div style={{
+                width: active ? 10 : 7, height: active ? 10 : 7,
+                borderRadius: "50%", background: z.color,
+                margin: "0 auto 8px",
+                boxShadow: active ? `0 0 10px ${z.color}` : "none",
+                transition: "all 0.5s ease",
+              }}/>
+              <div style={{
+                fontFamily: "Space Mono, monospace",
+                fontSize: "clamp(7px,1.5vw,9px)",
+                color: active ? z.color : MUTED,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                lineHeight: 1.4,
+                fontWeight: active ? 700 : 400,
+              }}>
+                {z.label.split(" ").map((word, i) => (
+                  <span key={i}>{word}<br/></span>
+                ))}
+              </div>
+              {active && (
+                <div style={{
+                  fontFamily: "DM Serif Display, serif",
+                  fontSize: 13, color: z.color,
+                  marginTop: 6, opacity: 0.75,
+                }}>
+                  {Math.round(heat)}/100
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     );
   }
 
@@ -489,8 +493,8 @@
                 </div>
               </div>
 
-              {/* Gauge */}
-              {hasData && <HeatGauge heat={heat} zoneColor={zone.color}/>}
+              {/* Zone strip */}
+              {hasData && <ZoneStrip activeZone={zone} heat={heat}/>}
 
               {/* 3 Signal badges */}
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 20 }}>
