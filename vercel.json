@@ -7,6 +7,7 @@
     { "source": "/investor-dna", "destination": "/investor-dna.html" },
     { "source": "/compounding-machine", "destination": "/compounding-machine.html" },
     { "source": "/delay-engine", "destination": "/delay-engine.html" },
-    { "source": "/smart-sip-allocator", "destination": "/smart-sip-allocator.html" }
+    { "source": "/smart-sip-allocator", "destination": "/smart-sip-allocator.html" },
+    { "source": "/fire-calculator", "destination": "/fire-calculator.html" }
   ]
 }
