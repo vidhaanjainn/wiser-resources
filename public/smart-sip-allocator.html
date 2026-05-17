@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart SIP Allocator — Wiser With Vidhaan</title>
+  <meta name="description" content="Live market signals — VIX, Nifty 200-DMA, P/E. One number from you. Exact allocation between equity and liquid funds. No emotion. Just math." />
+  <meta property="og:title" content="Smart SIP Allocator — Deploy Based on Market, Not Calendar" />
+  <meta property="og:description" content="We read today's market. You enter your monthly amount. We tell you exactly where to put it." />
+  <meta name="theme-color" content="#090B0F" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { background: #090B0F; min-height: 100%; }
+    body { -webkit-font-smoothing: antialiased; }
+
+    @keyframes slideUp  { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn   { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pulse    { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+    @keyframes spin     { to { transform: rotate(360deg); } }
+    @keyframes fillBar  { from { width: 0%; } to { width: var(--w); } }
+
+    .slide-up  { animation: slideUp 0.48s cubic-bezier(0.22,1,0.36,1) both; }
+    .fade-in   { animation: fadeIn 0.4s ease both; }
+    .spinning  { animation: spin 1s linear infinite; }
+    .wbtn      { transition: transform 0.12s, opacity 0.12s; cursor: pointer; }
+    .wbtn:hover  { opacity: 0.88; transform: translateY(-1px); }
+    .wbtn:active { transform: scale(0.98); }
+
+    input[type=range] { -webkit-appearance: none; width: 100%; height: 2px; border-radius: 2px; outline: none; cursor: pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: #F5C842; box-shadow: 0 0 0 5px rgba(245,200,66,0.15); cursor: pointer; transition: transform .15s, box-shadow .15s; }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); box-shadow: 0 0 0 9px rgba(245,200,66,0.1); }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: #090B0F; }
+    ::-webkit-scrollbar-thumb { background: rgba(245,200,66,0.18); border-radius: 2px; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+  const { useState, useEffect, useRef } = React;
+
+  /* ── TOKENS ── */
+  const BG = "#090B0F", CARD = "#0D0D18", CARD2 = "#0A0B15";
+  const BORDER = "#1A1A28", GOLD = "#F5C842", TEAL = "#00D9A0";
+  const TEXT = "#EDE9E3", MUTED = "#5A5A70", FAINT = "#2A2A3A";
+  const RED = "#E85D5D", AMBER = "#FFB347";
+
+  /* ── ZONE CONFIG ── */
+  const ZONES = {
+    OVERHEATED: {
+      key: "OVERHEATED", label: "Overheated",
+      color: RED, bg: "rgba(232,93,93,0.07)", border: "rgba(232,93,93,0.2)",
+      equityPct: 30,
+      tagline: "Market running too hot. Build your dry powder.",
+      desc: "When markets are overheated, the upside is limited and the downside unpriced. The smartest move is patience — keep 70% in Liquid / Arbitrage funds earning 7–8% p.a., ready to deploy when the correction arrives.",
+      histReturn: "5–8%",
+      histPeriods: "P/E >23 + VIX <14 periods: 2015 peak, Dec 2017, Oct 2021",
+      nextAction: "Wait. Let your liquid fund compound quietly. Don't FOMO into equity at these levels."
+    },
+    FAIR_VALUE: {
+      key: "FAIR_VALUE", label: "Fair Value",
+      color: AMBER, bg: "rgba(255,179,71,0.06)", border: "rgba(255,179,71,0.18)",
+      equityPct: 65,
+      tagline: "Market fairly priced. Standard deployment.",
+      desc: "Markets are trading near fundamental value. No tactical edge either way. A 65/35 split gives you solid equity exposure while keeping dry powder if things dip further — the textbook split.",
+      histReturn: "12–15%",
+      histPeriods: "P/E 18–22 range — long-term Nifty median zone",
+      nextAction: "Stay consistent. SIP as planned. Review allocation only if VIX spikes above 22."
+    },
+    CORRECTION: {
+      key: "CORRECTION", label: "Correction",
+      color: TEAL, bg: "rgba(0,217,160,0.06)", border: "rgba(0,217,160,0.18)",
+      equityPct: 85,
+      tagline: "Prices down. This is where wealth is quietly built.",
+      desc: "Corrections are the market's gift to disciplined investors. Fear is high, prices are reasonable — this is exactly when you go heavy. Keep 15% liquid as insurance for a deeper fall, but don't wait for perfect.",
+      histReturn: "18–24%",
+      histPeriods: "10–20% below peak with VIX 20–27: Jun 2019, Jun 2022, Mar 2023",
+      nextAction: "Increase equity aggressively. If you have a liquid fund buffer, start deploying it here."
+    },
+    CRASH: {
+      key: "CRASH", label: "Crash Zone",
+      color: GOLD, bg: "rgba(245,200,66,0.06)", border: "rgba(245,200,66,0.22)",
+      equityPct: 100,
+      tagline: "Maximum fear. Maximum opportunity.",
+      desc: "This is the moment most investors freeze — and the exact moment that defines long-term returns. Deploy 100% to equity. If you've been building a liquid fund reserve, now is when it earns its keep.",
+      histReturn: "30–45%",
+      histPeriods: "Deep crashes with VIX >25: Mar 2020 COVID, Oct 2008 GFC, Jun 2022",
+      nextAction: "Go all-in. Deploy existing liquid fund balances too. This is what you saved dry powder for."
+    }
+  };
+
+  /* ── SCORING ENGINE ── */
+  function computeHeat(vix, dmaGap, pe) {
+    let heat = 50;
+    if (vix !== null && vix !== undefined) {
+      if      (vix < 11) heat += 22;
+      else if (vix < 13) heat += 15;
+      else if (vix < 15) heat += 8;
+      else if (vix < 18) heat += 2;
+      else if (vix < 22) heat -= 5;
+      else if (vix < 28) heat -= 14;
+      else               heat -= 22;
+    }
+    if (dmaGap !== null && dmaGap !== undefined) {
+      if      (dmaGap > 18) heat += 22;
+      else if (dmaGap > 12) heat += 14;
+      else if (dmaGap > 6)  heat += 7;
+      else if (dmaGap > 1)  heat += 2;
+      else if (dmaGap > -4) heat -= 3;
+      else if (dmaGap > -10)heat -= 12;
+      else                  heat -= 20;
+    }
+    if (pe !== null && pe !== undefined && pe > 0) {
+      if      (pe > 26) heat += 18;
+      else if (pe > 23) heat += 11;
+      else if (pe > 20) heat += 4;
+      else if (pe > 18) heat -= 2;
+      else if (pe > 15) heat -= 10;
+      else              heat -= 16;
+    }
+    return Math.max(0, Math.min(100, heat));
+  }
+
+  function getZone(heat) {
+    if (heat > 68) return ZONES.OVERHEATED;
+    if (heat > 46) return ZONES.FAIR_VALUE;
+    if (heat > 26) return ZONES.CORRECTION;
+    return ZONES.CRASH;
+  }
+
+  /* ── FORMATTERS ── */
+  const fmt = (n) => {
+    if (!n || n < 0) return "₹0";
+    if (n >= 1e7) return `₹${(n/1e7).toFixed(2)} Cr`;
+    if (n >= 1e5) return `₹${(n/1e5).toFixed(1)}L`;
+    return `₹${Math.round(n).toLocaleString("en-IN")}`;
+  };
+  const fmtPct = (n) => n === null ? "—" : `${n > 0 ? "+" : ""}${n.toFixed(1)}%`;
+
+  /* ── COUNT UP ── */
+  function useCountUp(target, dur = 1400) {
+    const [val, setVal] = useState(0);
+    const raf = useRef(null);
+    const prev = useRef(null);
+    useEffect(() => {
+      if (target === prev.current) return;
+      prev.current = target;
+      if (raf.current) cancelAnimationFrame(raf.current);
+      const t0 = performance.now(), start = val;
+      const run = (t) => {
+        const p = Math.min((t - t0) / dur, 1);
+        setVal(start + (target - start) * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) raf.current = requestAnimationFrame(run);
+      };
+      raf.current = requestAnimationFrame(run);
+    }, [target]);
+    return val;
+  }
+
+  /* ── ZONE STRIP — replaces gauge ── */
+  const ZONE_ORDER = [ZONES.CRASH, ZONES.CORRECTION, ZONES.FAIR_VALUE, ZONES.OVERHEATED];
+
+  function ZoneStrip({ activeZone, heat }) {
+    return (
+      <div style={{ display: "flex", gap: 6, margin: "20px 0 4px" }}>
+        {ZONE_ORDER.map((z) => {
+          const active = z.key === activeZone.key;
+          return (
+            <div key={z.key} style={{
+              flex: 1, borderRadius: 14, padding: "14px 6px 12px",
+              border: `1px solid ${active ? z.color : BORDER}`,
+              background: active ? z.bg : "transparent",
+              textAlign: "center",
+              transition: "all 0.5s cubic-bezier(0.22,1,0.36,1)",
+              opacity: active ? 1 : 0.35,
+            }}>
+              <div style={{
+                width: active ? 10 : 7, height: active ? 10 : 7,
+                borderRadius: "50%", background: z.color,
+                margin: "0 auto 8px",
+                boxShadow: active ? `0 0 10px ${z.color}` : "none",
+                transition: "all 0.5s ease",
+              }}/>
+              <div style={{
+                fontFamily: "Space Mono, monospace",
+                fontSize: "clamp(7px,1.5vw,9px)",
+                color: active ? z.color : MUTED,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                lineHeight: 1.4,
+                fontWeight: active ? 700 : 400,
+              }}>
+                {z.label.split(" ").map((word, i) => (
+                  <span key={i}>{word}<br/></span>
+                ))}
+              </div>
+              {active && (
+                <div style={{
+                  fontFamily: "DM Serif Display, serif",
+                  fontSize: 13, color: z.color,
+                  marginTop: 6, opacity: 0.75,
+                }}>
+                  {Math.round(heat)}/100
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  /* ── SIGNAL BADGE ── */
+  function SignalBadge({ label, value, source, live, color, onClick, editable, children }) {
+    return (
+      <div onClick={onClick} style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: "16px", flex: 1, minWidth: 0, cursor: editable ? "pointer" : "default" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+          <div style={{ width: 6, height: 6, borderRadius: "50%", background: live ? TEAL : AMBER, animation: live ? "none" : "pulse 1.8s ease infinite", flexShrink: 0 }}/>
+          <span style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: MUTED, letterSpacing: "0.1em", textTransform: "uppercase" }}>{label}</span>
+          {editable && <span style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, marginLeft: "auto" }}>✎ tap</span>}
+        </div>
+        {children || (
+          <div style={{ fontFamily: "DM Serif Display, serif", fontSize: 27, color: color || TEXT, lineHeight: 1, marginBottom: 5 }}>
+            {value !== null && value !== undefined ? value : <span style={{ fontSize: 15, color: FAINT }}>Fetching…</span>}
+          </div>
+        )}
+        <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, letterSpacing: "0.06em", marginTop: 4 }}>{source}</div>
+      </div>
+    );
+  }
+
+  /* ── ALLOC BAR ── */
+  function AllocBar({ pct, color }) {
+    const [w, setW] = useState(0);
+    useEffect(() => { const t = setTimeout(() => setW(pct), 80); return () => clearTimeout(t); }, [pct]);
+    return (
+      <div style={{ background: BORDER, borderRadius: 5, height: 6, overflow: "hidden", marginBottom: 10 }}>
+        <div style={{ width: `${w}%`, height: "100%", background: color, borderRadius: 5, transition: "width 1.3s cubic-bezier(0.22,1,0.36,1)" }}/>
+      </div>
+    );
+  }
+
+  /* ── TRIGGER TABLE ── */
+  function TriggerTable({ niftyPrice, dma200, pe, vix }) {
+    if (!niftyPrice || !dma200) return null;
+    const scenarios = [-15, -8, 0, 8, 15].map(pct => {
+      const price = niftyPrice * (1 + pct / 100);
+      const dmaG  = ((price / dma200) - 1) * 100;
+      const newPe = pe ? pe * (1 + pct / 100) : null;
+      const heat  = computeHeat(vix, dmaG, newPe);
+      const zone  = getZone(heat);
+      return { pct, price, zone, isCurrent: pct === 0 };
+    });
+    return (
+      <div>
+        <div style={{ fontFamily: "DM Serif Display, serif", fontSize: 22, color: TEXT, marginBottom: 6 }}>If Nifty moves…</div>
+        <div style={{ fontFamily: "Space Mono, monospace", fontSize: 9, color: FAINT, marginBottom: 18, letterSpacing: "0.04em" }}>
+          P/E SHIFTS PROPORTIONALLY · VIX HELD AT CURRENT · 200-DMA ASSUMED STATIC
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          {scenarios.map((s, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 16px", background: s.isCurrent ? "rgba(245,200,66,0.05)" : CARD, border: `1px solid ${s.isCurrent ? "rgba(245,200,66,0.18)" : BORDER}`, borderRadius: 11 }}>
+              <div style={{ fontFamily: "Space Mono, monospace", fontSize: 11, color: s.pct < 0 ? TEAL : s.pct > 0 ? RED : MUTED, minWidth: 46, fontWeight: s.isCurrent ? 700 : 400 }}>
+                {s.isCurrent ? "NOW" : `${s.pct > 0 ? "+" : ""}${s.pct}%`}
+              </div>
+              <div style={{ flex: 1 }}>
+                <span style={{ fontFamily: "DM Serif Display, serif", fontSize: 17, color: s.isCurrent ? GOLD : TEXT }}>{Math.round(s.price).toLocaleString("en-IN")}</span>
+                <span style={{ fontSize: 10, color: FAINT, marginLeft: 5, fontFamily: "Space Mono, monospace" }}>NIFTY</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                <div style={{ width: 7, height: 7, borderRadius: "50%", background: s.zone.color, flexShrink: 0 }}/>
+                <span style={{ fontSize: 12, color: s.zone.color, fontWeight: 600 }}>{s.zone.label}</span>
+              </div>
+              <div style={{ fontFamily: "Space Mono, monospace", fontSize: 10, color: MUTED, minWidth: 36, textAlign: "right" }}>
+                {s.zone.equityPct}%
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, marginTop: 12, letterSpacing: "0.06em" }}>
+          FOR EDUCATION ONLY · NOT SEBI-REGISTERED INVESTMENT ADVICE
+        </div>
+      </div>
+    );
+  }
+
+  /* ── LEAD CAPTURE ── */
+  const LEADS_URL = "https://script.google.com/macros/s/AKfycbxYoHR1iCFIwOM8l6Rfz6n2jKc3JwCojhnuhs58Bw3kL3iQudiDp_DKz0BczSRA0nQ/exec";
+  function LeadCapture({ zoneName, monthly }) {
+    const [name, setName]       = useState("");
+    const [email, setEmail]     = useState("");
+    const [status, setStatus]   = useState("idle");
+    const inp = { background: "#0F1220", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "13px 16px", color: TEXT, fontFamily: "DM Sans, sans-serif", fontSize: 14, width: "100%", outline: "none" };
+    const submit = async () => {
+      if (!email.includes("@") || name.trim().length < 2) return;
+      setStatus("sending");
+      try {
+        await fetch(LEADS_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, email, source: "smart-sip-allocator", zone: zoneName, monthly }) });
+      } catch {}
+      setStatus("done");
+    };
+    if (status === "done") return (
+      <div style={{ textAlign: "center", padding: "28px 16px" }}>
+        <div style={{ fontSize: 38, marginBottom: 12 }}>✓</div>
+        <div style={{ fontFamily: "DM Serif Display, serif", fontSize: 24, color: GOLD, marginBottom: 8 }}>You're in.</div>
+        <div style={{ fontSize: 13, color: MUTED, lineHeight: 1.8 }}>You'll get a heads-up when the market zone shifts. Don't miss the crash window.</div>
+      </div>
+    );
+    return (
+      <div>
+        <div style={{ fontFamily: "DM Serif Display, serif", fontSize: "clamp(22px,4vw,30px)", color: TEXT, marginBottom: 8, lineHeight: 1.25 }}>
+          Get notified when the <em style={{ color: GOLD, fontStyle: "italic" }}>zone changes</em>
+        </div>
+        <div style={{ fontSize: 13, color: MUTED, marginBottom: 24, lineHeight: 1.75 }}>
+          The crash window is short. We'll alert you when signals shift — so you're ready, not reactive.
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <input style={inp} placeholder="Your name" value={name} onChange={e => setName(e.target.value)}/>
+          <input style={inp} type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)}/>
+          <button className="wbtn" onClick={submit} disabled={status === "sending"} style={{ background: GOLD, color: BG, border: "none", borderRadius: 10, padding: "16px", fontFamily: "DM Sans, sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", cursor: "pointer", marginTop: 2 }}>
+            {status === "sending" ? "Saving…" : "Notify Me When Zone Shifts"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── MAIN APP ── */
+  function App() {
+    const [loading,     setLoading]     = useState(true);
+    const [live,        setLive]        = useState(false);
+    const [dataError,   setDataError]   = useState(false);
+    const [niftyPrice,  setNiftyPrice]  = useState(null);
+    const [dma200,      setDma200]      = useState(null);
+    const [vix,         setVix]         = useState(null);
+    const [pe,          setPe]          = useState(null);
+    const [peSource,    setPeSource]    = useState(null);
+    const [peEstimated, setPeEstimated] = useState(false);
+    const [fetchedAt,   setFetchedAt]   = useState(null);
+    const [monthly,     setMonthly]     = useState(30000);
+    const [mEditing,    setMEditing]    = useState(false);
+    const [mDraft,      setMDraft]      = useState("");
+    const mRef = useRef();
+
+    /* DATA FETCH */
+    useEffect(() => {
+      const proxy = "https://api.allorigins.win/raw?url=";
+      const yf1 = "https://query1.finance.yahoo.com/v8/finance/chart/";
+      const yf2 = "https://query2.finance.yahoo.com/v8/finance/chart/";
+
+      async function fetchJson(url) {
+        const res = await fetch(proxy + encodeURIComponent(url));
+        if (!res.ok) throw new Error(res.status);
+        return res.json();
+      }
+
+      async function fetchSymbol(symbol, params) {
+        try { return await fetchJson(`${yf1}${symbol}?${params}`); } catch {}
+        try { return await fetchJson(`${yf2}${symbol}?${params}`); } catch {}
+        return null;
+      }
+
+      async function load() {
+        let gotAny = false;
+
+        // ── Nifty 1y history → price + 200-DMA ──
+        try {
+          const d = await fetchSymbol("^NSEI", "interval=1d&range=1y");
+          const closes = (d?.chart?.result?.[0]?.indicators?.quote?.[0]?.close || []).filter(Boolean);
+          if (closes.length >= 20) {
+            const cur   = closes[closes.length - 1];
+            const l200  = closes.slice(-200);
+            const avg   = l200.reduce((a, b) => a + b, 0) / l200.length;
+            setNiftyPrice(Math.round(cur));
+            setDma200(Math.round(avg));
+            gotAny = true;
+          }
+        } catch {}
+
+        // ── India VIX ──
+        try {
+          const d = await fetchSymbol("^INDIAVIX", "interval=1d&range=5d");
+          const closes = (d?.chart?.result?.[0]?.indicators?.quote?.[0]?.close || []).filter(Boolean);
+          const vVal   = d?.chart?.result?.[0]?.meta?.regularMarketPrice || closes[closes.length - 1];
+          if (vVal && vVal > 0) { setVix(parseFloat(Number(vVal).toFixed(1))); gotAny = true; }
+        } catch {}
+
+        if (gotAny) { setLive(true); setFetchedAt(new Date()); }
+        else         { setDataError(true); }
+        setLoading(false);
+      }
+
+      // ── Nifty P/E — from /api/pe serverless function ──
+      async function loadPE() {
+        try {
+          const r = await fetch("/api/pe");
+          if (!r.ok) throw new Error(r.status);
+          const data = await r.json();
+          if (data?.pe && data.pe > 5 && data.pe < 80) {
+            setPe(data.pe);
+            setPeSource(data.source || "NSE India");
+            setPeEstimated(!!data.estimated);
+          }
+        } catch {}
+      }
+
+      // Run both in parallel — market data and P/E are independent
+      Promise.all([load(), loadPE()]);
+    }, []);
+
+    const dmaGap       = (niftyPrice && dma200) ? ((niftyPrice / dma200) - 1) * 100 : null;
+    const hasData      = vix !== null || dmaGap !== null;
+    const heat         = computeHeat(vix, dmaGap, pe);
+    const zone         = getZone(heat);
+    const equityAmt    = monthly * (zone.equityPct / 100);
+    const liquidAmt    = monthly - equityAmt;
+    const animEquity   = useCountUp(equityAmt);
+    const animLiquid   = useCountUp(liquidAmt);
+
+    /* MONTHLY HANDLERS */
+    const mOpen  = () => { setMEditing(true); setMDraft(String(monthly)); setTimeout(() => mRef.current?.select(), 0); };
+    const mClose = () => {
+      const n = parseInt(mDraft.replace(/[^0-9]/g, ""), 10);
+      if (!isNaN(n) && n >= 500) setMonthly(Math.min(1e7, n));
+      setMEditing(false);
+    };
+
+    const sliderBg = `linear-gradient(to right, ${GOLD} ${((monthly - 500) / 499500 * 100).toFixed(1)}%, ${BORDER} ${((monthly - 500) / 499500 * 100).toFixed(1)}%)`;
+    const timeStr  = fetchedAt ? fetchedAt.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) : "";
+
+    const C = {
+      wrap:   { maxWidth: 700, margin: "0 auto", padding: "clamp(36px,6vw,64px) clamp(16px,5vw,28px) 88px", position: "relative", zIndex: 1, fontFamily: "DM Sans, sans-serif" },
+      card:   { background: CARD, border: `1px solid ${BORDER}`, borderRadius: 20, padding: "clamp(22px,4vw,30px)" },
+      sec:    { marginBottom: 18 },
+      eyebrow:{ fontFamily: "Space Mono, monospace", fontSize: 9, fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: GOLD, marginBottom: 14 },
+    };
+
+    return (
+      <div style={{ background: BG, minHeight: "100vh", color: TEXT }}>
+        {/* Ambient glow */}
+        <div style={{ position: "fixed", inset: 0, background: `radial-gradient(ellipse 65% 55% at 80% -5%, rgba(245,200,66,0.05) 0%, transparent 60%), radial-gradient(ellipse 45% 40% at 10% 95%, rgba(0,217,160,0.04) 0%, transparent 60%)`, pointerEvents: "none", zIndex: 0 }}/>
+
+        <div style={C.wrap}>
+
+          {/* ── HEADER ── */}
+          <div style={{ ...C.sec, animationDelay: "0ms" }} className="slide-up">
+            <div style={C.eyebrow}>Wiser With Vidhaan</div>
+            <h1 style={{ fontFamily: "DM Serif Display, serif", fontSize: "clamp(42px,8vw,72px)", lineHeight: 1.0, letterSpacing: "-1.5px", marginBottom: 16 }}>
+              Smart SIP<br /><em style={{ color: GOLD }}>Allocator</em>
+            </h1>
+            <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.8, maxWidth: 460, fontWeight: 300 }}>
+              We read today's market — VIX, Nifty 200-DMA, and P/E. You tell us your monthly amount. We tell you exactly where to deploy it. No emotion. Just math.
+            </p>
+          </div>
+
+          {/* ── LOADING ── */}
+          {loading && (
+            <div style={{ ...C.card, ...C.sec, display: "flex", alignItems: "center", gap: 14 }} className="fade-in">
+              <div className="spinning" style={{ width: 18, height: 18, border: `2px solid ${BORDER}`, borderTop: `2px solid ${GOLD}`, borderRadius: "50%", flexShrink: 0 }}/>
+              <div>
+                <div style={{ fontSize: 13, color: TEXT, marginBottom: 3 }}>Reading live market signals…</div>
+                <div style={{ fontFamily: "Space Mono, monospace", fontSize: 9, color: FAINT }}>YAHOO FINANCE · ^NSEI · ^INDIAVIX</div>
+              </div>
+            </div>
+          )}
+
+          {/* ── MARKET TEMPERATURE ── */}
+          {!loading && (
+            <div style={{ ...C.sec, background: zone.bg, border: `1px solid ${zone.border}`, borderRadius: 20, padding: "clamp(22px,4vw,30px)" }} className="slide-up">
+
+              {/* Data status bar */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 22 }}>
+                <div style={{ width: 7, height: 7, borderRadius: "50%", background: live ? TEAL : dataError ? RED : AMBER, animation: live ? "none" : "pulse 1.8s ease infinite", flexShrink: 0 }}/>
+                <span style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: live ? TEAL : dataError ? RED : AMBER, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  {live ? `Live · Yahoo Finance · NSE India · ${timeStr}` : dataError ? "Market data unavailable — check connection and refresh." : "Connecting…"}
+                </span>
+              </div>
+
+              {/* Zone headline */}
+              <div style={{ textAlign: "center", marginBottom: 4 }}>
+                <div style={{ fontFamily: "DM Serif Display, serif", fontSize: "clamp(36px,7vw,58px)", color: zone.color, lineHeight: 1, marginBottom: 8 }}>
+                  {hasData ? zone.label : "—"}
+                </div>
+                <div style={{ fontSize: 13, color: MUTED, maxWidth: 380, margin: "0 auto", lineHeight: 1.7 }}>
+                  {hasData ? zone.tagline : "Waiting for market signals…"}
+                </div>
+              </div>
+
+              {/* Zone strip */}
+              {hasData && <ZoneStrip activeZone={zone} heat={heat}/>}
+
+              {/* 3 Signal badges */}
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 20 }}>
+                <SignalBadge
+                  label="India VIX"
+                  value={vix !== null ? vix.toFixed(1) : null}
+                  source="Yahoo Finance · ^INDIAVIX"
+                  live={live}
+                  color={vix !== null ? (vix < 14 ? AMBER : vix > 22 ? TEAL : TEXT) : MUTED}
+                />
+                <SignalBadge
+                  label="vs 200-DMA"
+                  value={dmaGap !== null ? fmtPct(dmaGap) : null}
+                  source="Yahoo Finance · ^NSEI · 200-day avg"
+                  live={live}
+                  color={dmaGap !== null ? (dmaGap > 8 ? RED : dmaGap < -5 ? TEAL : TEXT) : MUTED}
+                />
+                {/* P/E — auto-fetched from /api/pe */}
+                <SignalBadge
+                  label="Nifty P/E"
+                  value={pe !== null ? pe.toFixed(2) : null}
+                  source={peSource || "NSE India · fetching…"}
+                  live={pe !== null && !peEstimated}
+                  color={pe !== null ? (pe > 23 ? RED : pe > 19 ? AMBER : TEAL) : MUTED}
+                />
+              </div>
+
+              {/* Zone context */}
+              {hasData && (
+                <div style={{ marginTop: 20, padding: 18, background: "rgba(0,0,0,0.25)", borderRadius: 14 }}>
+                  <div style={{ fontSize: 13, color: TEXT, lineHeight: 1.75, marginBottom: 14 }}>{zone.desc}</div>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
+                    <span style={{ fontFamily: "Space Mono, monospace", fontSize: 9, color: zone.color, letterSpacing: "0.1em" }}>AVG 1-YR FORWARD RETURN IN THIS ZONE</span>
+                    <span style={{ fontFamily: "DM Serif Display, serif", fontSize: 22, color: zone.color }}>{zone.histReturn} CAGR</span>
+                  </div>
+                  <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, letterSpacing: "0.05em" }}>Based on: {zone.histPeriods}</div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── MONTHLY INPUT ── */}
+          {!loading && (
+            <div style={{ ...C.card, ...C.sec }} className="slide-up">
+              <div style={{ ...C.eyebrow, color: FAINT }}>Your Monthly Investment</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+                <div style={{ fontSize: 14, color: MUTED }}>I can invest every month</div>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                  {mEditing ? (
+                    <input ref={mRef} type="text" inputMode="numeric"
+                      value={mDraft} onChange={e => setMDraft(e.target.value.replace(/[^0-9]/g, ""))}
+                      onBlur={mClose} onKeyDown={e => e.key === "Enter" && mRef.current?.blur()}
+                      autoFocus
+                      style={{ fontFamily: "DM Serif Display, serif", fontSize: 30, color: GOLD, background: "transparent", border: "none", borderBottom: `1.5px solid ${GOLD}`, textAlign: "right", width: 200, outline: "none", padding: "2px 0" }}
+                    />
+                  ) : (
+                    <div onClick={mOpen} style={{ fontFamily: "DM Serif Display, serif", fontSize: 30, color: TEXT, cursor: "pointer", paddingBottom: 2, borderBottom: `1px solid transparent`, transition: "border-color .15s" }}
+                      onMouseEnter={e => e.currentTarget.style.borderColor = BORDER}
+                      onMouseLeave={e => e.currentTarget.style.borderColor = "transparent"}>
+                      {fmt(monthly)}
+                    </div>
+                  )}
+                  <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, marginTop: 4 }}>tap to type</div>
+                </div>
+              </div>
+              <input type="range" min="500" max="500000" step="500" value={monthly}
+                onChange={e => setMonthly(Number(e.target.value))}
+                style={{ background: sliderBg }}
+              />
+              <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "Space Mono, monospace", fontSize: 9, color: FAINT, marginTop: 7 }}>
+                <span>₹500</span><span>₹5L</span>
+              </div>
+            </div>
+          )}
+
+          {/* ── ALLOCATION RESULT ── */}
+          {!loading && hasData && (
+            <div style={{ ...C.sec }} className="slide-up">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                {/* Equity */}
+                <div style={{ background: CARD, border: `1px solid rgba(0,217,160,0.18)`, borderRadius: 20, padding: "clamp(18px,3vw,26px)" }}>
+                  <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: TEAL, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 16 }}>Equity MFs</div>
+                  <div style={{ fontFamily: "DM Serif Display, serif", fontSize: "clamp(26px,5vw,40px)", color: TEXT, lineHeight: 1, marginBottom: 5 }}>{fmt(animEquity)}</div>
+                  <div style={{ fontFamily: "Space Mono, monospace", fontSize: 10, color: TEAL, marginBottom: 16 }}>{zone.equityPct}%</div>
+                  <AllocBar pct={zone.equityPct} color={TEAL}/>
+                  <div style={{ fontSize: 11, color: FAINT, lineHeight: 1.65 }}>Index Funds · Flexi-cap · Aggressive Hybrid</div>
+                </div>
+                {/* Liquid */}
+                <div style={{ background: CARD, border: `1px solid rgba(255,179,71,0.18)`, borderRadius: 20, padding: "clamp(18px,3vw,26px)" }}>
+                  <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: zone.equityPct < 100 ? AMBER : GOLD, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 16 }}>
+                    {zone.equityPct < 100 ? "Liquid / Arbitrage" : "All-In — Deploy Reserves"}
+                  </div>
+                  <div style={{ fontFamily: "DM Serif Display, serif", fontSize: "clamp(26px,5vw,40px)", color: TEXT, lineHeight: 1, marginBottom: 5 }}>
+                    {zone.equityPct < 100 ? fmt(animLiquid) : <span style={{ fontSize: 20, color: GOLD, lineHeight: 1.3 }}>Redeploy<br/>existing liquid</span>}
+                  </div>
+                  <div style={{ fontFamily: "Space Mono, monospace", fontSize: 10, color: zone.equityPct < 100 ? AMBER : GOLD, marginBottom: 16 }}>{100 - zone.equityPct}%</div>
+                  <AllocBar pct={100 - zone.equityPct} color={zone.equityPct < 100 ? AMBER : GOLD}/>
+                  <div style={{ fontSize: 11, color: FAINT, lineHeight: 1.65 }}>
+                    {zone.equityPct === 100 ? "Deploy existing liquid fund balance into equity MFs." : "Liquid Funds · Arbitrage Funds · Ultra Short Duration"}
+                  </div>
+                </div>
+              </div>
+              {/* Action line */}
+              <div style={{ marginTop: 10, padding: "15px 18px", background: "rgba(245,200,66,0.04)", border: `1px solid rgba(245,200,66,0.1)`, borderRadius: 12 }}>
+                <span style={{ color: GOLD, fontWeight: 600, fontSize: 13 }}>Your move: </span>
+                <span style={{ fontSize: 13, color: TEXT, lineHeight: 1.7 }}>{zone.nextAction}</span>
+              </div>
+            </div>
+          )}
+
+          {/* ── TRIGGER TABLE ── */}
+          {!loading && hasData && niftyPrice && (
+            <div style={{ ...C.card, ...C.sec }} className="slide-up">
+              <TriggerTable niftyPrice={niftyPrice} dma200={dma200} pe={pe} vix={vix}/>
+            </div>
+          )}
+
+          {/* ── HOW IT WORKS ── */}
+          <div style={{ ...C.card, ...C.sec }} className="slide-up">
+            <div style={{ fontFamily: "DM Serif Display, serif", fontSize: 24, color: TEXT, marginBottom: 22 }}>How the engine works</div>
+            {[
+              {
+                label: "India VIX", color: TEAL,
+                why: "Implied volatility of Nifty options. Low VIX = market complacency = historically bad entry. High VIX = fear = historically great entry.",
+                source: "Yahoo Finance · ^INDIAVIX · auto-fetched"
+              },
+              {
+                label: "200-Day Moving Average Gap", color: AMBER,
+                why: "The long-term trend anchor. When Nifty is far above its 200-DMA, the market is stretched. Far below it — oversold and usually cheap.",
+                source: "Yahoo Finance · ^NSEI · 200-day computed from 1-year daily closes"
+              },
+              {
+                label: "Nifty P/E Ratio", color: GOLD,
+                why: "Fundamental valuation. P/E above 23 has historically meant expensive. Below 17 has meant cheap. Adds a third dimension to the signal.",
+                source: "NSE India · fetched via /api/pe serverless function · 3hr cache"
+              },
+            ].map((row, i) => (
+              <div key={i} style={{ display: "flex", gap: 18, padding: "16px 0", borderBottom: i < 2 ? `1px solid ${BORDER}` : "none" }}>
+                <div style={{ width: 3, background: row.color, borderRadius: 4, flexShrink: 0, minHeight: 20 }}/>
+                <div>
+                  <div style={{ fontFamily: "DM Serif Display, serif", fontSize: 17, color: TEXT, marginBottom: 5 }}>{row.label}</div>
+                  <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.7, marginBottom: 7 }}>{row.why}</div>
+                  <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, letterSpacing: "0.07em" }}>SOURCE: {row.source}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* ── RELATED TOOLS ── */}
+          <div style={C.sec} className="slide-up">
+            <div style={{ ...C.eyebrow, color: FAINT, marginBottom: 14 }}>More Wiser Tools</div>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              {[
+                { label: "Compounding Machine", href: "/compounding-machine", desc: "See what your equity allocation grows to over 20 years" },
+                { label: "Investor DNA", href: "/investor-dna", desc: "Find your risk profile before you allocate" },
+                { label: "SIP Flat Returns", href: "/sip-flat-returns", desc: "What sideways markets actually mean for your corpus" },
+              ].map((t, i) => (
+                <a key={i} href={t.href} style={{ flex: "1 1 160px", background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: "16px 14px", textDecoration: "none", display: "block", transition: "border-color .15s, transform .12s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(245,200,66,0.28)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = BORDER; e.currentTarget.style.transform = "translateY(0)"; }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: TEXT, marginBottom: 5 }}>{t.label}</div>
+                  <div style={{ fontSize: 11, color: MUTED, lineHeight: 1.6 }}>{t.desc}</div>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* ── LEAD CAPTURE ── */}
+          <div style={{ background: CARD2, border: `1px solid rgba(245,200,66,0.14)`, borderRadius: 20, padding: "clamp(28px,4vw,38px)", ...C.sec }} className="slide-up">
+            <LeadCapture zoneName={zone.label} monthly={monthly}/>
+          </div>
+
+          {/* ── FOOTER ── */}
+          <div style={{ textAlign: "center", marginTop: 52, fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, letterSpacing: "1.5px", lineHeight: 2.2 }}>
+            FOR EDUCATIONAL PURPOSES ONLY · NOT SEBI-REGISTERED INVESTMENT ADVICE<br/>
+            LIVE DATA: YAHOO FINANCE (^NSEI · ^INDIAVIX) · P/E: NSE INDIA (MANUAL)<br/>
+            HISTORICAL ZONE RETURNS ARE AVERAGES — NOT GUARANTEES OF FUTURE PERFORMANCE<br/>
+            WISER WITH VIDHAAN © 2026
+          </div>
+
+        </div>
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
