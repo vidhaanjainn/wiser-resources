@@ -116,12 +116,34 @@
     .ic-val{font-family:'DM Serif Display',serif;font-size:clamp(18px,2.5vw,24px);color:#F5C842;line-height:1;margin-bottom:6px;}
     .ic-label{font-size:12px;color:#404058;line-height:1.55;}
 
-    /* ── Savings Rate ── */
-    .sr-row{display:flex;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid #141420;}
-    .sr-row:last-child{border-bottom:none;}
-    .sr-label{font-size:11px;color:#5A5A70;width:36px;flex-shrink:0;}
-    .sr-bar-wrap{flex:1;background:#141420;border-radius:4px;height:5px;overflow:hidden;}
-    .sr-bar{height:100%;border-radius:4px;animation:barIn .8s cubic-bezier(0.22,1,0.36,1) both;}
+    /* ── Savings Rate Table ── */
+    .sr-context{background:#0A0A14;border:1px solid #1A1A28;border-radius:12px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:#5A5A70;line-height:1.75;}
+    .sr-context strong{color:#EDE9E3;}
+    .sr-context em{color:#F5C842;font-style:normal;font-weight:600;}
+    .sr-dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+    .sr-force{border-radius:12px;padding:14px 16px;}
+    .sr-force.up{background:rgba(0,217,160,0.05);border:1px solid rgba(0,217,160,0.12);}
+    .sr-force.down{background:rgba(245,200,66,0.04);border:1px solid rgba(245,200,66,0.12);}
+    .sr-force-icon{font-size:18px;margin-bottom:6px;}
+    .sr-force-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+    .sr-force.up .sr-force-title{color:#00D9A0;}
+    .sr-force.down .sr-force-title{color:#F5C842;}
+    .sr-force-body{font-size:12px;color:#5A5A70;line-height:1.6;}
+    .sr-force-body strong{color:#EDE9E3;}
+    .sr-table{width:100%;border-collapse:collapse;}
+    .sr-table th{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#2A2A3A;padding:0 8px 10px;border-bottom:1px solid #1A1A28;text-align:left;}
+    .sr-table th:last-child{text-align:right;padding-right:0;}
+    .sr-table td{padding:10px 8px;border-bottom:1px solid #0F0F1C;font-size:13px;vertical-align:middle;}
+    .sr-table td:first-child{padding-left:0;}
+    .sr-table td:last-child{padding-right:0;}
+    .sr-table tr:last-child td{border-bottom:none;}
+    .sr-table tr.sr-current td{background:rgba(245,200,66,0.025);}
+    .sr-fire-badge{display:inline-block;font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:6px;letter-spacing:.5px;margin-left:5px;vertical-align:middle;}
+    .sr-fire-badge.faster{background:rgba(0,217,160,0.1);color:#00D9A0;border:1px solid rgba(0,217,160,0.15);}
+    .sr-fire-badge.current{background:rgba(245,200,66,0.1);color:#F5C842;border:1px solid rgba(245,200,66,0.2);}
+    .sr-nextstep{margin-top:18px;padding:16px;background:#0A0A14;border:1px solid #1A1A28;border-left:2px solid #00D9A0;border-radius:0 10px 10px 0;font-size:13px;color:#5A5A70;line-height:1.75;}
+    .sr-nextstep strong{color:#EDE9E3;}
+    .sr-nextstep em{color:#00D9A0;font-style:normal;}
     @keyframes barIn{from{width:0!important;}to{}}
 
     /* ── Stress toggle ── */
@@ -770,26 +792,83 @@
               <div className="chart-card">
                 <div className="ctitle">The Savings Rate Lever</div>
                 <div className="cdesc">
-                  More powerful than your return rate. Higher savings = you invest more AND need less. Both work at once. Income: {fmt(monthlyExpense + monthlyInvest)}/mo.
+                  Your savings rate is what % of your income you invest vs spend. It's the most powerful FIRE lever — because it attacks the problem from both ends at once.
                 </div>
-                <div style={{marginTop:8}}>
-                  {res.srRows.map((row, i) => {
-                    const isCurrent = i === closestSrIdx;
-                    const barW = row.years ? Math.max(5, (row.years / maxSrYears) * 100) : 100;
-                    const barCol = isCurrent ? "#F5C842" : (res.actualFireYear && row.years && row.years < res.actualFireYear) ? "#00D9A0" : "#252535";
-                    return (
-                      <div className="sr-row" key={i} style={isCurrent ? {background:"rgba(245,200,66,0.03)",borderRadius:6,marginLeft:-4,paddingLeft:4} : {}}>
-                        <div className="sr-label" style={{color: isCurrent ? "#F5C842" : "#404058"}}>{row.sr}%</div>
-                        <div className="sr-bar-wrap">
-                          <div className="sr-bar" style={{width:`${barW}%`, background: barCol}} />
-                        </div>
-                        <div style={{fontSize:11,width:60,textAlign:"right",flexShrink:0,color: isCurrent ? "#F5C842" : "#363650"}}>
-                          {row.years ? `${row.years}y` : "50+y"}{isCurrent ? " ◀" : ""}
-                        </div>
-                      </div>
-                    );
-                  })}
+
+                {/* Context: your current numbers */}
+                {(() => {
+                  const income = monthlyExpense + monthlyInvest;
+                  const currentSR = Math.round(res.currentSRPct);
+                  return (
+                    <div className="sr-context">
+                      You earn <strong>{fmt(income)}/mo</strong>. You currently invest <strong>{fmt(monthlyInvest)}</strong> and spend <strong>{fmt(monthlyExpense)}</strong> — a <em>~{currentSR}% savings rate</em>. The table shows your FIRE timeline at every savings rate.
+                    </div>
+                  );
+                })()}
+
+                {/* The two forces */}
+                <div className="sr-dual-grid">
+                  <div className="sr-force up">
+                    <div className="sr-force-icon">↑</div>
+                    <div className="sr-force-title">Force 1: More goes in</div>
+                    <div className="sr-force-body">Every extra rupee saved goes straight into your SIP. <strong>Your corpus grows faster.</strong></div>
+                  </div>
+                  <div className="sr-force down">
+                    <div className="sr-force-icon">↓</div>
+                    <div className="sr-force-title">Force 2: Less needed</div>
+                    <div className="sr-force-body">Spending less means your FIRE number — the total corpus required — is <strong>actually smaller.</strong></div>
+                  </div>
                 </div>
+
+                <table className="sr-table">
+                  <thead>
+                    <tr>
+                      <th>% saved</th>
+                      <th>Monthly SIP</th>
+                      <th>Monthly spend</th>
+                      <th style={{textAlign:"right"}}>Years to FIRE</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {res.srRows.map((row, i) => {
+                      const isCurrent = i === closestSrIdx;
+                      const income = monthlyExpense + monthlyInvest;
+                      const invest = income * row.sr / 100;
+                      const spend = income * (1 - row.sr / 100);
+                      const isBetter = res.actualFireYear && row.years && row.years < res.actualFireYear;
+                      return (
+                        <tr key={i} className={isCurrent ? "sr-current" : ""}>
+                          <td style={{color: isCurrent ? "#F5C842" : isBetter ? "#00D9A0" : "#404058", fontWeight: isCurrent ? 600 : 400}}>
+                            {row.sr}%
+                            {isCurrent && <span className="sr-fire-badge current">you are here</span>}
+                          </td>
+                          <td style={{color: isCurrent ? "#EDE9E3" : "#5A5A70"}}>{fmt(invest)}/mo</td>
+                          <td style={{color: isCurrent ? "#EDE9E3" : "#363650"}}>{fmt(spend)}/mo</td>
+                          <td style={{textAlign:"right", color: isCurrent ? "#F5C842" : isBetter ? "#00D9A0" : "#363650", fontWeight: isCurrent || isBetter ? 500 : 400}}>
+                            {row.years ? `${row.years} yrs` : "50+ yrs"}
+                            {isBetter && !isCurrent && <span className="sr-fire-badge faster">sooner</span>}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+
+                {/* Concrete next-step insight */}
+                {(() => {
+                  const income = monthlyExpense + monthlyInvest;
+                  const nextRow = res.srRows[closestSrIdx + 1];
+                  if (!nextRow || !res.srRows[closestSrIdx]) return null;
+                  const currentRow = res.srRows[closestSrIdx];
+                  const extraInvest = fmt(income * (nextRow.sr - currentRow.sr) / 100);
+                  const yearsDiff = currentRow.years && nextRow.years ? currentRow.years - nextRow.years : null;
+                  if (!yearsDiff || yearsDiff <= 0) return null;
+                  return (
+                    <div className="sr-nextstep">
+                      Move from <strong>{currentRow.sr}% → {nextRow.sr}%</strong>: invest just <em>{extraInvest}/mo more</em>, spend that much less — and FIRE arrives <em>{yearsDiff} year{yearsDiff > 1 ? "s" : ""} earlier</em>. Both forces working together.
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* CTA */}
