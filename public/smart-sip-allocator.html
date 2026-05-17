@@ -16,11 +16,13 @@
     html, body, #root { background: #090B0F; min-height: 100%; }
     body { -webkit-font-smoothing: antialiased; }
 
-    @keyframes slideUp  { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeIn   { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes pulse    { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
-    @keyframes spin     { to { transform: rotate(360deg); } }
-    @keyframes fillBar  { from { width: 0%; } to { width: var(--w); } }
+    @keyframes slideUp   { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pulse     { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+    @keyframes spin      { to { transform: rotate(360deg); } }
+    @keyframes fillBar   { from { width: 0%; } to { width: var(--w); } }
+    @keyframes shimmer   { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+    @keyframes insightIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
     .slide-up  { animation: slideUp 0.48s cubic-bezier(0.22,1,0.36,1) both; }
     .fade-in   { animation: fadeIn 0.4s ease both; }
@@ -332,87 +334,141 @@
     );
   }
 
+  /* ── INSIGHTS for loading screen ── */
+  const INSIGHTS = [
+    "VIX above 20 signals elevated fear — historically one of the best equity entry points.",
+    "Nifty P/E above 23 has meant expensive. Below 17 has meant cheap. Math, not opinion.",
+    "The 200-DMA is the market's long-term compass. Far above it = stretched. Far below = opportunity.",
+    "Dry powder matters. Liquid funds earn 7–8% while you wait for the crash window to open.",
+    "In every major crash — 2008, 2020 — investors who stayed invested recovered fully within 2–3 years.",
+  ];
+
+  /* ── LIVE INTEL LOADING SKELETON ── */
+  function LiveIntel({ marketLoaded, peLoaded }) {
+    const [insight, setInsight] = useState(0);
+    const [visible, setVisible] = useState(true);
+
+    useEffect(() => {
+      const id = setInterval(() => {
+        setVisible(false);
+        setTimeout(() => { setInsight(i => (i + 1) % INSIGHTS.length); setVisible(true); }, 350);
+      }, 3000);
+      return () => clearInterval(id);
+    }, []);
+
+    const signals = [
+      { label: "India VIX", desc: "How nervous is the market feeling right now?", resolved: marketLoaded, color: TEAL },
+      { label: "Nifty 200-DMA Gap", desc: "How far are stocks from the long-term trend?", resolved: marketLoaded, color: AMBER },
+      { label: "Nifty P/E Ratio", desc: "Are stocks cheap or overpriced today?", resolved: peLoaded, color: GOLD },
+    ];
+
+    const shimmerStyle = {
+      background: `linear-gradient(90deg, ${FAINT} 25%, #2e2e42 50%, ${FAINT} 75%)`,
+      backgroundSize: "400px 100%",
+      animation: "shimmer 1.6s infinite linear",
+      borderRadius: 4,
+    };
+
+    return (
+      <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 20, padding: "clamp(22px,4vw,30px)", marginBottom: 18 }} className="fade-in">
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+          <div className="spinning" style={{ width: 16, height: 16, border: `2px solid ${FAINT}`, borderTop: `2px solid ${GOLD}`, borderRadius: "50%", flexShrink: 0 }}/>
+          <div>
+            <div style={{ fontSize: 14, color: TEXT, fontWeight: 500 }}>Fetching live market intelligence</div>
+            <div style={{ fontFamily: "Space Mono, monospace", fontSize: 9, color: FAINT, marginTop: 3, letterSpacing: "0.06em" }}>DIRECT FROM NSE INDIA · YAHOO FINANCE · ~3 SECONDS</div>
+          </div>
+        </div>
+
+        {/* Signal rows */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+          {signals.map((s, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "13px 0", borderBottom: i < 2 ? `1px solid ${FAINT}22` : "none", transition: "opacity 0.4s" }}>
+              {/* Status dot */}
+              <div style={{
+                width: 8, height: 8, borderRadius: "50%", flexShrink: 0,
+                background: s.resolved ? s.color : FAINT,
+                boxShadow: s.resolved ? `0 0 8px ${s.color}` : "none",
+                animation: s.resolved ? "none" : "pulse 1.4s ease infinite",
+                transition: "all 0.5s ease",
+              }}/>
+              {/* Label + desc */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 13, color: s.resolved ? TEXT : MUTED, fontWeight: 500, marginBottom: 2, transition: "color 0.4s" }}>{s.label}</div>
+                <div style={{ fontFamily: "Space Mono, monospace", fontSize: 9, color: FAINT, letterSpacing: "0.04em" }}>{s.desc}</div>
+              </div>
+              {/* Value placeholder or resolved */}
+              <div style={{ flexShrink: 0, textAlign: "right" }}>
+                {s.resolved
+                  ? <div style={{ fontFamily: "Space Mono, monospace", fontSize: 9, color: s.color, letterSpacing: "0.08em" }}>LOADED ✓</div>
+                  : <div style={{ ...shimmerStyle, width: 52, height: 10 }}/>
+                }
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Rotating insight */}
+        <div style={{ marginTop: 22, padding: "14px 16px", background: "rgba(245,200,66,0.04)", border: `1px solid rgba(245,200,66,0.08)`, borderRadius: 12 }}>
+          <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: GOLD, letterSpacing: "0.12em", marginBottom: 7 }}>WHILE YOU WAIT · MARKET INSIGHT</div>
+          <div key={insight} style={{ fontSize: 12, color: MUTED, lineHeight: 1.7, opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(4px)", transition: "opacity 0.35s ease, transform 0.35s ease" }}>
+            {INSIGHTS[insight]}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   /* ── MAIN APP ── */
   function App() {
-    const [loading,     setLoading]     = useState(true);
-    const [live,        setLive]        = useState(false);
-    const [dataError,   setDataError]   = useState(false);
-    const [niftyPrice,  setNiftyPrice]  = useState(null);
-    const [dma200,      setDma200]      = useState(null);
-    const [vix,         setVix]         = useState(null);
-    const [pe,          setPe]          = useState(null);
-    const [peSource,    setPeSource]    = useState(null);
-    const [peEstimated, setPeEstimated] = useState(false);
-    const [fetchedAt,   setFetchedAt]   = useState(null);
-    const [monthly,     setMonthly]     = useState(30000);
-    const [mEditing,    setMEditing]    = useState(false);
-    const [mDraft,      setMDraft]      = useState("");
+    const [marketLoaded, setMarketLoaded] = useState(false);
+    const [peLoaded,     setPeLoaded]     = useState(false);
+    const [live,         setLive]         = useState(false);
+    const [niftyPrice,   setNiftyPrice]   = useState(null);
+    const [dma200,       setDma200]       = useState(null);
+    const [vix,          setVix]          = useState(null);
+    const [pe,           setPe]           = useState(null);
+    const [peSource,     setPeSource]     = useState(null);
+    const [peEstimated,  setPeEstimated]  = useState(false);
+    const [fetchedAt,    setFetchedAt]    = useState(null);
+    const [monthly,      setMonthly]      = useState(30000);
+    const [mEditing,     setMEditing]     = useState(false);
+    const [mDraft,       setMDraft]       = useState("");
     const mRef = useRef();
+
+    const loading = !marketLoaded;
 
     /* DATA FETCH */
     useEffect(() => {
-      const proxy = "https://api.allorigins.win/raw?url=";
-      const yf1 = "https://query1.finance.yahoo.com/v8/finance/chart/";
-      const yf2 = "https://query2.finance.yahoo.com/v8/finance/chart/";
-
-      async function fetchJson(url) {
-        const res = await fetch(proxy + encodeURIComponent(url));
-        if (!res.ok) throw new Error(res.status);
-        return res.json();
-      }
-
-      async function fetchSymbol(symbol, params) {
-        try { return await fetchJson(`${yf1}${symbol}?${params}`); } catch {}
-        try { return await fetchJson(`${yf2}${symbol}?${params}`); } catch {}
-        return null;
-      }
-
-      async function load() {
-        let gotAny = false;
-
-        // ── Nifty 1y history → price + 200-DMA ──
+      async function fetchMarket() {
         try {
-          const d = await fetchSymbol("^NSEI", "interval=1d&range=1y");
-          const closes = (d?.chart?.result?.[0]?.indicators?.quote?.[0]?.close || []).filter(Boolean);
-          if (closes.length >= 20) {
-            const cur   = closes[closes.length - 1];
-            const l200  = closes.slice(-200);
-            const avg   = l200.reduce((a, b) => a + b, 0) / l200.length;
-            setNiftyPrice(Math.round(cur));
-            setDma200(Math.round(avg));
-            gotAny = true;
-          }
+          const r = await fetch("/api/market");
+          if (!r.ok) throw new Error(r.status);
+          const d = await r.json();
+          if (d.niftyPrice) setNiftyPrice(d.niftyPrice);
+          if (d.dma200)     setDma200(d.dma200);
+          if (d.vix)        setVix(d.vix);
+          setLive(!!d.live);
+          setFetchedAt(d.fetchedAt ? new Date(d.fetchedAt) : new Date());
         } catch {}
-
-        // ── India VIX ──
-        try {
-          const d = await fetchSymbol("^INDIAVIX", "interval=1d&range=5d");
-          const closes = (d?.chart?.result?.[0]?.indicators?.quote?.[0]?.close || []).filter(Boolean);
-          const vVal   = d?.chart?.result?.[0]?.meta?.regularMarketPrice || closes[closes.length - 1];
-          if (vVal && vVal > 0) { setVix(parseFloat(Number(vVal).toFixed(1))); gotAny = true; }
-        } catch {}
-
-        if (gotAny) { setLive(true); setFetchedAt(new Date()); }
-        else         { setDataError(true); }
-        setLoading(false);
+        setMarketLoaded(true);
       }
 
-      // ── Nifty P/E — from /api/pe serverless function ──
-      async function loadPE() {
+      async function fetchPE() {
         try {
           const r = await fetch("/api/pe");
           if (!r.ok) throw new Error(r.status);
-          const data = await r.json();
-          if (data?.pe && data.pe > 5 && data.pe < 80) {
-            setPe(data.pe);
-            setPeSource(data.source || "NSE India");
-            setPeEstimated(!!data.estimated);
+          const d = await r.json();
+          if (d?.pe && d.pe > 5 && d.pe < 80) {
+            setPe(d.pe);
+            setPeSource(d.source || "NSE India");
+            setPeEstimated(!!d.estimated);
           }
         } catch {}
+        setPeLoaded(true);
       }
 
-      // Run both in parallel — market data and P/E are independent
-      Promise.all([load(), loadPE()]);
+      Promise.all([fetchMarket(), fetchPE()]);
     }, []);
 
     const dmaGap       = (niftyPrice && dma200) ? ((niftyPrice / dma200) - 1) * 100 : null;
@@ -460,15 +516,9 @@
             </p>
           </div>
 
-          {/* ── LOADING ── */}
-          {loading && (
-            <div style={{ ...C.card, ...C.sec, display: "flex", alignItems: "center", gap: 14 }} className="fade-in">
-              <div className="spinning" style={{ width: 18, height: 18, border: `2px solid ${BORDER}`, borderTop: `2px solid ${GOLD}`, borderRadius: "50%", flexShrink: 0 }}/>
-              <div>
-                <div style={{ fontSize: 13, color: TEXT, marginBottom: 3 }}>Reading live market signals…</div>
-                <div style={{ fontFamily: "Space Mono, monospace", fontSize: 9, color: FAINT }}>YAHOO FINANCE · ^NSEI · ^INDIAVIX</div>
-              </div>
-            </div>
+          {/* ── LOADING SKELETON ── */}
+          {(loading || !peLoaded) && (
+            <LiveIntel marketLoaded={marketLoaded} peLoaded={peLoaded} />
           )}
 
           {/* ── MARKET TEMPERATURE ── */}
@@ -477,9 +527,9 @@
 
               {/* Data status bar */}
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 22 }}>
-                <div style={{ width: 7, height: 7, borderRadius: "50%", background: live ? TEAL : dataError ? RED : AMBER, animation: live ? "none" : "pulse 1.8s ease infinite", flexShrink: 0 }}/>
-                <span style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: live ? TEAL : dataError ? RED : AMBER, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                  {live ? `Live · Yahoo Finance · NSE India · ${timeStr}` : dataError ? "Market data unavailable — check connection and refresh." : "Connecting…"}
+                <div style={{ width: 7, height: 7, borderRadius: "50%", background: live ? TEAL : AMBER, animation: live ? "none" : "pulse 1.8s ease infinite", flexShrink: 0 }}/>
+                <span style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: live ? TEAL : AMBER, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  {live ? `Live · Yahoo Finance · NSE India · ${timeStr}` : "Estimated data — live fetch unavailable"}
                 </span>
               </div>
 
