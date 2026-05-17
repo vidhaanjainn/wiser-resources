@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FIRE Calculator — Wiser With Vidhaan</title>
+  <meta name="description" content="Find your exact FIRE number, years to financial independence, Coast FIRE milestone, and whether your corpus survives to age 90. Built on Trinity Study research." />
+  <meta name="theme-color" content="#090B0F" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body,#root{min-height:100%;background:#090B0F;}
+    .app{min-height:100vh;background:#090B0F;color:#EDE9E3;font-family:'DM Sans',sans-serif;}
+    .glow-bg{position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 80% 5%,rgba(245,200,66,0.06) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 10% 90%,rgba(0,217,160,0.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+    .wrap{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:56px 24px 96px;}
+    .eyebrow{font-size:11px;font-weight:600;letter-spacing:3.5px;text-transform:uppercase;color:#F5C842;margin-bottom:16px;}
+    .hero-title{font-family:'DM Serif Display',serif;font-size:clamp(44px,7vw,76px);line-height:1.0;color:#EDE9E3;margin-bottom:18px;letter-spacing:-1px;}
+    .hero-title em{font-style:italic;color:#F5C842;}
+    .hero-sub{font-size:16px;color:#5A5A70;line-height:1.75;max-width:520px;margin-bottom:60px;font-weight:300;}
+    .card{background:#0D0D18;border:1px solid #1A1A28;border-radius:20px;padding:32px;margin-bottom:20px;}
+    .card-label{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#2E2E42;margin-bottom:28px;}
+    .sg{margin-bottom:32px;}
+    .sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+    .sn{font-size:13px;color:#606078;font-weight:400;}
+    .sv{font-family:'DM Serif Display',serif;font-size:26px;color:#EDE9E3;line-height:1;}
+    .sv small{font-size:13px;color:#404058;font-family:'DM Sans',sans-serif;margin-left:4px;font-weight:400;}
+    .sv-input{font-family:'DM Serif Display',serif;font-size:26px;color:#EDE9E3;background:transparent;border:none;border-bottom:1.5px solid transparent;outline:none;text-align:right;max-width:220px;padding-bottom:2px;cursor:pointer;transition:border-color .15s,color .15s;line-height:1;}
+    .sv-input:hover{border-bottom-color:#2A2A3A;}
+    .sv-input:focus{border-bottom-color:#F5C842;cursor:text;color:#F5C842;}
+    .sv-hint{font-size:10px;color:#2A2A3A;text-align:right;margin-top:4px;letter-spacing:.5px;}
+    input[type=range]{-webkit-appearance:none;width:100%;height:2px;border-radius:2px;outline:none;cursor:pointer;}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+    input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
+    .rng-gold::-webkit-slider-thumb{background:#F5C842;box-shadow:0 0 0 5px rgba(245,200,66,0.14);}
+    .rng-teal::-webkit-slider-thumb{background:#00D9A0;box-shadow:0 0 0 5px rgba(0,217,160,0.14);}
+    .cta-btn{width:100%;padding:19px;background:#F5C842;color:#090B0F;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;border:none;border-radius:12px;cursor:pointer;text-transform:uppercase;transition:background .15s,transform .15s,box-shadow .2s;margin-top:28px;}
+    .cta-btn:hover{background:#FFD84A;transform:translateY(-2px);box-shadow:0 16px 48px rgba(245,200,66,0.22);}
+    .results{animation:fadeUp .55s ease forwards;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+    .badge-row{display:flex;justify-content:center;margin-bottom:28px;}
+    .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.22);border-radius:100px;padding:8px 20px;font-size:12px;color:#F5C842;font-weight:500;}
+    .fire-card{background:#0A0B10;border:1px solid rgba(245,200,66,0.2);border-radius:20px;padding:44px 32px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden;}
+    .fire-glow{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:400px;height:200px;background:radial-gradient(ellipse,rgba(245,200,66,0.1),transparent 65%);pointer-events:none;}
+    .fire-label{font-size:10px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:#F5C842;margin-bottom:20px;position:relative;}
+    .fire-amount{font-family:'DM Serif Display',serif;font-size:clamp(52px,10vw,96px);color:#F5C842;line-height:1;letter-spacing:-2px;margin-bottom:10px;position:relative;}
+    .fire-sub{font-size:13px;color:#4A4A28;position:relative;}
+    .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:20px;}
+    @media(max-width:560px){.stat-grid{grid-template-columns:1fr;}}
+    .stat-card{background:#0D0D18;border:1px solid #1A1A28;border-radius:16px;padding:22px 20px;}
+    .stat-tag{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+    .stat-tag.gold{color:#F5C842;}.stat-tag.teal{color:#00D9A0;}.stat-tag.mute{color:#404058;}.stat-tag.red{color:#FF7A7A;}
+    .stat-num{font-family:'DM Serif Display',serif;font-size:clamp(22px,3.5vw,28px);color:#EDE9E3;line-height:1;margin-bottom:6px;}
+    .stat-desc{font-size:11px;color:#363650;line-height:1.5;}
+    .chart-card{background:#0D0D18;border:1px solid #1A1A28;border-radius:20px;padding:32px;margin-bottom:20px;}
+    .ctitle{font-family:'DM Serif Display',serif;font-size:21px;color:#EDE9E3;margin-bottom:7px;}
+    .cdesc{font-size:13px;color:#363650;margin-bottom:22px;line-height:1.6;}
+    .legend{display:flex;gap:22px;margin-bottom:20px;flex-wrap:wrap;}
+    .li{display:flex;align-items:center;gap:8px;font-size:12px;color:#5A5A70;}
+    .ld{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .adv-toggle{display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;color:#404058;font-size:12px;font-family:'DM Sans',sans-serif;padding:0;margin-top:20px;letter-spacing:.5px;}
+    .adv-toggle:hover{color:#9090A8;}
+    .adv-section{margin-top:24px;padding-top:24px;border-top:1px solid #1A1A28;}
+    .adv-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+    @media(max-width:560px){.adv-grid{grid-template-columns:1fr;}}
+    .adv-label{font-size:11px;color:#404058;margin-bottom:6px;}
+    .adv-val{font-family:'DM Serif Display',serif;font-size:20px;color:#EDE9E3;margin-bottom:8px;}
+    .adv-hint{font-size:10px;color:#2A2A3A;margin-top:6px;}
+    .sr-row{display:flex;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid #141420;}
+    .sr-row:last-child{border-bottom:none;}
+    .sr-label{font-size:11px;color:#5A5A70;width:36px;flex-shrink:0;}
+    .sr-bar-wrap{flex:1;background:#141420;border-radius:4px;height:5px;overflow:hidden;}
+    .sr-bar{height:100%;border-radius:4px;transition:width .7s cubic-bezier(0.22,1,0.36,1);}
+    .sr-years{font-size:11px;width:56px;text-align:right;flex-shrink:0;}
+    .research-strip{background:#0D0D18;border:1px solid #1A1A28;border-radius:16px;padding:20px 24px;margin-bottom:20px;}
+    .research-label{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#2E2E42;margin-bottom:14px;}
+    .research-item{font-size:12px;color:#363650;line-height:1.7;padding:8px 0;border-bottom:1px solid #141420;}
+    .research-item:last-child{border-bottom:none;}
+    .insight-bar{border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:13px;line-height:1.65;}
+    .insight-bar.early{background:rgba(0,217,160,0.05);border:1px solid rgba(0,217,160,0.18);color:#6ED4BB;}
+    .insight-bar.late{background:rgba(255,122,122,0.05);border:1px solid rgba(255,122,122,0.18);color:#CC8888;}
+    .insight-bar.exact{background:rgba(245,200,66,0.05);border:1px solid rgba(245,200,66,0.18);color:#B8A040;}
+    .cta-end{background:#0A0A14;border:1px solid rgba(245,200,66,0.14);border-radius:20px;padding:38px;text-align:center;}
+    .cta-title{font-family:'DM Serif Display',serif;font-size:clamp(20px,3vw,27px);color:#EDE9E3;margin-bottom:10px;line-height:1.35;}
+    .cta-sub{font-size:14px;color:#404058;line-height:1.8;}
+    .div-line{height:1px;background:#1A1A28;margin:24px 0;}
+    .tool-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+    .tool-link{display:inline-flex;align-items:center;gap:6px;padding:11px 20px;border-radius:12px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;text-decoration:none;transition:transform .12s,opacity .12s;}
+    .tool-link:hover{transform:translateY(-1px);opacity:.88;}
+    .tool-link.gold{background:#F5C842;color:#090B0F;}
+    .tool-link.ghost{background:transparent;border:1px solid #1A1A28;color:#5A5A70;}
+    .footer-line{margin-top:56px;text-align:center;font-size:10px;color:#20202E;letter-spacing:2.5px;}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+  const { useState, useEffect, useRef } = React;
+
+  /* ─── Formatters ─── */
+  const fmt = (n) => {
+    if (n == null || isNaN(n) || n < 0) return "₹0";
+    if (n >= 1e7) return `₹${(n / 1e7).toFixed(2)} Cr`;
+    if (n >= 1e5) return `₹${(n / 1e5).toFixed(1)} L`;
+    return `₹${Math.round(n).toLocaleString("en-IN")}`;
+  };
+  const fmtY = (n) => {
+    if (n >= 1e7) return `${(n/1e7).toFixed(1)}Cr`;
+    if (n >= 1e5) return `${(n/1e5).toFixed(0)}L`;
+    if (n >= 1e3) return `${(n/1e3).toFixed(0)}K`;
+    return `${Math.round(n)}`;
+  };
+  const fmtDisplay = (v) => {
+    if (v === 0) return "₹0";
+    if (v >= 1e7) return `₹${(v / 1e7).toFixed(2)} Cr`;
+    if (v >= 1e5) return `₹${(v / 1e5).toFixed(1)} L`;
+    return `₹${Math.round(v).toLocaleString("en-IN")}`;
+  };
+  const trackBg = (val, min, max, col) => {
+    const pct = Math.round(((Math.min(val, max) - min) / (max - min)) * 100);
+    return { background: `linear-gradient(to right,${col} ${pct}%,#1A1A28 ${pct}%)` };
+  };
+
+  /* ─── Core FIRE Math ─── */
+  const sipFV = (monthly, annualRate, years) => {
+    if (years <= 0 || monthly <= 0) return 0;
+    const mr = annualRate / 100 / 12;
+    if (mr === 0) return monthly * 12 * years;
+    return monthly * ((Math.pow(1 + mr, 12 * years) - 1) / mr) * (1 + mr);
+  };
+
+  const lumpFV = (lump, annualRate, years) => {
+    if (years <= 0) return lump;
+    if (annualRate === 0) return lump;
+    return lump * Math.pow(1 + annualRate / 100, years);
+  };
+
+  const calcFIRE = ({ monthlyExpense, currentAge, fireAge, monthlyInvest, currentCorpus, inflation, returnRate, swr }) => {
+    const yearsToTarget = Math.max(1, fireAge - currentAge);
+    const inf = inflation / 100;
+    const swrDec = swr / 100;
+    const mr = returnRate / 100 / 12;
+
+    // Inflation-adjusted annual expense at target retirement age
+    const futureAnnualExpense = monthlyExpense * 12 * Math.pow(1 + inf, yearsToTarget);
+
+    // FIRE Number = corpus needed at retirement to sustain withdrawals forever at SWR
+    const fireNumber = futureAnnualExpense / swrDec;
+
+    // Iterate year by year: find when growing corpus crosses the FIRE threshold
+    let actualFireYear = null;
+    const yearlyData = [];
+    for (let y = 1; y <= 50; y++) {
+      const corpus = sipFV(monthlyInvest, returnRate, y) + lumpFV(currentCorpus, returnRate, y);
+      // FIRE threshold at year y = expenses at year y / SWR (both inflation-adjusted)
+      const fireNeededAtY = (monthlyExpense * 12 * Math.pow(1 + inf, y)) / swrDec;
+      yearlyData.push({
+        year: y,
+        age: currentAge + y,
+        corpus: Math.round(corpus),
+        fireNeeded: Math.round(fireNeededAtY),
+      });
+      if (actualFireYear === null && corpus >= fireNeededAtY) {
+        actualFireYear = y;
+      }
+    }
+
+    // Coast FIRE: corpus needed TODAY that compounds to fireNumber by target retirement age
+    // If you have this much already invested, you can stop all SIPs
+    const coastFIRE = fireNumber / Math.pow(1 + returnRate / 100, yearsToTarget);
+    const isCoasted = currentCorpus >= coastFIRE;
+
+    // Monthly SIP needed to hit fireNumber by target retirement age
+    const sipMultiplier = mr > 0
+      ? ((Math.pow(1 + mr, 12 * yearsToTarget) - 1) / mr) * (1 + mr)
+      : 12 * yearsToTarget;
+    const lumpAtTarget = lumpFV(currentCorpus, returnRate, yearsToTarget);
+    const sipNeeded = sipMultiplier > 0
+      ? Math.max(0, (fireNumber - lumpAtTarget) / sipMultiplier)
+      : 0;
+    const sipDelta = monthlyInvest - sipNeeded;
+
+    // Post-FIRE sustainability: project corpus from fireNumber to age 90
+    // Three post-retirement equity return scenarios (more conservative than accumulation phase)
+    const retirementYears = Math.max(25, 90 - fireAge);
+    const scenarios = [
+      { label: "Bear (7%)", rate: 7, color: "#5A5A70" },
+      { label: "Base (9%)", rate: 9, color: "#00D9A0" },
+      { label: "Bull (11%)", rate: 11, color: "#F5C842" },
+    ];
+    const postData = scenarios.map(s => {
+      const traj = [];
+      let c = fireNumber;
+      let depletedAt = null;
+      for (let y = 0; y <= retirementYears; y++) {
+        const val = Math.max(0, c);
+        traj.push({ year: y, age: fireAge + y, corpus: val });
+        if (c <= 0 && depletedAt === null) depletedAt = fireAge + y;
+        // Withdrawal = first-year amount × inflation compounding
+        const withdrawal = futureAnnualExpense * Math.pow(1 + inf, y);
+        c = c * (1 + s.rate / 100) - withdrawal;
+      }
+      return { ...s, traj, depletedAt };
+    });
+
+    // Savings Rate Lever: same income, different savings rates → different FIRE timelines
+    // Income = monthlyExpense + monthlyInvest (implied take-home)
+    const impliedIncome = monthlyExpense + monthlyInvest;
+    const currentSRPct = impliedIncome > 0 ? (monthlyInvest / impliedIncome) * 100 : 0;
+    const srRows = [];
+    for (let sr = 10; sr <= 75; sr += 5) {
+      const srMonthly = impliedIncome * (sr / 100);
+      const srSpend = impliedIncome * (1 - sr / 100);
+      let srYear = null;
+      for (let y = 1; y <= 50; y++) {
+        const c = sipFV(srMonthly, returnRate, y) + lumpFV(currentCorpus, returnRate, y);
+        // Double benefit: higher savings rate = lower spending = smaller FIRE number
+        const fn = (srSpend * 12 * Math.pow(1 + inf, y)) / swrDec;
+        if (c >= fn) { srYear = y; break; }
+      }
+      srRows.push({ sr, years: srYear, monthly: Math.round(srMonthly) });
+    }
+
+    return {
+      fireNumber,
+      futureAnnualExpense,
+      yearsToTarget,
+      actualFireYear,
+      actualFireAge: actualFireYear !== null ? currentAge + actualFireYear : null,
+      coastFIRE,
+      isCoasted,
+      sipNeeded,
+      sipDelta,
+      currentSRPct,
+      yearlyData,
+      postData,
+      srRows,
+    };
+  };
+
+  /* ─── Count-up animation ─── */
+  function useCountUp(target, dur = 1800) {
+    const [val, setVal] = useState(0);
+    const prev = useRef(null);
+    useEffect(() => {
+      if (target === prev.current) return;
+      prev.current = target;
+      const t0 = performance.now();
+      const run = (t) => {
+        const p = Math.min((t - t0) / dur, 1);
+        setVal(target * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(run);
+      };
+      requestAnimationFrame(run);
+    }, [target]);
+    return val;
+  }
+
+  /* ─── Editable number input ─── */
+  function NumInput({ value, min, max, set }) {
+    const [editing, setEditing] = useState(false);
+    const [draft, setDraft] = useState("");
+    const inputRef = useRef();
+    const handleFocus = () => {
+      setEditing(true);
+      setDraft(String(value));
+      setTimeout(() => inputRef.current?.select(), 0);
+    };
+    const handleChange = (e) => {
+      const raw = e.target.value.replace(/[^0-9]/g, "");
+      setDraft(raw);
+      const n = parseInt(raw, 10);
+      if (!isNaN(n)) set(Math.min(max, Math.max(min, n)));
+    };
+    const handleBlur = () => {
+      setEditing(false);
+      const n = parseInt(draft.replace(/[^0-9]/g, ""), 10);
+      set(isNaN(n) ? min : Math.min(max, Math.max(min, n)));
+    };
+    return (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+        <input ref={inputRef} type="text" inputMode="numeric" className="sv-input"
+          value={editing ? draft : fmtDisplay(value)}
+          onFocus={handleFocus} onChange={handleChange} onBlur={handleBlur}
+          onKeyDown={e => e.key === "Enter" && inputRef.current?.blur()} />
+        <div className="sv-hint">{editing ? `max ${fmtDisplay(max)}` : "tap to edit"}</div>
+      </div>
+    );
+  }
+
+  /* ─── Path to FIRE chart ─── */
+  function PathChart({ data, fireYear }) {
+    const W = 600, H = 240;
+    const pad = { t: 10, r: 10, b: 30, l: 55 };
+    const cW = W - pad.l - pad.r, cH = H - pad.t - pad.b;
+    const maxY = fireYear ? Math.min(50, fireYear + 5) : 50;
+    const subset = data.slice(0, maxY);
+    const n = subset.length;
+    if (n === 0) return null;
+    const maxVal = Math.max(...subset.map(d => Math.max(d.corpus, d.fireNeeded)), 1);
+    const xS = (i) => pad.l + (i / Math.max(n - 1, 1)) * cW;
+    const yS = (v) => pad.t + cH - (Math.max(0, v) / maxVal) * cH;
+    const corpusLine = subset.map((d, i) => `${i === 0 ? "M" : "L"} ${xS(i).toFixed(1)},${yS(d.corpus).toFixed(1)}`).join(" ");
+    const fireLine = subset.map((d, i) => `${i === 0 ? "M" : "L"} ${xS(i).toFixed(1)},${yS(d.fireNeeded).toFixed(1)}`).join(" ");
+    const corpusArea = `${corpusLine} L ${xS(n-1).toFixed(1)},${yS(0).toFixed(1)} L ${xS(0).toFixed(1)},${yS(0).toFixed(1)} Z`;
+    const yTicks = [0, 0.25, 0.5, 0.75, 1].map(t => ({ v: t * maxVal, y: yS(t * maxVal), label: fmtY(Math.round(t * maxVal)) }));
+    const step = Math.max(1, Math.ceil(n / 6));
+    const xTicks = subset.reduce((a, d, i) => {
+      if (i === 0 || i === n - 1 || i % step === 0) a.push({ x: xS(i), label: d.year });
+      return a;
+    }, []);
+    const fireX = (fireYear && fireYear <= maxY) ? xS(fireYear - 1) : null;
+    const fireY = (fireYear && fireYear <= maxY && subset[fireYear - 1]) ? yS(subset[fireYear - 1].corpus) : null;
+    return (
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
+        <defs>
+          <linearGradient id="corpGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#F5C842" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#F5C842" stopOpacity="0.02" />
+          </linearGradient>
+        </defs>
+        {yTicks.map((t, i) => (
+          <line key={i} x1={pad.l} x2={W - pad.r} y1={t.y} y2={t.y} stroke="#1A1A28" strokeWidth="1" />
+        ))}
+        {yTicks.map((t, i) => (
+          <text key={i} x={pad.l - 6} y={t.y} textAnchor="end" dominantBaseline="middle" fill="#2E2E42" fontSize="11" fontFamily="DM Sans,sans-serif">{t.label}</text>
+        ))}
+        {xTicks.map((t, i) => (
+          <text key={i} x={t.x} y={H - 5} textAnchor="middle" fill="#2E2E42" fontSize="11" fontFamily="DM Sans,sans-serif">Yr {t.label}</text>
+        ))}
+        <path d={corpusArea} fill="url(#corpGrad)" />
+        <path d={fireLine} fill="none" stroke="rgba(0,217,160,0.25)" strokeWidth="1.5" strokeDasharray="6,4" />
+        <path d={corpusLine} fill="none" stroke="#F5C842" strokeWidth="2.5" />
+        {fireX !== null && fireY !== null && (
+          <>
+            <line x1={fireX} x2={fireX} y1={pad.t} y2={H - pad.b} stroke="rgba(0,217,160,0.35)" strokeWidth="1.5" strokeDasharray="4,4" />
+            <circle cx={fireX} cy={fireY} r="5" fill="#00D9A0" />
+            <text x={fireX + 9} y={fireY - 2} fill="#00D9A0" fontSize="11" fontFamily="DM Sans,sans-serif" fontWeight="600">FIRE ✓</text>
+          </>
+        )}
+      </svg>
+    );
+  }
+
+  /* ─── Post-FIRE sustainability chart ─── */
+  function PostFireChart({ postData }) {
+    const W = 600, H = 220;
+    const pad = { t: 10, r: 10, b: 30, l: 55 };
+    const cW = W - pad.l - pad.r, cH = H - pad.t - pad.b;
+    const allCorpus = postData.flatMap(s => s.traj.map(d => d.corpus));
+    const maxVal = Math.max(...allCorpus, 1);
+    const ages = postData[0]?.traj.map(d => d.age) || [];
+    const n = ages.length;
+    if (n === 0) return null;
+    const xS = (i) => pad.l + (i / Math.max(n - 1, 1)) * cW;
+    const yS = (v) => pad.t + cH - (Math.max(0, v) / maxVal) * cH;
+    const yTicks = [0, 0.25, 0.5, 0.75, 1].map(t => ({ v: t * maxVal, y: yS(t * maxVal), label: fmtY(Math.round(t * maxVal)) }));
+    const step = Math.max(1, Math.ceil(n / 7));
+    const xTicks = ages.reduce((a, age, i) => {
+      if (i === 0 || i === n - 1 || i % step === 0) a.push({ x: xS(i), label: age });
+      return a;
+    }, []);
+    return (
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
+        {yTicks.map((t, i) => (
+          <line key={i} x1={pad.l} x2={W - pad.r} y1={t.y} y2={t.y} stroke="#1A1A28" strokeWidth="1" />
+        ))}
+        {yTicks.map((t, i) => (
+          <text key={i} x={pad.l - 6} y={t.y} textAnchor="end" dominantBaseline="middle" fill="#2E2E42" fontSize="11" fontFamily="DM Sans,sans-serif">{t.label}</text>
+        ))}
+        {xTicks.map((t, i) => (
+          <text key={i} x={t.x} y={H - 5} textAnchor="middle" fill="#2E2E42" fontSize="11" fontFamily="DM Sans,sans-serif">Age {t.label}</text>
+        ))}
+        <line x1={pad.l} x2={W - pad.r} y1={yS(0)} y2={yS(0)} stroke="rgba(255,100,100,0.15)" strokeWidth="1" strokeDasharray="3,5" />
+        {postData.map((s, si) => {
+          const linePath = s.traj.map((d, i) => `${i === 0 ? "M" : "L"} ${xS(i).toFixed(1)},${yS(d.corpus).toFixed(1)}`).join(" ");
+          return (
+            <path key={si} d={linePath} fill="none" stroke={s.color}
+              strokeWidth={si === 2 ? 2.5 : si === 1 ? 2 : 1.5}
+              strokeOpacity={si === 0 ? 0.6 : 0.85} />
+          );
+        })}
+      </svg>
+    );
+  }
+
+  /* ─── Main App ─── */
+  function App() {
+    const [monthlyExpense, setMonthlyExpense] = useState(50000);
+    const [currentAge,    setCurrentAge]    = useState(28);
+    const [fireAge,       setFireAge]        = useState(45);
+    const [monthlyInvest, setMonthlyInvest]  = useState(20000);
+    const [currentCorpus, setCurrentCorpus]  = useState(500000);
+    const [inflation,     setInflation]      = useState(6);
+    const [returnRate,    setReturnRate]     = useState(12);
+    const [swr,           setSwr]            = useState(4);
+    const [showAdv,       setShowAdv]        = useState(false);
+    const [res,           setRes]            = useState(null);
+
+    const animFireNum = useCountUp(res?.fireNumber || 0);
+
+    const handleCalc = () => {
+      const effectiveFireAge = Math.max(fireAge, currentAge + 1);
+      setRes(calcFIRE({
+        monthlyExpense, currentAge,
+        fireAge: effectiveFireAge,
+        monthlyInvest, currentCorpus,
+        inflation, returnRate, swr,
+      }));
+    };
+
+    const maxSrYears = res ? Math.max(...res.srRows.map(r => r.years || 50)) : 50;
+
+    // Find the closest savings rate to current
+    const closestSrIdx = res
+      ? res.srRows.reduce((best, row, i) => Math.abs(row.sr - res.currentSRPct) < Math.abs(res.srRows[best].sr - res.currentSRPct) ? i : best, 0)
+      : -1;
+
+    return (
+      <div className="app">
+        <div className="glow-bg" />
+        <div className="wrap">
+          <div className="eyebrow">Financial Independence · Retire Early · Wiser With Vidhaan</div>
+          <h1 className="hero-title">Your <em>FIRE</em><br />Number</h1>
+          <p className="hero-sub">The exact corpus you need to never work for money again — and the fastest path to get there. Based on the Trinity Study's Safe Withdrawal Rate research.</p>
+
+          {/* ─── Inputs ─── */}
+          <div className="card">
+            <div className="card-label">Your Numbers</div>
+
+            <div className="sg">
+              <div className="sh">
+                <span className="sn">Monthly expenses today</span>
+                <NumInput value={monthlyExpense} min={5000} max={500000} set={setMonthlyExpense} />
+              </div>
+              <input type="range" className="rng-gold" min={5000} max={500000} step={1000}
+                value={Math.min(monthlyExpense, 500000)} style={trackBg(monthlyExpense, 5000, 500000, "#F5C842")}
+                onChange={e => setMonthlyExpense(parseInt(e.target.value))} />
+            </div>
+
+            <div className="sg">
+              <div className="sh">
+                <span className="sn">Current age</span>
+                <div className="sv">{currentAge}<small>yrs</small></div>
+              </div>
+              <input type="range" className="rng-gold" min={18} max={55} step={1}
+                value={currentAge} style={trackBg(currentAge, 18, 55, "#F5C842")}
+                onChange={e => {
+                  const v = parseInt(e.target.value);
+                  setCurrentAge(v);
+                  if (fireAge <= v) setFireAge(v + 5);
+                }} />
+            </div>
+
+            <div className="sg">
+              <div className="sh">
+                <span className="sn">Target FIRE age</span>
+                <div className="sv">{Math.max(fireAge, currentAge + 1)}<small>yrs</small></div>
+              </div>
+              <input type="range" className="rng-gold" min={currentAge + 1} max={65} step={1}
+                value={Math.max(fireAge, currentAge + 1)} style={trackBg(Math.max(fireAge, currentAge + 1), currentAge + 1, 65, "#F5C842")}
+                onChange={e => setFireAge(parseInt(e.target.value))} />
+            </div>
+
+            <div className="sg">
+              <div className="sh">
+                <span className="sn">Monthly investment / SIP</span>
+                <NumInput value={monthlyInvest} min={0} max={500000} set={setMonthlyInvest} />
+              </div>
+              <input type="range" className="rng-teal" min={0} max={500000} step={1000}
+                value={Math.min(monthlyInvest, 500000)} style={trackBg(monthlyInvest, 0, 500000, "#00D9A0")}
+                onChange={e => setMonthlyInvest(parseInt(e.target.value))} />
+            </div>
+
+            <div className="sg">
+              <div className="sh">
+                <span className="sn">Current portfolio / savings</span>
+                <NumInput value={currentCorpus} min={0} max={50000000} set={setCurrentCorpus} />
+              </div>
+              <input type="range" className="rng-teal" min={0} max={50000000} step={100000}
+                value={Math.min(currentCorpus, 50000000)} style={trackBg(currentCorpus, 0, 50000000, "#00D9A0")}
+                onChange={e => setCurrentCorpus(parseInt(e.target.value))} />
+            </div>
+
+            <button className="adv-toggle" onClick={() => setShowAdv(v => !v)}>
+              <span style={{ fontSize: 15, display: "inline-block", transition: "transform .2s", transform: showAdv ? "rotate(90deg)" : "none" }}>›</span>
+              {showAdv ? "Hide" : "Show"} advanced — inflation, return rate, SWR
+            </button>
+
+            {showAdv && (
+              <div className="adv-section">
+                <div className="adv-grid">
+                  <div>
+                    <div className="adv-label">Inflation rate</div>
+                    <div className="adv-val">{inflation}<span style={{fontSize:13,color:"#404058",marginLeft:3}}>%</span></div>
+                    <input type="range" className="rng-gold" min={4} max={10} step={0.5}
+                      value={inflation} style={trackBg(inflation, 4, 10, "#F5C842")}
+                      onChange={e => setInflation(parseFloat(e.target.value))} />
+                    <div className="adv-hint">India CPI avg: ~5.5% (2015–2024)</div>
+                  </div>
+                  <div>
+                    <div className="adv-label">Expected return (pre-FIRE)</div>
+                    <div className="adv-val">{returnRate}<span style={{fontSize:13,color:"#404058",marginLeft:3}}>%</span></div>
+                    <input type="range" className="rng-teal" min={8} max={16} step={0.5}
+                      value={returnRate} style={trackBg(returnRate, 8, 16, "#00D9A0")}
+                      onChange={e => setReturnRate(parseFloat(e.target.value))} />
+                    <div className="adv-hint">Nifty 50 CAGR ~13% (1990–2024)</div>
+                  </div>
+                  <div>
+                    <div className="adv-label">Safe Withdrawal Rate</div>
+                    <div className="adv-val">{swr}<span style={{fontSize:13,color:"#404058",marginLeft:3}}>%</span></div>
+                    <input type="range" className="rng-gold" min={3} max={5} step={0.25}
+                      value={swr} style={trackBg(swr, 3, 5, "#F5C842")}
+                      onChange={e => setSwr(parseFloat(e.target.value))} />
+                    <div className="adv-hint">Trinity Study: 4% = 95%+ success</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <button className="cta-btn" onClick={handleCalc}>Calculate My FIRE Number →</button>
+          </div>
+
+          {/* ─── Results ─── */}
+          {res && (
+            <div className="results">
+              <div className="badge-row">
+                <div className="badge">✦ FIRE Analysis Complete</div>
+              </div>
+
+              {/* FIRE Number hero */}
+              <div className="fire-card">
+                <div className="fire-glow" />
+                <div className="fire-label">Your FIRE Number</div>
+                <div className="fire-amount">{fmt(animFireNum)}</div>
+                <div className="fire-sub">
+                  Retire at {Math.max(fireAge, currentAge + 1)} · ₹{Math.round(res.futureAnnualExpense / 12).toLocaleString("en-IN")}/mo in {Math.max(fireAge, currentAge + 1)}'s rupees · {swr}% Safe Withdrawal Rate
+                </div>
+              </div>
+
+              {/* Timeline insight */}
+              {res.actualFireYear !== null ? (
+                res.actualFireYear < res.yearsToTarget ? (
+                  <div className="insight-bar early">
+                    You hit FIRE in <strong>{res.actualFireYear} years — at age {res.actualFireAge}</strong>. That's {res.yearsToTarget - res.actualFireYear} year{res.yearsToTarget - res.actualFireYear > 1 ? "s" : ""} ahead of your target age. You could retire early.
+                  </div>
+                ) : res.actualFireYear === res.yearsToTarget ? (
+                  <div className="insight-bar exact">
+                    You're on track — your corpus crosses the FIRE threshold exactly at your target age {res.actualFireAge}.
+                  </div>
+                ) : (
+                  <div className="insight-bar late">
+                    At current trajectory, FIRE happens at age <strong>{res.actualFireAge}</strong> — {res.actualFireYear - res.yearsToTarget} year{res.actualFireYear - res.yearsToTarget > 1 ? "s" : ""} past your target. The SIP gap below shows exactly how much more is needed.
+                  </div>
+                )
+              ) : (
+                <div className="insight-bar late">
+                  FIRE isn't reached within 50 years at current trajectory. Increasing your monthly investment is the single fastest lever.
+                </div>
+              )}
+
+              {/* 4-stat grid */}
+              <div className="stat-grid">
+                <div className="stat-card">
+                  <div className="stat-tag teal">Years to FIRE</div>
+                  <div className="stat-num">{res.actualFireYear !== null ? res.actualFireYear : "50+"}</div>
+                  <div className="stat-desc">At your current SIP of {fmt(monthlyInvest)}/month</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-tag gold">FIRE at Age</div>
+                  <div className="stat-num">{res.actualFireAge !== null ? res.actualFireAge : "—"}</div>
+                  <div className="stat-desc">The year your corpus funds your full lifestyle</div>
+                </div>
+                <div className="stat-card">
+                  <div className={`stat-tag ${res.sipDelta >= 0 ? "teal" : "red"}`}>
+                    {res.sipDelta >= 0 ? "SIP Surplus" : "SIP Gap"}
+                  </div>
+                  <div className="stat-num" style={{fontSize:"clamp(16px,2.5vw,22px)"}}>
+                    {fmt(Math.abs(res.sipNeeded))}<span style={{fontFamily:"DM Sans,sans-serif",fontSize:11,color:"#404058",marginLeft:4}}>/mo needed</span>
+                  </div>
+                  <div className="stat-desc">
+                    {res.sipDelta >= 0
+                      ? `You invest ${fmt(res.sipDelta)}/mo more than needed — ahead of plan`
+                      : `Increase SIP by ${fmt(-res.sipDelta)}/mo to hit FIRE at your target age`}
+                  </div>
+                </div>
+                <div className="stat-card">
+                  <div className={`stat-tag ${res.isCoasted ? "teal" : "mute"}`}>Coast FIRE</div>
+                  <div className="stat-num" style={{fontSize: res.isCoasted ? undefined : "clamp(14px,2vw,20px)"}}>
+                    {res.isCoasted ? "✓ Achieved" : fmt(res.coastFIRE)}
+                  </div>
+                  <div className="stat-desc">
+                    {res.isCoasted
+                      ? "Your current savings compound to your FIRE number without any more SIPs"
+                      : "Portfolio needed today to reach FIRE by target age — even if you stop all SIPs now"}
+                  </div>
+                </div>
+              </div>
+
+              {/* Path to FIRE chart */}
+              <div className="chart-card">
+                <div className="ctitle">Path to FIRE</div>
+                <div className="cdesc">
+                  Gold line: your projected corpus. Dashed line: the FIRE threshold — what you need at each point in time (grows with inflation). Where they cross is your FIRE moment.
+                </div>
+                <div className="legend">
+                  <div className="li"><div className="ld" style={{background:"#F5C842"}} /><span>Your corpus</span></div>
+                  <div className="li"><div className="ld" style={{background:"rgba(0,217,160,0.4)",border:"none"}} /><span>FIRE threshold (inflation-adjusted)</span></div>
+                  {res.actualFireYear && <div className="li"><div className="ld" style={{background:"#00D9A0"}} /><span>FIRE crossover</span></div>}
+                </div>
+                <PathChart data={res.yearlyData} fireYear={res.actualFireYear} />
+              </div>
+
+              {/* Post-FIRE sustainability */}
+              <div className="chart-card">
+                <div className="ctitle">Post-FIRE: Does Your Corpus Last to 90?</div>
+                <div className="cdesc">
+                  Starting with your FIRE number at retirement. Each year: corpus earns returns, you withdraw inflation-adjusted expenses. Three post-retirement equity return scenarios. A line staying above zero at 90 = financial safety.
+                </div>
+                <div className="legend">
+                  {res.postData.map((s, i) => (
+                    <div className="li" key={i}>
+                      <div className="ld" style={{background: s.color}} />
+                      <span>
+                        {s.label}
+                        {s.depletedAt
+                          ? <span style={{color:"#CC7070"}}> — depletes at age {s.depletedAt}</span>
+                          : <span style={{color:"#00D9A0"}}> — survives to 90+</span>}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <PostFireChart postData={res.postData} />
+                <div style={{fontSize:11,color:"#2E2E42",marginTop:14,lineHeight:1.65}}>
+                  Trinity Study methodology. Withdrawal = {swr}% of initial FIRE corpus, inflation-adjusted at {inflation}%/yr. Post-retirement return scenarios at 7%, 9%, and 11%. If Bear (7%) survives — your FIRE plan is robust.
+                </div>
+              </div>
+
+              {/* Savings rate lever */}
+              <div className="chart-card">
+                <div className="ctitle">The Savings Rate Lever</div>
+                <div className="cdesc">
+                  The most powerful variable in your FIRE timeline — more than your return rate. Higher savings rate means you invest more AND need less (smaller FIRE number). Both effects compound. Income assumed: {fmt(monthlyExpense + monthlyInvest)}/mo.
+                </div>
+                <div style={{marginTop:8}}>
+                  {res.srRows.map((row, i) => {
+                    const isCurrent = i === closestSrIdx;
+                    const barWidth = row.years ? Math.max(4, (row.years / maxSrYears) * 100) : 100;
+                    const barCol = isCurrent ? "#F5C842"
+                      : (res.actualFireYear && row.years && row.years < res.actualFireYear) ? "#00D9A0"
+                      : "#2A2A3A";
+                    return (
+                      <div className="sr-row" key={i} style={isCurrent ? {background:"rgba(245,200,66,0.03)",borderRadius:6} : {}}>
+                        <div className="sr-label" style={{color: isCurrent ? "#F5C842" : "#404058"}}>{row.sr}%</div>
+                        <div className="sr-bar-wrap">
+                          <div className="sr-bar" style={{width:`${barWidth}%`, background: barCol}} />
+                        </div>
+                        <div className="sr-years" style={{color: isCurrent ? "#F5C842" : row.years && row.years <= (res.actualFireYear || 999) ? "#5A7A6A" : "#363650"}}>
+                          {row.years ? `${row.years} yr` : "50+ yr"}
+                          {isCurrent ? " ◀" : ""}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{fontSize:11,color:"#2E2E42",marginTop:16,lineHeight:1.65}}>
+                  This double benefit — less spending reduces your FIRE number while more savings grow your corpus faster — is the mathematical foundation of the FIRE movement (Bengen 1994, MMM framework).
+                </div>
+              </div>
+
+              {/* Research backing */}
+              <div className="research-strip">
+                <div className="research-label">Research Backing</div>
+                <div className="research-item">
+                  <strong style={{color:"#5A5A70"}}>Trinity Study (1998)</strong> — Cooley, Hubbard & Walz, AAII Journal. Analysed 50+ years of US market data across every rolling 30-year period. Found a 4% annual withdrawal sustains a portfolio in 95%+ of historical scenarios. The gold standard for all FIRE calculators.
+                </div>
+                <div className="research-item">
+                  <strong style={{color:"#5A5A70"}}>Bengen (1994)</strong> — Journal of Financial Planning. Originally derived the 4% safe withdrawal rule from 50 years of historical market data. Showed 3% SWR almost never fails; 5% begins showing meaningful depletion risk. Formed the basis of the Trinity Study.
+                </div>
+                <div className="research-item">
+                  <strong style={{color:"#5A5A70"}}>Nifty 50 Historical CAGR ~13%</strong> — NSE/SEBI records (1990–2024). The 12% default pre-FIRE return is a conservative estimate after accounting for expense ratios and LTCG tax (10% above ₹1.25L gains).
+                </div>
+                <div className="research-item">
+                  <strong style={{color:"#5A5A70"}}>RBI CPI Data</strong> — Reserve Bank of India Monetary Policy Reports. India's consumer price inflation averaged ~5.5% from 2015–2024. The 6% default adds a conservative buffer above the RBI's 4% target.
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div className="cta-end">
+                <div className="cta-title">The number is only the map.<br />The SIP is the engine.</div>
+                <div className="cta-sub">Your FIRE number is a fixed target. Time and consistency are the only two variables that move it.</div>
+                <div className="div-line" />
+                <div className="tool-links">
+                  <a href="/compounding-machine" className="tool-link gold">The Compounding Machine →</a>
+                  <a href="/delay-engine" className="tool-link ghost">Delay Cost Engine</a>
+                  <a href="/" className="tool-link ghost">All Tools</a>
+                </div>
+                <div className="div-line" style={{marginTop:28}} />
+                <a href="https://calendly.com/vidhaanjain/investmentfirst" target="_blank" rel="noopener noreferrer"
+                  style={{display:"block",background:"rgba(245,200,66,0.05)",border:"1px solid rgba(245,200,66,0.22)",borderRadius:14,padding:"22px 24px",textDecoration:"none",marginTop:16,textAlign:"left"}}>
+                  <div style={{fontSize:10,letterSpacing:"0.14em",textTransform:"uppercase",color:"#F5C842",fontWeight:600,marginBottom:8,fontFamily:"DM Sans,sans-serif"}}>1:1 Consultation · ₹999 · 45 min</div>
+                  <div style={{fontFamily:"DM Serif Display,serif",fontSize:"clamp(18px,2.5vw,22px)",color:"#EDE9E3",marginBottom:6,lineHeight:1.3}}>Build your FIRE plan with Vidhaan →</div>
+                  <div style={{fontSize:13,color:"#5A5A70",lineHeight:1.7,fontFamily:"DM Sans,sans-serif"}}>We'll reverse-engineer your FIRE number — income, EMIs, real expenses, tax strategy — and build a plan you'll actually execute. Payment details shared after booking.</div>
+                </a>
+                <a href="https://wisermoney.vercel.app" target="_blank" rel="noopener noreferrer"
+                  style={{display:"block",background:"transparent",border:"1px solid #1A1A28",borderRadius:14,padding:"18px 24px",textDecoration:"none",marginTop:10,textAlign:"left"}}>
+                  <div style={{fontSize:10,letterSpacing:"0.14em",textTransform:"uppercase",color:"#00D9A0",fontWeight:600,marginBottom:6,fontFamily:"DM Sans,sans-serif"}}>Full Assessment · wisermoney.vercel.app ↗</div>
+                  <div style={{fontSize:13,color:"#5A5A70",lineHeight:1.65,fontFamily:"DM Sans,sans-serif"}}>Income, expenses, insurance, EMIs — a full financial health assessment across 8 investor archetypes.</div>
+                </a>
+              </div>
+
+              <div className="footer-line">WISER WITH VIDHAAN · FIRE CALCULATIONS BASED ON TRINITY STUDY METHODOLOGY · ILLUSTRATIVE ONLY · NOT PERSONALISED FINANCIAL ADVICE</div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
