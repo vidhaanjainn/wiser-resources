@@ -6,6 +6,7 @@
     { "source": "/sip-flat-returns", "destination": "/sip-flat-returns.html" },
     { "source": "/investor-dna", "destination": "/investor-dna.html" },
     { "source": "/compounding-machine", "destination": "/compounding-machine.html" },
-    { "source": "/delay-engine", "destination": "/delay-engine.html" }
+    { "source": "/delay-engine", "destination": "/delay-engine.html" },
+    { "source": "/fire-calculator", "destination": "/fire-calculator.html" }
   ]
 }
