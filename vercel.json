@@ -9,6 +9,7 @@
     { "source": "/delay-engine", "destination": "/delay-engine.html" },
     { "source": "/smart-sip-allocator", "destination": "/smart-sip-allocator.html" },
     { "source": "/fire-calculator", "destination": "/fire-calculator.html" },
-    { "source": "/ai-stock-research-toolkit", "destination": "/ai-stock-research-toolkit.html" }
+    { "source": "/ai-stock-research-toolkit", "destination": "/ai-stock-research-toolkit.html" },
+    { "source": "/anthropic-finance-agents", "destination": "/anthropic-finance-agents.html" }
   ]
 }
