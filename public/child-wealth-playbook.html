@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Child Wealth Playbook — Wiser With Vidhaan</title>
+  <meta name="description" content="How to build ₹95 lakhs for your child by age 18. Every account explained — SSY, PPF, NPS Vatsalya, Index SIPs. Where to open, what the rules are, and why starting at birth changes everything." />
+  <meta name="theme-color" content="#090B0F" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:          #090B0F;
+      --surface:     #0C0F17;
+      --card:        #0D1018;
+      --card-hover:  #101420;
+      --gold:        #F5C842;
+      --gold-soft:   #F9DC7A;
+      --gold-pale:   rgba(245,200,66,0.07);
+      --gold-border: rgba(245,200,66,0.2);
+      --teal:        #00D9A0;
+      --teal-pale:   rgba(0,217,160,0.07);
+      --teal-border: rgba(0,217,160,0.18);
+      --text:        #EDE9E3;
+      --text-soft:   rgba(237,233,227,0.62);
+      --text-muted:  rgba(237,233,227,0.3);
+      --border:      rgba(255,255,255,0.065);
+      --border-mid:  rgba(255,255,255,0.1);
+      --serif:       'DM Serif Display', serif;
+      --sans:        'Plus Jakarta Sans', sans-serif;
+      --mono:        'DM Mono', monospace;
+      --ease:        cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── AMBIENT ─── */
+    .glow-bg {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 65% 50% at 80% 0%, rgba(245,200,66,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 5% 85%, rgba(0,217,160,0.05) 0%, transparent 60%);
+    }
+
+    .wrap {
+      position: relative; z-index: 1;
+      max-width: 780px; margin: 0 auto;
+      padding: 0 24px 96px;
+    }
+
+    /* ─── NAV ─── */
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 0; margin-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--serif); font-size: 17px;
+      color: var(--text); text-decoration: none;
+    }
+    .nav-logo em { font-style: italic; color: var(--gold); }
+    .nav-tag {
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-muted);
+    }
+
+    /* ─── HERO ─── */
+    .hero { padding: 64px 0 56px; }
+    .eyebrow {
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 22px;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.1s forwards;
+    }
+    .hero-h1 {
+      font-family: var(--serif); font-size: clamp(42px, 7.5vw, 72px);
+      line-height: 1.04; letter-spacing: -0.02em; color: var(--text);
+      margin-bottom: 20px;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.22s forwards;
+    }
+    .hero-h1 em { font-style: italic; color: var(--gold); }
+    .hero-sub {
+      font-size: 16px; color: var(--text-soft); line-height: 1.78;
+      max-width: 500px; font-weight: 300; margin-bottom: 40px;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.34s forwards;
+    }
+
+    .stat-bar {
+      display: flex; gap: 0; flex-wrap: wrap;
+      border: 1px solid var(--border-mid); border-radius: 14px;
+      overflow: hidden;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.44s forwards;
+    }
+    .stat-item {
+      flex: 1; min-width: 120px; padding: 18px 22px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-label {
+      font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 7px;
+    }
+    .stat-val {
+      font-family: var(--serif); font-size: 22px; color: var(--gold); line-height: 1;
+    }
+    .stat-val.teal { color: var(--teal); }
+
+    /* ─── SECTION ─── */
+    .section { padding: 64px 0 0; }
+    .section-head {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 32px;
+    }
+    .section-tag {
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--gold); white-space: nowrap; flex-shrink: 0;
+    }
+    .section-rule {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--gold-border) 0%, transparent 100%);
+    }
+    .section-num {
+      font-family: var(--mono); font-size: 10px; color: var(--text-muted); flex-shrink: 0;
+    }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 28px; margin-bottom: 14px;
+    }
+    .card-gold {
+      border-color: var(--gold-border);
+      background: linear-gradient(135deg, rgba(245,200,66,0.04) 0%, var(--card) 60%);
+    }
+    .card-teal {
+      border-color: var(--teal-border);
+      background: linear-gradient(135deg, rgba(0,217,160,0.04) 0%, var(--card) 60%);
+    }
+    .card-title {
+      font-family: var(--serif); font-size: 21px; color: var(--text);
+      margin-bottom: 10px; line-height: 1.2;
+    }
+    .card-body {
+      font-size: 14px; color: var(--text-soft); line-height: 1.8; font-weight: 300;
+    }
+
+    /* ─── BUCKET GRID ─── */
+    .bucket-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 12px; margin-bottom: 14px;
+    }
+    @media (max-width: 600px) { .bucket-grid { grid-template-columns: 1fr; } }
+
+    .bucket {
+      border-radius: 16px; padding: 24px 20px;
+      border: 1px solid var(--border);
+    }
+    .bucket-safety { border-color: var(--teal-border); background: var(--teal-pale); }
+    .bucket-growth { border-color: var(--gold-border); background: var(--gold-pale); }
+    .bucket-accel  { border-color: rgba(160,120,255,0.22); background: rgba(160,120,255,0.05); }
+
+    .bucket-icon { font-size: 22px; margin-bottom: 12px; }
+    .bucket-label {
+      font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    .bucket-label.teal { color: var(--teal); }
+    .bucket-label.gold { color: var(--gold); }
+    .bucket-label.purple { color: #A078FF; }
+    .bucket-name {
+      font-family: var(--serif); font-size: 17px; color: var(--text);
+      margin-bottom: 8px; line-height: 1.2;
+    }
+    .bucket-desc { font-size: 12px; color: var(--text-soft); line-height: 1.65; font-weight: 300; }
+
+    /* ─── OPTION TABLE ─── */
+    .option-block {
+      border: 1px solid var(--border); border-radius: 18px;
+      overflow: hidden; margin-bottom: 14px;
+    }
+    .option-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      flex-wrap: wrap;
+    }
+    .option-name-row { display: flex; align-items: center; gap: 12px; }
+    .option-dot {
+      width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+    }
+    .option-name {
+      font-family: var(--serif); font-size: 20px; color: var(--text); line-height: 1;
+    }
+    .option-tag {
+      font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
+    }
+    .tag-safety { color: var(--teal); background: var(--teal-pale); border: 1px solid var(--teal-border); }
+    .tag-growth { color: var(--gold); background: var(--gold-pale); border: 1px solid var(--gold-border); }
+    .tag-market { color: #A078FF; background: rgba(160,120,255,0.08); border: 1px solid rgba(160,120,255,0.22); }
+
+    .option-body { padding: 20px 24px; }
+    .option-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 16px 24px; margin-bottom: 16px;
+    }
+    @media (max-width: 520px) { .option-grid { grid-template-columns: 1fr; } }
+    .option-field-label {
+      font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px;
+    }
+    .option-field-val {
+      font-size: 14px; color: var(--text); font-weight: 500; line-height: 1.4;
+    }
+    .option-field-val.accent-gold { color: var(--gold); font-family: var(--serif); font-size: 16px; }
+    .option-field-val.accent-teal { color: var(--teal); font-family: var(--serif); font-size: 16px; }
+    .option-note {
+      font-size: 13px; color: var(--text-soft); line-height: 1.75;
+      padding-top: 16px; border-top: 1px solid var(--border); font-weight: 300;
+    }
+
+    /* ─── TIMELINE TABLE ─── */
+    .timeline-table { width: 100%; border-collapse: collapse; }
+    .timeline-table th {
+      font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--text-muted);
+      padding: 0 0 14px 0; text-align: left; border-bottom: 1px solid var(--border);
+    }
+    .timeline-table th:not(:first-child) { text-align: right; }
+    .timeline-table td {
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+      font-size: 14px; color: var(--text-soft); vertical-align: middle;
+    }
+    .timeline-table td:not(:first-child) { text-align: right; }
+    .timeline-table tr:last-child td { border-bottom: none; }
+    .timeline-table tr.highlight td {
+      color: var(--text);
+      background: var(--gold-pale);
+    }
+    .timeline-table tr.highlight td:first-child {
+      border-radius: 8px 0 0 8px;
+      padding-left: 12px;
+    }
+    .timeline-table tr.highlight td:last-child {
+      border-radius: 0 8px 8px 0;
+      padding-right: 12px;
+    }
+    .age-cell {
+      font-family: var(--serif); font-size: 17px; color: var(--text); line-height: 1;
+    }
+    .corpus-cell {
+      font-family: var(--serif); font-size: 18px; color: var(--gold); line-height: 1;
+    }
+
+    /* ─── RULES GRID ─── */
+    .rules-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 560px) { .rules-grid { grid-template-columns: 1fr; } }
+
+    .rule-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px;
+    }
+    .rule-icon { font-size: 18px; margin-bottom: 10px; }
+    .rule-title {
+      font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 7px;
+    }
+    .rule-body { font-size: 12.5px; color: var(--text-soft); line-height: 1.7; font-weight: 300; }
+
+    /* ─── PRINCIPLES ─── */
+    .principles-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 560px) { .principles-grid { grid-template-columns: 1fr; } }
+
+    .principle {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 26px 22px;
+    }
+    .principle-num {
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+      color: var(--gold); margin-bottom: 14px;
+    }
+    .principle-title {
+      font-family: var(--serif); font-size: 18px; color: var(--text);
+      margin-bottom: 10px; line-height: 1.2;
+    }
+    .principle-body { font-size: 13px; color: var(--text-soft); line-height: 1.75; font-weight: 300; }
+
+    /* ─── HIGHLIGHT BOX ─── */
+    .highlight-box {
+      background: var(--gold-pale); border: 1px solid var(--gold-border);
+      border-radius: 14px; padding: 20px 22px;
+      margin-bottom: 14px;
+    }
+    .highlight-box p {
+      font-size: 13.5px; color: var(--text-soft); line-height: 1.75; font-weight: 300;
+    }
+    .highlight-box strong { color: var(--text); font-weight: 500; }
+
+    .teal-box {
+      background: var(--teal-pale); border: 1px solid var(--teal-border);
+      border-radius: 14px; padding: 20px 22px;
+      margin-bottom: 14px;
+    }
+    .teal-box p { font-size: 13.5px; color: var(--text-soft); line-height: 1.75; font-weight: 300; }
+    .teal-box strong { color: var(--teal); font-weight: 500; }
+
+    /* ─── FLOW ─── */
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      flex-wrap: wrap; margin-bottom: 14px;
+    }
+    .flow-step {
+      flex: 1; min-width: 130px; background: var(--card);
+      border: 1px solid var(--border); border-radius: 12px; padding: 16px;
+      text-align: center;
+    }
+    .flow-arrow {
+      font-size: 18px; color: var(--text-muted); padding: 0 8px; flex-shrink: 0;
+    }
+    .flow-step-label {
+      font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 6px;
+    }
+    .flow-step-val {
+      font-family: var(--serif); font-size: 16px; color: var(--text); line-height: 1.2;
+    }
+    .flow-step-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      margin: 60px 0 0; height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--border-mid) 30%, var(--border-mid) 70%, transparent 100%);
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      padding: 48px 0 0; margin-top: 64px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .footer-brand { font-family: var(--serif); font-size: 18px; color: var(--text); }
+    .footer-brand em { font-style: italic; color: var(--gold); }
+    .footer-sub {
+      font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-muted); margin-top: 4px;
+    }
+    .footer-link {
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+      color: var(--teal); text-decoration: none; padding: 8px 18px;
+      border: 1px solid var(--teal-border); border-radius: 20px;
+      background: var(--teal-pale); transition: all 0.2s ease;
+    }
+    .footer-link:hover { background: rgba(0,217,160,0.14); transform: translateY(-1px); }
+
+    /* ─── DISCLAIMER ─── */
+    .disclaimer {
+      margin-top: 32px; padding: 16px 20px;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .disclaimer p {
+      font-size: 11px; color: var(--text-muted); line-height: 1.7; font-weight: 300;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-bg"></div>
+
+  <div class="wrap">
+
+    <!-- Nav -->
+    <nav class="nav">
+      <a class="nav-logo" href="/"><em>Wiser</em>Resources</a>
+      <span class="nav-tag">WR-006 · Finance</span>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="eyebrow">Child Wealth · Wiser With Vidhaan</div>
+      <h1 class="hero-h1">Start Before<br />They Can <em>Walk.</em></h1>
+      <p class="hero-sub">By age 18, your child could already have ~₹95 lakhs. Not from a high salary. Not from luck. From starting early, staying consistent, and letting compounding do the heavy lifting.</p>
+
+      <div class="stat-bar">
+        <div class="stat-item">
+          <div class="stat-label">Target corpus</div>
+          <div class="stat-val">₹95L</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Monthly SIP</div>
+          <div class="stat-val">₹10,000</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Investment window</div>
+          <div class="stat-val">18 years</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Assumed CAGR</div>
+          <div class="stat-val teal">12%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 01: The Contribution Plan -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-tag">01 · The Plan</span>
+        <div class="section-rule"></div>
+        <span class="section-num">three inputs</span>
+      </div>
+
+      <div class="card card-gold" style="margin-bottom:14px;">
+        <div class="card-title">The exact three inputs</div>
+        <div class="card-body" style="margin-bottom:20px;">This isn't a theory. It's a specific contribution structure. Three numbers, sustained for 18 years.</div>
+
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-step-label">At birth</div>
+            <div class="flow-step-val">₹50,000</div>
+            <div class="flow-step-sub">One-time lump sum</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-step-label">Every month</div>
+            <div class="flow-step-val">₹10,000</div>
+            <div class="flow-step-sub">SIP via mutual funds</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-step-label">Every birthday</div>
+            <div class="flow-step-val">₹25,000</div>
+            <div class="flow-step-sub">Annual top-up</div>
+          </div>
+        </div>
+
+        <div class="highlight-box" style="margin-bottom:0; margin-top:0;">
+          <p>Total you put in over 18 years: <strong>~₹27.5 lakhs.</strong> What you get back: <strong>~₹95 lakhs.</strong> The market adds the rest. That gap — roughly ₹67 lakhs — is compounding. You never earned it. You never saved it. It just grew.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 02: The 3-Bucket System -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-tag">02 · The Framework</span>
+        <div class="section-rule"></div>
+        <span class="section-num">three buckets</span>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-title" style="margin-bottom:10px;">Don't put everything in one place</div>
+        <div class="card-body" style="margin-bottom:20px;">Child investing works best when you split across three roles: a safety layer for guaranteed floors, a growth engine for long-horizon returns, and an accelerator for those who want more structure.</div>
+        <div class="bucket-grid">
+          <div class="bucket bucket-safety">
+            <div class="bucket-icon">🛡</div>
+            <div class="bucket-label teal">Safety</div>
+            <div class="bucket-name">Guaranteed Floor</div>
+            <div class="bucket-desc">SSY or PPF. Government-backed, tax-free, fixed rate. Protects against the scenario where markets underperform for a decade.</div>
+          </div>
+          <div class="bucket bucket-growth">
+            <div class="bucket-icon">📈</div>
+            <div class="bucket-label gold">Growth</div>
+            <div class="bucket-name">Compounding Engine</div>
+            <div class="bucket-desc">Nifty 50 Index SIP or Flexi Cap funds. The primary wealth builder over 18+ years. Highest historical returns for India equity.</div>
+          </div>
+          <div class="bucket bucket-accel">
+            <div class="bucket-icon">⚡</div>
+            <div class="bucket-label purple">Accelerator</div>
+            <div class="bucket-name">Pension + Discipline</div>
+            <div class="bucket-desc">NPS Vatsalya. Market-linked returns with built-in structure. Good for parents who want a pension-style start for their child.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 03: Every Account Explained -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-tag">03 · Every Option</span>
+        <div class="section-rule"></div>
+        <span class="section-num">5 accounts</span>
+      </div>
+
+      <!-- SSY -->
+      <div class="option-block">
+        <div class="option-header">
+          <div class="option-name-row">
+            <div class="option-dot" style="background:var(--teal);"></div>
+            <div class="option-name">Sukanya Samriddhi Yojana</div>
+          </div>
+          <div class="option-tag tag-safety">Safety · Girl Child Only</div>
+        </div>
+        <div class="option-body">
+          <div class="option-grid">
+            <div>
+              <div class="option-field-label">Interest Rate (Q1 FY27)</div>
+              <div class="option-field-val accent-teal">8.2% p.a.</div>
+            </div>
+            <div>
+              <div class="option-field-label">Annual Deposit Limit</div>
+              <div class="option-field-val">₹250 – ₹1.5 lakh</div>
+            </div>
+            <div>
+              <div class="option-field-label">Who Can Open</div>
+              <div class="option-field-val">Girl child, under age 10 at opening</div>
+            </div>
+            <div>
+              <div class="option-field-label">Lock-in</div>
+              <div class="option-field-val">Matures at 21 years from opening; partial withdrawal allowed at 18</div>
+            </div>
+            <div>
+              <div class="option-field-label">Tax Status</div>
+              <div class="option-field-val">EEE — deposit, interest, and maturity all tax-free</div>
+            </div>
+            <div>
+              <div class="option-field-label">Where to Open</div>
+              <div class="option-field-val">Any post office or authorised bank (SBI, HDFC, ICICI, etc.)</div>
+            </div>
+          </div>
+          <div class="option-note">Highest rate among all small savings schemes. The compounding is annual — interest calculated monthly, credited yearly. Best fixed-income option for girl children by a wide margin.</div>
+        </div>
+      </div>
+
+      <!-- PPF -->
+      <div class="option-block">
+        <div class="option-header">
+          <div class="option-name-row">
+            <div class="option-dot" style="background:#7ECFB8;"></div>
+            <div class="option-name">Public Provident Fund</div>
+          </div>
+          <div class="option-tag tag-safety">Safety · Any Child</div>
+        </div>
+        <div class="option-body">
+          <div class="option-grid">
+            <div>
+              <div class="option-field-label">Interest Rate (Q1 FY27)</div>
+              <div class="option-field-val accent-teal">7.1% p.a.</div>
+            </div>
+            <div>
+              <div class="option-field-label">Annual Deposit Limit</div>
+              <div class="option-field-val">₹500 – ₹1.5 lakh</div>
+            </div>
+            <div>
+              <div class="option-field-label">Who Can Open</div>
+              <div class="option-field-val">Any child — parent operates as guardian until 18</div>
+            </div>
+            <div>
+              <div class="option-field-label">Lock-in</div>
+              <div class="option-field-val">15 years (extendable in 5-year blocks)</div>
+            </div>
+            <div>
+              <div class="option-field-label">Tax Status</div>
+              <div class="option-field-val">EEE — fully tax-free on all three stages</div>
+            </div>
+            <div>
+              <div class="option-field-label">Where to Open</div>
+              <div class="option-field-val">Post office, SBI, HDFC, ICICI, Axis and most PSU banks</div>
+            </div>
+          </div>
+          <div class="option-note">The default safety bucket for boy children. The 15-year lock-in fits an 18-year horizon almost perfectly — open at birth, it matures just before the child turns 15. You can extend it through the college years.</div>
+        </div>
+      </div>
+
+      <!-- NPS Vatsalya -->
+      <div class="option-block">
+        <div class="option-header">
+          <div class="option-name-row">
+            <div class="option-dot" style="background:#A078FF;"></div>
+            <div class="option-name">NPS Vatsalya</div>
+          </div>
+          <div class="option-tag tag-market">Accelerator · Any Child</div>
+        </div>
+        <div class="option-body">
+          <div class="option-grid">
+            <div>
+              <div class="option-field-label">Expected Returns</div>
+              <div class="option-field-val" style="color:#A078FF; font-family:var(--serif); font-size:16px;">9–11% historically</div>
+            </div>
+            <div>
+              <div class="option-field-label">Minimum Annual Contribution</div>
+              <div class="option-field-val">₹1,000/year</div>
+            </div>
+            <div>
+              <div class="option-field-label">Asset Allocation (2026 rules)</div>
+              <div class="option-field-val">50–75% equity, 15–20% G-secs, balance in debt</div>
+            </div>
+            <div>
+              <div class="option-field-label">At Age 18</div>
+              <div class="option-field-val">Up to 80% lump sum; rest in annuity. Full withdrawal if corpus &lt; ₹8L</div>
+            </div>
+            <div>
+              <div class="option-field-label">Partial Withdrawals</div>
+              <div class="option-field-val">Up to 2 times before the child turns 18</div>
+            </div>
+            <div>
+              <div class="option-field-label">Where to Open</div>
+              <div class="option-field-val">eNPS portal (enps.nsdl.com) or any POP bank branch</div>
+            </div>
+          </div>
+          <div class="option-note"><strong style="color:var(--text);">PFRDA 2026 update:</strong> New guidelines effective Jan 2026 revised exit rules. If the child doesn't act at 18, the account auto-converts to the All Citizen Model by age 21. Gives 80C deduction benefits for the contributing parent.</div>
+        </div>
+      </div>
+
+      <!-- Index Funds SIP -->
+      <div class="option-block">
+        <div class="option-header">
+          <div class="option-name-row">
+            <div class="option-dot" style="background:var(--gold);"></div>
+            <div class="option-name">Nifty 50 / Flexi Cap SIP</div>
+          </div>
+          <div class="option-tag tag-growth">Growth · Core Engine</div>
+        </div>
+        <div class="option-body">
+          <div class="option-grid">
+            <div>
+              <div class="option-field-label">Long-run CAGR (Nifty 50, ~25 years)</div>
+              <div class="option-field-val accent-gold">~12–13%</div>
+            </div>
+            <div>
+              <div class="option-field-label">Top Flexi Cap 5-yr CAGR (2026)</div>
+              <div class="option-field-val accent-gold">15–20%+</div>
+            </div>
+            <div>
+              <div class="option-field-label">How to Invest for a Minor</div>
+              <div class="option-field-val">Minor MF folio — parent/guardian as first holder. Any AMC (Zerodha Coin, Groww, MFCentral, direct)</div>
+            </div>
+            <div>
+              <div class="option-field-label">Notable Index Funds</div>
+              <div class="option-field-val">UTI Nifty 50, Nippon India Nifty 50, HDFC Nifty 50</div>
+            </div>
+            <div>
+              <div class="option-field-label">Notable Flexi Cap Funds</div>
+              <div class="option-field-val">Parag Parikh Flexi Cap, HDFC Flexi Cap, Quant Flexi Cap</div>
+            </div>
+            <div>
+              <div class="option-field-label">Lock-in / Exit</div>
+              <div class="option-field-val">No lock-in for regular equity funds. ELSS: 3-year lock-in, adds 80C benefit</div>
+            </div>
+          </div>
+          <div class="option-note">This is the primary compounding vehicle in the plan. A ₹10,000/month SIP for 18 years at 12% CAGR grows to ~₹80 lakhs on its own — before you add the birthday top-ups or the birth lump sum. The index fund variant gives broad diversification at the lowest cost.</div>
+        </div>
+      </div>
+
+      <!-- Minor Demat -->
+      <div class="option-block">
+        <div class="option-header">
+          <div class="option-name-row">
+            <div class="option-dot" style="background:#F09A40;"></div>
+            <div class="option-name">Minor Demat Account</div>
+          </div>
+          <div class="option-tag tag-growth">Growth · Stocks / ETFs</div>
+        </div>
+        <div class="option-body">
+          <div class="option-grid">
+            <div>
+              <div class="option-field-label">Best Platform</div>
+              <div class="option-field-val">Zerodha — free minor account, AMC waived. Groww does not support minors (as of 2026)</div>
+            </div>
+            <div>
+              <div class="option-field-label">Who Operates</div>
+              <div class="option-field-val">Guardian (parent) until child turns 18. Account freezes at 18 pending independent KYC</div>
+            </div>
+            <div>
+              <div class="option-field-label">What the Minor Can Hold</div>
+              <div class="option-field-val">Delivery stocks, ETFs, IPO applications. No intraday, no F&O</div>
+            </div>
+            <div>
+              <div class="option-field-label">Tax on Dividends</div>
+              <div class="option-field-val">Added to parent's income (clubbing provisions). ₹1,500/child/year exempt under Sec 10(32)</div>
+            </div>
+          </div>
+          <div class="option-note">Useful for direct stock or ETF holdings — particularly Nifty BeES or gold ETFs. For most families, a minor MF folio (simpler) will do everything the demat does for long-horizon investing.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 04: Corpus by Age -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-tag">04 · The Timeline</span>
+        <div class="section-rule"></div>
+        <span class="section-num">18 years</span>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:6px;">What the corpus looks like, year by year</div>
+        <div class="card-body" style="margin-bottom:24px;">Inputs: ₹50,000 at birth + ₹10,000/month SIP + ₹25,000 every birthday. Assuming 12% annual CAGR on equity SIP.</div>
+
+        <table class="timeline-table">
+          <thead>
+            <tr>
+              <th>Age</th>
+              <th>Total Invested</th>
+              <th>Approx Corpus</th>
+              <th>Compounding Multiple</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="age-cell">Year 1</span></td>
+              <td>~₹1.95L</td>
+              <td>~₹2.1L</td>
+              <td>1.1×</td>
+            </tr>
+            <tr>
+              <td><span class="age-cell">Year 3</span></td>
+              <td>~₹4.3L</td>
+              <td>~₹5.3L</td>
+              <td>1.2×</td>
+            </tr>
+            <tr>
+              <td><span class="age-cell">Year 5</span></td>
+              <td>~₹7.2L</td>
+              <td>~₹9.5L</td>
+              <td>1.3×</td>
+            </tr>
+            <tr>
+              <td><span class="age-cell">Year 8</span></td>
+              <td>~₹11.6L</td>
+              <td>~₹18L</td>
+              <td>1.6×</td>
+            </tr>
+            <tr>
+              <td><span class="age-cell">Year 10</span></td>
+              <td>~₹14.5L</td>
+              <td>~₹27L</td>
+              <td>1.9×</td>
+            </tr>
+            <tr>
+              <td><span class="age-cell">Year 12</span></td>
+              <td>~₹17.4L</td>
+              <td>~₹38L</td>
+              <td>2.2×</td>
+            </tr>
+            <tr>
+              <td><span class="age-cell">Year 15</span></td>
+              <td>~₹21.8L</td>
+              <td>~₹63L</td>
+              <td>2.9×</td>
+            </tr>
+            <tr class="highlight">
+              <td><span class="age-cell" style="color:var(--gold);">Year 18 ✦</span></td>
+              <td>~₹27.5L</td>
+              <td><span class="corpus-cell">~₹95L</span></td>
+              <td style="color:var(--gold); font-weight:600;">3.5×</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="teal-box" style="margin-top:20px; margin-bottom:0;">
+          <p>If the child <strong>continues investing at 18</strong> — even without adding more — compounding accelerates. By their late 30s, the ₹95L base grows to ₹5–7 crore range at the same rate. By their 40s, work becomes optional. This is the slide the carousel was building to.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 05: Rules and Tax -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-tag">05 · Rules & Tax</span>
+        <div class="section-rule"></div>
+        <span class="section-num">what changes at 18</span>
+      </div>
+
+      <div class="rules-grid">
+        <div class="rule-card">
+          <div class="rule-icon">👤</div>
+          <div class="rule-title">Guardian rules</div>
+          <div class="rule-body">Parent or legal guardian operates all accounts — demat, MF folio, NPS Vatsalya — until the child turns 18. The child has no independent access before that.</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-icon">⚠️</div>
+          <div class="rule-title">The KYC freeze at 18</div>
+          <div class="rule-body">Demat and MF folio accounts freeze automatically when the child turns 18. Fresh KYC (Aadhaar, PAN, bank account) must be done by the child before they can operate independently.</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-icon">🧾</div>
+          <div class="rule-title">Tax — clubbing rules</div>
+          <div class="rule-body">Income from investments (dividends, interest) gets clubbed with the parent's income and taxed at their slab rate. ₹1,500 per child per year is exempt under Section 10(32). LTCG is taxed normally at 12.5% above ₹1.25L.</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-icon">🔓</div>
+          <div class="rule-title">NPS Vatsalya at 18</div>
+          <div class="rule-body">Can withdraw up to 80% of corpus as lump sum. Remaining 20% goes into an annuity. If corpus is under ₹8 lakh, full withdrawal is allowed. Must act by 21 or it auto-converts to All Citizen Model.</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-icon">🧮</div>
+          <div class="rule-title">80C benefit</div>
+          <div class="rule-body">SSY (₹1.5L/yr), PPF (₹1.5L/yr), and NPS Vatsalya all give 80C deductions to the contributing parent. Combined limit is ₹1.5L across all 80C instruments — not per instrument.</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-icon">📋</div>
+          <div class="rule-title">SSY withdrawal at 18</div>
+          <div class="rule-body">Partial withdrawal allowed at 18 for higher education — up to 50% of the balance at the end of the previous financial year. Full maturity is at 21 years from account opening date.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 06: Principles -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-tag">06 · Principles</span>
+        <div class="section-rule"></div>
+        <span class="section-num">why this actually works</span>
+      </div>
+
+      <div class="principles-grid">
+        <div class="principle">
+          <div class="principle-num">01 / 04</div>
+          <div class="principle-title">Starting age is not a minor variable</div>
+          <div class="principle-body">Starting at birth vs. starting at 5 costs you approximately ₹30 lakhs in final corpus, even with the same monthly investment. The first five years compound the base that everything else grows on. There's no "catch up" in compounding — only starting earlier.</div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">02 / 04</div>
+          <div class="principle-title">Consistency beats timing every time</div>
+          <div class="principle-body">Missing 6 months of SIP during a market crash to "wait for stability" costs more than the crash itself. The months when the market is falling are precisely when your SIP buys the most units. Missing those months is the worst trade you can make in a long-horizon plan.</div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">03 / 04</div>
+          <div class="principle-title">The last five years do most of the work</div>
+          <div class="principle-body">At 12% CAGR, the ₹63L corpus at year 15 grows to ₹95L by year 18 — ₹32L added in just three years. More was added in years 15–18 than in years 1–10 combined. This is why stopping early kills wealth. The back end of a compounding curve is where everything happens.</div>
+        </div>
+        <div class="principle">
+          <div class="principle-num">04 / 04</div>
+          <div class="principle-title">Allocation matters less than duration</div>
+          <div class="principle-body">The difference between an 11% and 13% CAGR over 18 years is meaningful — but it's smaller than the difference between starting at birth vs. starting at 3. Get the duration right first. Optimise allocation second. The sequence of returns matters far less when the time horizon is this long.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer" style="margin-top:40px;">
+      <p><strong style="color:var(--text-muted);">Disclaimer:</strong> All projections assume a consistent 12% annual CAGR, which reflects the approximate long-run historical return of diversified Indian equity (Nifty 50 CAGR ~1999–2025: ~12.5%). Actual returns vary by market conditions, fund selection, and timing. Past performance is not a guarantee of future results. Interest rates for SSY (8.2%) and PPF (7.1%) are government-set and reviewed quarterly — they may change. NPS Vatsalya return projections are based on historical equity-oriented pension fund performance. This page is for educational purposes only and does not constitute financial advice. Consult a SEBI-registered financial advisor before investing.</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div>
+        <div class="footer-brand"><em>Wiser</em> With Vidhaan</div>
+        <div class="footer-sub">Free guides from every reel · wiser-resources.vercel.app</div>
+      </div>
+      <a class="footer-link" href="/">← All Resources</a>
+    </div>
+
+  </div>
+</body>
+</html>
