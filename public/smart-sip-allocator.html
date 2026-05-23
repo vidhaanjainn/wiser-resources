@@ -220,20 +220,22 @@
   }
 
   /* ── SIGNAL BADGE ── */
-  function SignalBadge({ label, value, source, live, color, onClick, editable, children }) {
+  function SignalBadge({ label, value, source, live, color, hint, children }) {
     return (
-      <div onClick={onClick} style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: "16px", flex: 1, minWidth: 0, cursor: editable ? "pointer" : "default" }}>
+      <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: "16px", flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
           <div style={{ width: 6, height: 6, borderRadius: "50%", background: live ? TEAL : AMBER, animation: live ? "none" : "pulse 1.8s ease infinite", flexShrink: 0 }}/>
           <span style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: MUTED, letterSpacing: "0.1em", textTransform: "uppercase" }}>{label}</span>
-          {editable && <span style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, marginLeft: "auto" }}>✎ tap</span>}
         </div>
         {children || (
-          <div style={{ fontFamily: "DM Serif Display, serif", fontSize: 27, color: color || TEXT, lineHeight: 1, marginBottom: 5 }}>
+          <div style={{ fontFamily: "DM Serif Display, serif", fontSize: 27, color: color || TEXT, lineHeight: 1, marginBottom: 6 }}>
             {value !== null && value !== undefined ? value : <span style={{ fontSize: 15, color: FAINT }}>Fetching…</span>}
           </div>
         )}
-        <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, letterSpacing: "0.06em", marginTop: 4 }}>{source}</div>
+        {hint && value !== null && value !== undefined && (
+          <div style={{ fontSize: 11, color, opacity: 0.85, marginBottom: 6, lineHeight: 1.4, fontWeight: 500 }}>{hint}</div>
+        )}
+        <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, letterSpacing: "0.06em" }}>{source}</div>
       </div>
     );
   }
@@ -262,7 +264,11 @@
     });
     return (
       <div>
-        <div style={{ fontFamily: "DM Serif Display, serif", fontSize: 22, color: TEXT, marginBottom: 6 }}>If Nifty moves…</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+          <div style={{ fontFamily: "DM Serif Display, serif", fontSize: 22, color: TEXT }}>If Nifty moves…</div>
+          <span style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: MUTED, background: BORDER, borderRadius: 6, padding: "3px 8px", letterSpacing: "0.08em" }}>ADVANCED</span>
+        </div>
+        <div style={{ fontSize: 12, color: MUTED, marginBottom: 10, lineHeight: 1.6 }}>How your allocation would change if Nifty goes up or down from here. Useful for planning ahead — skip if you're new to investing.</div>
         <div style={{ fontFamily: "Space Mono, monospace", fontSize: 9, color: FAINT, marginBottom: 18, letterSpacing: "0.04em" }}>
           P/E SHIFTS PROPORTIONALLY · VIX HELD AT CURRENT · 200-DMA ASSUMED STATIC
         </div>
@@ -514,6 +520,43 @@
             <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.8, maxWidth: 460, fontWeight: 300 }}>
               We read today's market — VIX, Nifty 200-DMA, and P/E. You tell us your monthly amount. We tell you exactly where to deploy it. No emotion. Just math.
             </p>
+            <div style={{ marginTop: 20, padding: "14px 18px", background: "rgba(245,200,66,0.04)", border: "1px solid rgba(245,200,66,0.1)", borderRadius: 12, maxWidth: 460 }}>
+              <div style={{ fontSize: 13, color: TEXT, lineHeight: 1.75 }}>
+                <strong style={{ color: GOLD }}>How it works in 3 steps:</strong> Enter your monthly SIP amount → we fetch 3 live market signals → you get an exact split between equity funds and liquid funds. Change as the market changes.
+              </div>
+            </div>
+          </div>
+
+          {/* ── MONTHLY INPUT — always visible so user can set amount while data loads ── */}
+          <div style={{ ...C.card, ...C.sec }} className="slide-up">
+            <div style={{ ...C.eyebrow, color: FAINT }}>Step 1 — Your Monthly SIP</div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+              <div style={{ fontSize: 14, color: MUTED }}>I can invest every month</div>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                {mEditing ? (
+                  <input ref={mRef} type="text" inputMode="numeric"
+                    value={mDraft} onChange={e => setMDraft(e.target.value.replace(/[^0-9]/g, ""))}
+                    onBlur={mClose} onKeyDown={e => e.key === "Enter" && mRef.current?.blur()}
+                    autoFocus
+                    style={{ fontFamily: "DM Serif Display, serif", fontSize: 30, color: GOLD, background: "transparent", border: "none", borderBottom: `1.5px solid ${GOLD}`, textAlign: "right", width: 200, outline: "none", padding: "2px 0" }}
+                  />
+                ) : (
+                  <div onClick={mOpen} style={{ fontFamily: "DM Serif Display, serif", fontSize: 30, color: TEXT, cursor: "pointer", paddingBottom: 2, borderBottom: `1px solid transparent`, transition: "border-color .15s" }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = BORDER}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = "transparent"}>
+                    {fmt(monthly)}
+                  </div>
+                )}
+                <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, marginTop: 4 }}>tap to type</div>
+              </div>
+            </div>
+            <input type="range" min="500" max="500000" step="500" value={monthly}
+              onChange={e => setMonthly(Number(e.target.value))}
+              style={{ background: sliderBg }}
+            />
+            <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "Space Mono, monospace", fontSize: 9, color: FAINT, marginTop: 7 }}>
+              <span>₹500</span><span>₹5L</span>
+            </div>
           </div>
 
           {/* ── LOADING SKELETON ── */}
@@ -546,29 +589,40 @@
               {/* Zone strip */}
               {hasData && <ZoneStrip activeZone={zone} heat={heat}/>}
 
-              {/* 3 Signal badges */}
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 20 }}>
+              {/* 4 Signal badges — Step 2 label */}
+              <div style={{ fontFamily: "Space Mono, monospace", fontSize: 9, color: FAINT, letterSpacing: "0.1em", textTransform: "uppercase", marginTop: 20, marginBottom: 10 }}>Step 2 — Live Market Signals</div>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <SignalBadge
-                  label="India VIX"
+                  label="Nifty 50"
+                  value={niftyPrice !== null ? niftyPrice.toLocaleString("en-IN", { maximumFractionDigits: 0 }) : null}
+                  source="Yahoo Finance · ^NSEI · live"
+                  live={live}
+                  color={TEXT}
+                  hint={dmaGap !== null ? (dmaGap > 8 ? "Trading well above its long-term average" : dmaGap < -5 ? "Trading below its long-term average — opportunity zone" : "Near its long-term average") : null}
+                />
+                <SignalBadge
+                  label="Fear Index (VIX)"
                   value={vix !== null ? vix.toFixed(1) : null}
                   source="Yahoo Finance · ^INDIAVIX"
                   live={live}
                   color={vix !== null ? (vix < 14 ? AMBER : vix > 22 ? TEAL : TEXT) : MUTED}
+                  hint={vix !== null ? (vix < 14 ? "Low fear — market complacent, be cautious" : vix > 22 ? "High fear — historically a great time to invest" : "Moderate fear — normal market conditions") : null}
                 />
                 <SignalBadge
-                  label="vs 200-DMA"
+                  label="Above/Below Trend"
                   value={dmaGap !== null ? fmtPct(dmaGap) : null}
-                  source="Yahoo Finance · ^NSEI · 200-day avg"
+                  source="200-day moving average gap"
                   live={live}
                   color={dmaGap !== null ? (dmaGap > 8 ? RED : dmaGap < -5 ? TEAL : TEXT) : MUTED}
+                  hint={dmaGap !== null ? (dmaGap > 8 ? "Stretched above trend — expensive territory" : dmaGap < -5 ? "Below trend — historically cheap" : "Near trend — fairly valued") : null}
                 />
-                {/* P/E — auto-fetched from /api/pe */}
                 <SignalBadge
-                  label="Nifty P/E"
-                  value={pe !== null ? pe.toFixed(2) : null}
+                  label="Valuation (P/E)"
+                  value={pe !== null ? pe.toFixed(1) : null}
                   source={peSource || "NSE India · fetching…"}
                   live={pe !== null && !peEstimated}
                   color={pe !== null ? (pe > 23 ? RED : pe > 19 ? AMBER : TEAL) : MUTED}
+                  hint={pe !== null ? (pe > 23 ? "Expensive — above historical average" : pe > 19 ? "Fair value — near long-term median" : "Cheap — below historical average, good entry") : null}
                 />
               </div>
 
@@ -586,43 +640,11 @@
             </div>
           )}
 
-          {/* ── MONTHLY INPUT ── */}
-          {!loading && (
-            <div style={{ ...C.card, ...C.sec }} className="slide-up">
-              <div style={{ ...C.eyebrow, color: FAINT }}>Your Monthly Investment</div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
-                <div style={{ fontSize: 14, color: MUTED }}>I can invest every month</div>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                  {mEditing ? (
-                    <input ref={mRef} type="text" inputMode="numeric"
-                      value={mDraft} onChange={e => setMDraft(e.target.value.replace(/[^0-9]/g, ""))}
-                      onBlur={mClose} onKeyDown={e => e.key === "Enter" && mRef.current?.blur()}
-                      autoFocus
-                      style={{ fontFamily: "DM Serif Display, serif", fontSize: 30, color: GOLD, background: "transparent", border: "none", borderBottom: `1.5px solid ${GOLD}`, textAlign: "right", width: 200, outline: "none", padding: "2px 0" }}
-                    />
-                  ) : (
-                    <div onClick={mOpen} style={{ fontFamily: "DM Serif Display, serif", fontSize: 30, color: TEXT, cursor: "pointer", paddingBottom: 2, borderBottom: `1px solid transparent`, transition: "border-color .15s" }}
-                      onMouseEnter={e => e.currentTarget.style.borderColor = BORDER}
-                      onMouseLeave={e => e.currentTarget.style.borderColor = "transparent"}>
-                      {fmt(monthly)}
-                    </div>
-                  )}
-                  <div style={{ fontFamily: "Space Mono, monospace", fontSize: 8, color: FAINT, marginTop: 4 }}>tap to type</div>
-                </div>
-              </div>
-              <input type="range" min="500" max="500000" step="500" value={monthly}
-                onChange={e => setMonthly(Number(e.target.value))}
-                style={{ background: sliderBg }}
-              />
-              <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "Space Mono, monospace", fontSize: 9, color: FAINT, marginTop: 7 }}>
-                <span>₹500</span><span>₹5L</span>
-              </div>
-            </div>
-          )}
 
           {/* ── ALLOCATION RESULT ── */}
           {!loading && hasData && (
             <div style={{ ...C.sec }} className="slide-up">
+              <div style={{ fontFamily: "Space Mono, monospace", fontSize: 9, color: FAINT, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12 }}>Step 3 — Your Allocation Today</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 {/* Equity */}
                 <div style={{ background: CARD, border: `1px solid rgba(0,217,160,0.18)`, borderRadius: 20, padding: "clamp(18px,3vw,26px)" }}>
@@ -651,6 +673,18 @@
               <div style={{ marginTop: 10, padding: "15px 18px", background: "rgba(245,200,66,0.04)", border: `1px solid rgba(245,200,66,0.1)`, borderRadius: 12 }}>
                 <span style={{ color: GOLD, fontWeight: 600, fontSize: 13 }}>Your move: </span>
                 <span style={{ fontSize: 13, color: TEXT, lineHeight: 1.7 }}>{zone.nextAction}</span>
+              </div>
+              {/* Beginner action CTA */}
+              <div style={{ marginTop: 10, padding: "16px 18px", background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+                <div>
+                  <div style={{ fontSize: 13, color: TEXT, fontWeight: 500, marginBottom: 3 }}>Ready to start your SIP?</div>
+                  <div style={{ fontSize: 12, color: MUTED }}>Open any of these platforms and set up your SIP with the split above.</div>
+                </div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {["Groww", "Zerodha Coin", "Kuvera"].map(p => (
+                    <span key={p} style={{ fontFamily: "Space Mono, monospace", fontSize: 9, color: TEAL, border: `1px solid rgba(0,217,160,0.25)`, borderRadius: 8, padding: "5px 10px", letterSpacing: "0.04em" }}>{p}</span>
+                  ))}
+                </div>
               </div>
             </div>
           )}
