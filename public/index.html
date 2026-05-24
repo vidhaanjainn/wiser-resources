@@ -10,27 +10,28 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:           #060b0f;
-    --surface:      #0a0d14;
-    --card:         #0c1019;
-    --card-hover:   #0f1420;
+    --bg:           #04070A;
+    --surface:      #070B10;
+    --card:         #0A0E16;
+    --card-hover:   #0D1220;
     --gold:         #F5C842;
     --gold-soft:    #F9DC7A;
     --gold-pale:    rgba(245,200,66,0.07);
-    --gold-border:  rgba(245,200,66,0.2);
-    --gold-glow:    rgba(245,200,66,0.06);
+    --gold-border:  rgba(245,200,66,0.18);
+    --gold-glow:    rgba(245,200,66,0.05);
     --teal:         #00D9A0;
     --teal-pale:    rgba(0,217,160,0.07);
-    --teal-border:  rgba(0,217,160,0.18);
+    --teal-border:  rgba(0,217,160,0.16);
     --text:         #EDE9E3;
-    --text-soft:    rgba(237,233,227,0.62);
-    --text-muted:   rgba(237,233,227,0.3);
-    --border:       rgba(255,255,255,0.065);
-    --border-mid:   rgba(255,255,255,0.1);
+    --text-soft:    rgba(237,233,227,0.60);
+    --text-muted:   rgba(237,233,227,0.28);
+    --border:       rgba(255,255,255,0.06);
+    --border-mid:   rgba(255,255,255,0.09);
     --serif:        'DM Serif Display', serif;
     --sans:         'Plus Jakarta Sans', sans-serif;
     --mono:         'DM Mono', monospace;
-    --ease-spring:  cubic-bezier(0.22, 1, 0.36, 1);
+    --spring:       cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out:     cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -58,41 +59,62 @@
   .orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(100px);
+    filter: blur(120px);
     will-change: transform;
   }
   .orb-gold {
-    width: 700px; height: 700px;
-    background: radial-gradient(circle, rgba(245,200,66,0.13) 0%, transparent 70%);
-    top: -250px; left: -150px;
-    animation: floatA 25s ease-in-out infinite;
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(245,200,66,0.11) 0%, transparent 70%);
+    top: -300px; left: -200px;
+    animation: floatA 28s ease-in-out infinite;
   }
   .orb-teal {
-    width: 550px; height: 550px;
-    background: radial-gradient(circle, rgba(0,217,160,0.10) 0%, transparent 70%);
-    bottom: -180px; right: -120px;
-    animation: floatB 30s ease-in-out infinite;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,217,160,0.09) 0%, transparent 70%);
+    bottom: -200px; right: -150px;
+    animation: floatB 34s ease-in-out infinite;
   }
   .orb-mid {
-    width: 320px; height: 320px;
-    background: radial-gradient(circle, rgba(245,200,66,0.06) 0%, transparent 70%);
-    top: 55%; right: 8%;
-    animation: floatC 20s ease-in-out infinite;
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, rgba(245,200,66,0.05) 0%, transparent 70%);
+    top: 55%; right: 5%;
+    animation: floatC 22s ease-in-out infinite;
+  }
+  .orb-violet {
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, rgba(110,60,220,0.05) 0%, transparent 70%);
+    top: 38%; left: 28%;
+    animation: floatB 40s ease-in-out infinite reverse;
   }
 
   @keyframes floatA {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    40%       { transform: translate(40px, -30px) scale(1.06); }
-    70%       { transform: translate(-20px, 40px) scale(0.96); }
+    40%       { transform: translate(50px, -40px) scale(1.07); }
+    70%       { transform: translate(-25px, 50px) scale(0.95); }
   }
   @keyframes floatB {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    35%       { transform: translate(-30px, 20px) scale(1.04); }
-    65%       { transform: translate(25px, -35px) scale(0.97); }
+    35%       { transform: translate(-40px, 25px) scale(1.05); }
+    65%       { transform: translate(30px, -45px) scale(0.96); }
   }
   @keyframes floatC {
     0%, 100% { transform: translate(0, 0); }
-    50%       { transform: translate(-15px, -20px); }
+    50%       { transform: translate(-20px, -25px); }
+  }
+
+  /* ─── CURSOR GLOW ─── */
+  #cursor-glow {
+    position: fixed;
+    width: 650px; height: 650px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245,200,66,0.055) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+    transform: translate(-50%, -50%);
+    left: 50%; top: 30%;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    will-change: left, top;
   }
 
   /* Noise texture overlay */
@@ -126,11 +148,15 @@
     position: sticky;
     top: 0;
     z-index: 200;
-    background: rgba(6,11,15,0.82);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(4,7,10,0.82);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     border-bottom: 1px solid var(--border);
-    margin: 0 0 0 0;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+  .nav.scrolled {
+    border-bottom-color: rgba(245,200,66,0.12);
+    box-shadow: 0 1px 0 rgba(245,200,66,0.04);
   }
   @media (max-width: 680px) { .nav { padding: 16px 20px; } }
 
@@ -172,42 +198,49 @@
     align-items: center;
     gap: 12px;
     opacity: 0;
-    animation: fadeUp 0.7s var(--ease-spring) 0.1s forwards;
+    animation: fadeUp 0.7s var(--ease-out) 0.3s forwards;
   }
   .hero-eyebrow::before {
     content: '';
     display: block;
-    width: 36px;
+    width: 0;
     height: 1px;
     background: var(--gold);
-    opacity: 0.45;
+    opacity: 0.55;
     flex-shrink: 0;
+    animation: lineGrow 0.55s var(--ease-out) 0.1s forwards;
   }
 
   .hero-h1 {
     font-family: var(--serif);
-    font-size: clamp(54px, 9vw, 100px);
+    font-size: clamp(58px, 9.5vw, 108px);
     font-weight: 400;
     line-height: 1.0;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.03em;
     color: var(--text);
     margin-bottom: 28px;
-    opacity: 0;
-    animation: fadeUp 0.8s var(--ease-spring) 0.22s forwards;
+    overflow: visible;
   }
   .hero-h1 em {
     font-style: italic;
     color: var(--gold);
+    display: inline-block;
+  }
+  /* hero word spans — injected by JS */
+  .hw {
+    display: inline-block;
+    opacity: 0;
+    animation: heroWord 0.9s var(--spring) forwards;
   }
 
   .hero-sub {
     font-size: 17px;
     color: var(--text-soft);
-    line-height: 1.78;
+    line-height: 1.8;
     max-width: 440px;
     font-weight: 300;
     opacity: 0;
-    animation: fadeUp 0.8s var(--ease-spring) 0.38s forwards;
+    animation: fadeUp 0.8s var(--ease-out) 0.75s forwards;
   }
 
   /* ─── SECTION ─── */
@@ -234,6 +267,12 @@
     flex: 1;
     height: 1px;
     background: linear-gradient(90deg, var(--gold-border) 0%, transparent 100%);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.9s var(--ease-out) 0.2s;
+  }
+  .section-head.visible .section-rule {
+    transform: scaleX(1);
   }
 
   .section-count {
@@ -262,57 +301,89 @@
     display: block;
     overflow: hidden;
     cursor: pointer;
+    will-change: transform;
 
     /* scroll reveal start state */
     opacity: 0;
-    transform: translateY(28px);
+    transform: perspective(1000px) scale(0.96) translateY(22px);
     transition:
-      opacity 0.6s var(--ease-spring),
-      transform 0.6s var(--ease-spring),
+      opacity 0.65s var(--ease-out),
+      transform 0.65s var(--ease-out),
       border-color 0.25s ease,
       box-shadow 0.3s ease,
       background 0.25s ease;
   }
   .card.visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: perspective(1000px)
+               rotateX(var(--rx, 0deg))
+               rotateY(var(--ry, 0deg))
+               translateY(var(--ty, 0px))
+               scale(1);
   }
 
   /* staggered delays per child */
   .card:nth-child(1) { transition-delay: 0ms; }
-  .card:nth-child(2) { transition-delay: 70ms; }
-  .card:nth-child(3) { transition-delay: 140ms; }
-  .card:nth-child(4) { transition-delay: 210ms; }
-  .card:nth-child(5) { transition-delay: 280ms; }
-  .card:nth-child(6) { transition-delay: 350ms; }
+  .card:nth-child(2) { transition-delay: 65ms; }
+  .card:nth-child(3) { transition-delay: 130ms; }
+  .card:nth-child(4) { transition-delay: 195ms; }
+  .card:nth-child(5) { transition-delay: 260ms; }
+  .card:nth-child(6) { transition-delay: 325ms; }
+  .card:nth-child(7) { transition-delay: 390ms; }
 
-  /* inner glow highlight — fills from top on hover */
+  /* top glow — fills from top on hover */
   .card::before {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(245,200,66,0.09), transparent 80%);
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(245,200,66,0.10), transparent 80%);
     opacity: 0;
-    transition: opacity 0.35s ease;
+    transition: opacity 0.4s ease;
     pointer-events: none;
+    z-index: 0;
   }
   .card:hover::before { opacity: 1; }
 
-  /* teal variant glow */
+  /* teal variant */
   .card.teal-card::before {
-    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,217,160,0.09), transparent 80%);
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,217,160,0.10), transparent 80%);
   }
+
+  /* shine sweep */
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.04) 50%, transparent 65%);
+    background-size: 250% 100%;
+    background-position: 200% 0;
+    transition: background-position 0.75s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .card:hover::after { background-position: -100% 0; }
+
+  /* ensure card content sits above pseudo-elements */
+  .card-badge, .card-wr, .card-title, .card-desc, .card-cta { position: relative; z-index: 2; }
 
   .card:hover {
     background: var(--card-hover);
     border-color: var(--gold-border);
-    box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(245,200,66,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
-    transform: translateY(-5px) !important;
+    box-shadow: 0 28px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,200,66,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
   }
   .card.teal-card:hover {
     border-color: var(--teal-border);
-    box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,217,160,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
+    box-shadow: 0 28px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,217,160,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  /* mobile tap feel */
+  @media (hover: none) {
+    .card:active {
+      transform: perspective(1000px) scale(0.972) !important;
+      transition-duration: 0.1s !important;
+    }
   }
 
   .card-badge {
@@ -473,21 +544,46 @@
     transform: translateY(-1px);
   }
 
+  /* ─── FOOTER REVEAL ─── */
+  .footer {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease 0.1s, transform 0.6s var(--ease-out) 0.1s;
+  }
+  .footer.visible { opacity: 1; transform: none; }
+
   /* ─── ANIMATIONS ─── */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(26px); }
+    from { opacity: 0; transform: translateY(24px); }
     to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes heroWord {
+    from { opacity: 0; transform: translateY(32px) scale(0.93); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes lineGrow {
+    from { width: 0; }
+    to   { width: 36px; }
   }
 
   /* section head reveal */
   .section-head {
     opacity: 0;
     transform: translateY(16px);
-    transition: opacity 0.5s ease, transform 0.5s var(--ease-spring);
+    transition: opacity 0.5s ease, transform 0.5s var(--ease-out);
   }
   .section-head.visible {
     opacity: 1;
     transform: none;
+  }
+
+  /* ─── REDUCED MOTION ─── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 </style>
 </head>
@@ -498,8 +594,10 @@
   <div class="orb orb-gold"></div>
   <div class="orb orb-teal"></div>
   <div class="orb orb-mid"></div>
+  <div class="orb orb-violet"></div>
 </div>
 <div class="bg-noise"></div>
+<div id="cursor-glow"></div>
 
 <!-- Nav -->
 <nav class="nav">
@@ -677,7 +775,32 @@
 </div>
 
 <script>
-  // Scroll reveal with IntersectionObserver
+  /* ── 1. CURSOR GLOW (desktop only) ── */
+  const glow = document.getElementById('cursor-glow');
+  let glowVisible = false;
+  const isTouch = window.matchMedia('(hover: none)').matches;
+  if (!isTouch) {
+    document.addEventListener('mousemove', (e) => {
+      if (!glowVisible) { glow.style.opacity = '1'; glowVisible = true; }
+      glow.style.left = e.clientX + 'px';
+      glow.style.top  = e.clientY + 'px';
+    }, { passive: true });
+  }
+
+  /* ── 2. SCROLL — nav glow + orb parallax ── */
+  const nav     = document.querySelector('.nav');
+  const orbGold = document.querySelector('.orb-gold');
+  const orbTeal = document.querySelector('.orb-teal');
+
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    nav.classList.toggle('scrolled', y > 20);
+    // orbs drift at different speeds for depth
+    orbGold.style.transform = `translate(0, ${y * 0.13}px) scale(1)`;
+    orbTeal.style.transform = `translate(0, ${-y * 0.09}px) scale(1)`;
+  }, { passive: true });
+
+  /* ── 3. SCROLL REVEAL ── */
   const io = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -687,22 +810,57 @@
     });
   }, { threshold: 0.06, rootMargin: '0px 0px -32px 0px' });
 
-  document.querySelectorAll('.card, .section-head').forEach(el => io.observe(el));
+  document.querySelectorAll('.card, .section-head, .footer').forEach(el => io.observe(el));
 
-  // Subtle magnetic card effect
-  document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width  - 0.5) * 8;
-      const y = ((e.clientY - rect.top)  / rect.height - 0.5) * 8;
-      card.style.setProperty('--rx', `${y}deg`);
-      card.style.setProperty('--ry', `${-x}deg`);
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.removeProperty('--rx');
-      card.style.removeProperty('--ry');
-    });
+  /* ── 4. HERO WORD SPLIT ── */
+  const h1 = document.querySelector('.hero-h1');
+  let wordDelay = 220;
+  Array.from(h1.childNodes).forEach(node => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent.trim();
+      if (!text) return;
+      const span = document.createElement('span');
+      span.className = 'hw';
+      span.textContent = text;
+      span.style.animationDelay = wordDelay + 'ms';
+      wordDelay += 130;
+      node.parentNode.replaceChild(span, node);
+    } else if (node.nodeName === 'EM') {
+      node.style.display = 'inline-block';
+      const inner = node.textContent;
+      node.innerHTML = '';
+      const span = document.createElement('span');
+      span.className = 'hw';
+      span.textContent = inner;
+      span.style.animationDelay = wordDelay + 'ms';
+      node.appendChild(span);
+    }
+    // BR nodes left untouched
   });
+
+  /* ── 5. 3D CARD TILT + SHINE (desktop only) ── */
+  if (!isTouch) {
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const r  = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top)  / r.height;
+        const rx = (py - 0.5) * 9;   // tilt up/down
+        const ry = (px - 0.5) * -9;  // tilt left/right
+        card.style.setProperty('--rx', `${rx}deg`);
+        card.style.setProperty('--ry', `${ry}deg`);
+        card.style.setProperty('--ty', '-6px');
+        // suppress the slow entrance transition while tilting
+        card.style.transition = 'border-color 0.25s ease, box-shadow 0.3s ease, background 0.25s ease';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--rx', '0deg');
+        card.style.setProperty('--ry', '0deg');
+        card.style.setProperty('--ty', '0px');
+        card.style.transition = '';
+      });
+    });
+  }
 </script>
 </body>
 </html>
