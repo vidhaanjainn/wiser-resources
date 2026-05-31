@@ -181,70 +181,167 @@
     border-radius: 20px;
   }
 
-  /* ─── HERO ─── */
-  .hero {
-    padding: 96px 0 72px;
-    max-width: 720px;
+  /* ─── COSMIC HERO ─── */
+  #cosmic-hero {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100svh;
+    min-height: 580px;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .hero-eyebrow {
+  #cosmic-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* gradient fade-out at bottom for seamless card transition */
+  #cosmic-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 220px;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  #cosmic-text {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 0 24px;
+    max-width: 660px;
+  }
+
+  .cosmic-eyebrow {
     font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.15em;
+    font-size: 10px;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--gold);
     margin-bottom: 28px;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 12px;
     opacity: 0;
-    animation: fadeUp 0.7s var(--ease-out) 0.3s forwards;
+    animation: fadeUp 0.7s var(--ease-out) 0.4s forwards;
   }
-  .hero-eyebrow::before {
+  .cosmic-eyebrow::before,
+  .cosmic-eyebrow::after {
     content: '';
     display: block;
-    width: 0;
+    width: 28px;
     height: 1px;
     background: var(--gold);
-    opacity: 0.55;
+    opacity: 0.4;
     flex-shrink: 0;
-    animation: lineGrow 0.55s var(--ease-out) 0.1s forwards;
   }
 
-  .hero-h1 {
+  .cosmic-h1 {
     font-family: var(--serif);
-    font-size: clamp(58px, 9.5vw, 108px);
+    font-size: clamp(52px, 8.5vw, 100px);
     font-weight: 400;
     line-height: 1.0;
     letter-spacing: -0.03em;
     color: var(--text);
-    margin-bottom: 28px;
-    overflow: visible;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.9s var(--spring) 0.65s forwards;
   }
-  .hero-h1 em {
+  .cosmic-h1 em {
     font-style: italic;
     color: var(--gold);
-    display: inline-block;
-  }
-  /* hero word spans — injected by JS */
-  .hw {
-    display: inline-block;
-    opacity: 0;
-    animation: heroWord 0.9s var(--spring) forwards;
   }
 
-  .hero-sub {
-    font-size: 17px;
+  .cosmic-sub {
+    font-size: 16px;
     color: var(--text-soft);
-    line-height: 1.8;
-    max-width: 440px;
+    line-height: 1.75;
     font-weight: 300;
+    max-width: 400px;
+    margin: 0 auto;
     opacity: 0;
-    animation: fadeUp 0.8s var(--ease-out) 0.75s forwards;
+    animation: fadeUp 0.7s var(--ease-out) 0.95s forwards;
+  }
+
+  .cosmic-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 30px;
+    background: var(--gold-pale);
+    border: 1px solid var(--gold-border);
+    border-radius: 40px;
+    color: var(--gold);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    margin-top: 40px;
+    pointer-events: all;
+    transition: all 0.3s ease;
+    opacity: 0;
+    animation: fadeUp 0.7s var(--ease-out) 1.2s forwards;
+  }
+  .cosmic-cta:hover {
+    background: rgba(245,200,66,0.14);
+    border-color: rgba(245,200,66,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(245,200,66,0.12);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 0.6s ease 2s forwards;
+  }
+  .scroll-hint-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .scroll-hint-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(245,200,66,0.6), transparent);
+    animation: scrollPulse 2.2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+    50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+    51%  { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+    100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
   }
 
   /* ─── SECTION ─── */
-  .section { padding: 72px 0 0; }
+  .section { padding: 80px 0 0; }
 
   .section-head {
     display: flex;
@@ -303,7 +400,6 @@
     cursor: pointer;
     will-change: transform;
 
-    /* scroll reveal start state */
     opacity: 0;
     transform: perspective(1000px) scale(0.96) translateY(22px);
     transition:
@@ -322,7 +418,6 @@
                scale(1);
   }
 
-  /* staggered delays per child */
   .card:nth-child(1) { transition-delay: 0ms; }
   .card:nth-child(2) { transition-delay: 65ms; }
   .card:nth-child(3) { transition-delay: 130ms; }
@@ -331,7 +426,6 @@
   .card:nth-child(6) { transition-delay: 325ms; }
   .card:nth-child(7) { transition-delay: 390ms; }
 
-  /* top glow — fills from top on hover */
   .card::before {
     content: '';
     position: absolute;
@@ -345,12 +439,10 @@
   }
   .card:hover::before { opacity: 1; }
 
-  /* teal variant */
   .card.teal-card::before {
     background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,217,160,0.10), transparent 80%);
   }
 
-  /* shine sweep */
   .card::after {
     content: '';
     position: absolute;
@@ -365,7 +457,6 @@
   }
   .card:hover::after { background-position: -100% 0; }
 
-  /* ensure card content sits above pseudo-elements */
   .card-badge, .card-wr, .card-title, .card-desc, .card-cta { position: relative; z-index: 2; }
 
   .card:hover {
@@ -378,7 +469,6 @@
     box-shadow: 0 28px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,217,160,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
   }
 
-  /* mobile tap feel */
   @media (hover: none) {
     .card:active {
       transform: perspective(1000px) scale(0.972) !important;
@@ -435,7 +525,6 @@
     font-weight: 300;
   }
 
-  /* arrow CTA at bottom-right */
   .card-cta {
     position: absolute;
     bottom: 24px;
@@ -544,7 +633,6 @@
     transform: translateY(-1px);
   }
 
-  /* ─── FOOTER REVEAL ─── */
   .footer {
     opacity: 0;
     transform: translateY(16px);
@@ -557,16 +645,11 @@
     from { opacity: 0; transform: translateY(24px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  @keyframes heroWord {
-    from { opacity: 0; transform: translateY(32px) scale(0.93); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
   @keyframes lineGrow {
     from { width: 0; }
     to   { width: 36px; }
   }
 
-  /* section head reveal */
   .section-head {
     opacity: 0;
     transform: translateY(16px);
@@ -605,14 +688,24 @@
   <div class="nav-pill">By Vidhaan</div>
 </nav>
 
-<div class="wrap">
+<!-- Cosmic Hero -->
+<section id="cosmic-hero">
+  <canvas id="cosmic-canvas"></canvas>
 
-  <!-- Hero -->
-  <div class="hero">
-    <div class="hero-eyebrow">Wiser With Vidhaan · Resources</div>
-    <h1 class="hero-h1">Get<br><em>Wiser.</em></h1>
-    <p class="hero-sub">Guides, calculators, and frameworks on money, AI, and decisions — from every reel.</p>
+  <div id="cosmic-text">
+    <div class="cosmic-eyebrow">Wiser With Vidhaan · Resources</div>
+    <h1 class="cosmic-h1">Your money.<br><em>Understood.</em></h1>
+    <p class="cosmic-sub">Free guides, calculators and frameworks — from every reel. Built for India.</p>
+    <a class="cosmic-cta" href="#tools">Explore Tools ↓</a>
   </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-hint-line"></div>
+    <span class="scroll-hint-label">scroll</span>
+  </div>
+</section>
+
+<div class="wrap" id="tools">
 
   <!-- Section: Finance Calculators -->
   <div class="section">
@@ -774,6 +867,11 @@
 
 </div>
 
+<!-- CDN: Three.js + GSAP -->
+<script src="/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
 <script>
   /* ── 1. CURSOR GLOW (desktop only) ── */
   const glow = document.getElementById('cursor-glow');
@@ -795,7 +893,6 @@
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
     nav.classList.toggle('scrolled', y > 20);
-    // orbs drift at different speeds for depth
     orbGold.style.transform = `translate(0, ${y * 0.13}px) scale(1)`;
     orbTeal.style.transform = `translate(0, ${-y * 0.09}px) scale(1)`;
   }, { passive: true });
@@ -812,45 +909,18 @@
 
   document.querySelectorAll('.card, .section-head, .footer').forEach(el => io.observe(el));
 
-  /* ── 4. HERO WORD SPLIT ── */
-  const h1 = document.querySelector('.hero-h1');
-  let wordDelay = 220;
-  Array.from(h1.childNodes).forEach(node => {
-    if (node.nodeType === Node.TEXT_NODE) {
-      const text = node.textContent.trim();
-      if (!text) return;
-      const span = document.createElement('span');
-      span.className = 'hw';
-      span.textContent = text;
-      span.style.animationDelay = wordDelay + 'ms';
-      wordDelay += 130;
-      node.parentNode.replaceChild(span, node);
-    } else if (node.nodeName === 'EM') {
-      node.style.display = 'inline-block';
-      const inner = node.textContent;
-      node.innerHTML = '';
-      const span = document.createElement('span');
-      span.className = 'hw';
-      span.textContent = inner;
-      span.style.animationDelay = wordDelay + 'ms';
-      node.appendChild(span);
-    }
-    // BR nodes left untouched
-  });
-
-  /* ── 5. 3D CARD TILT + SHINE (desktop only) ── */
+  /* ── 4. 3D CARD TILT + SHINE (desktop only) ── */
   if (!isTouch) {
     document.querySelectorAll('.card').forEach(card => {
       card.addEventListener('mousemove', (e) => {
         const r  = card.getBoundingClientRect();
         const px = (e.clientX - r.left) / r.width;
         const py = (e.clientY - r.top)  / r.height;
-        const rx = (py - 0.5) * 9;   // tilt up/down
-        const ry = (px - 0.5) * -9;  // tilt left/right
+        const rx = (py - 0.5) * 9;
+        const ry = (px - 0.5) * -9;
         card.style.setProperty('--rx', `${rx}deg`);
         card.style.setProperty('--ry', `${ry}deg`);
         card.style.setProperty('--ty', '-6px');
-        // suppress the slow entrance transition while tilting
         card.style.transition = 'border-color 0.25s ease, box-shadow 0.3s ease, background 0.25s ease';
       });
       card.addEventListener('mouseleave', () => {
@@ -862,5 +932,151 @@
     });
   }
 </script>
+
+<script>
+/* ── COSMIC HERO: THREE.JS PARTICLE SPHERE ── */
+(function () {
+  if (!window.THREE || !window.gsap) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile       = window.matchMedia('(max-width: 768px)').matches;
+
+  const heroEl = document.getElementById('cosmic-hero');
+  const canvas = document.getElementById('cosmic-canvas');
+  if (!heroEl || !canvas) return;
+
+  const COUNT = isMobile ? 5000 : 12000;
+
+  /* — Renderer — */
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !isMobile });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  /* — Scene / Camera — */
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
+  camera.position.z = 2.8;
+
+  /* — Fibonacci sphere distribution — */
+  const positions = new Float32Array(COUNT * 3);
+  const colors    = new Float32Array(COUNT * 3);
+  const GOLDEN    = Math.PI * (3 - Math.sqrt(5));
+  const cTeal     = new THREE.Color('#00D9A0');
+  const cGold     = new THREE.Color('#F5C842');
+
+  for (let i = 0; i < COUNT; i++) {
+    const y  = 1 - (i / (COUNT - 1)) * 2;
+    const r  = Math.sqrt(Math.max(0, 1 - y * y));
+    const th = GOLDEN * i;
+    // 72% on surface shell, 28% volumetric scatter for depth
+    const rs = Math.random() < 0.72
+      ? (0.88 + Math.random() * 0.12)
+      : (0.12 + Math.random() * 0.74);
+
+    positions[i*3]   = r * Math.cos(th) * rs;
+    positions[i*3+1] = y * rs;
+    positions[i*3+2] = r * Math.sin(th) * rs;
+
+    // teal (inner) → gold (outer surface) + noise
+    const blend = Math.min(1, rs * 0.68 + (1 - Math.abs(y)) * 0.12 + Math.random() * 0.20);
+    const c = cTeal.clone().lerp(cGold, blend);
+    colors[i*3] = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
+
+  /* circular soft-glow sprite so particles render as round dots */
+  function makeSprite() {
+    const c = document.createElement('canvas');
+    c.width = c.height = 64;
+    const ctx = c.getContext('2d');
+    const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0,    'rgba(255,255,255,1)');
+    g.addColorStop(0.35, 'rgba(255,255,255,0.75)');
+    g.addColorStop(0.7,  'rgba(255,255,255,0.2)');
+    g.addColorStop(1,    'rgba(255,255,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(c);
+  }
+
+  const mat = new THREE.PointsMaterial({
+    size:            isMobile ? 0.032 : 0.018,
+    map:             makeSprite(),
+    vertexColors:    true,
+    transparent:     true,
+    opacity:         0.88,
+    sizeAttenuation: true,
+    depthWrite:      false,
+    blending:        THREE.AdditiveBlending,
+    alphaTest:       0.001,
+  });
+
+  const points = new THREE.Points(geo, mat);
+  scene.add(points);
+
+  /* — Resize — */
+  function onResize() {
+    const w = heroEl.offsetWidth;
+    const h = heroEl.offsetHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  onResize();
+  window.addEventListener('resize', onResize, { passive: true });
+
+  /* — Mouse tilt (desktop only) — */
+  let tX = 0, tY = 0, lX = 0, lY = 0;
+  if (!isTouch) {
+    document.addEventListener('mousemove', (e) => {
+      tX = ((e.clientY / window.innerHeight) - 0.5) * 0.45;
+      tY = ((e.clientX / window.innerWidth)  - 0.5) * 0.70;
+    }, { passive: true });
+  }
+
+  /* — GSAP ScrollTrigger: dissolve on scroll — */
+  if (!prefersReduced) {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: heroEl,
+        start:   'top top',
+        end:     'bottom top',
+        scrub:   1.8,
+      }
+    })
+    .to(mat,            { opacity: 0 },                              0)
+    .to(points.scale,   { x: 0.42, y: 0.42, z: 0.42, ease: 'none' }, 0)
+    .to('#cosmic-text', { opacity: 0, y: -50, ease: 'none' },        0);
+  }
+
+  /* — Animation loop — */
+  let autoRot = 0;
+  let active  = true;
+
+  new IntersectionObserver(([e]) => { active = e.isIntersecting; }).observe(heroEl);
+
+  function tick() {
+    requestAnimationFrame(tick);
+    if (!active) return;
+
+    if (!prefersReduced) {
+      lX += (tX - lX) * 0.04;
+      lY += (tY - lY) * 0.04;
+      autoRot      += 0.0007;
+      points.rotation.x = lX;
+      points.rotation.y = autoRot + lY;
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  tick();
+})();
+</script>
+
 </body>
 </html>
